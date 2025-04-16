@@ -1,0 +1,67 @@
+services:
+  solana-test-validator:
+    image: robojosef/solana-test-validator
+    # command: solana-test-validator --bpf-program metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s /lib/program-fixture/metadata_program.so
+    command: solana-test-validator -q
+    ports:
+      - '8899:8899'
+      - '8900:8900'
+    volumes:
+      - ./solana-ledger:/test-ledger
+      - ./anchor/tests/fixtures:/lib/program-fixture
+    environment:
+      - RUST_LOG=solana=info
+    network_mode: host
+
+  client:
+    ports:
+      - '3000:3000'
+    build:
+      context: ./client
+      dockerfile: ../docker/local/Dockerfile.client
+    network_mode: host
+    develop:
+      watch:
+        - path: ./client/src
+          target: /apps/crud-dapp/src
+          action: sync
+        - path: ./client/package.json
+          action: rebuild
+
+  server:
+    ports:
+      - '3001:3001'
+    build:
+      context: ./server
+      dockerfile: ../docker/local/Dockerfile.server
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+    develop:
+      watch:
+        - path: ./server/src
+          target: /apps/server/src
+          action: sync+restart
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/package-lock.json
+          action: rebuild
+
+  postgres:
+    container_name: database
+    image: postgres:16.4-alpine3.20
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: solbay_db
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d solbay_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5

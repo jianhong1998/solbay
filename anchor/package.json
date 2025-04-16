@@ -1,0 +1,24 @@
+{
+  "name": "anchor-test",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,js}\""
+  },
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "anchor-bankrun": "^0.5.0",
+    "prettier": "^3.5.3",
+    "solana-bankrun": "^0.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "dependencies": {
+    "@solana-developers/helpers": "^2.8.1",
+    "@solana/web3.js": "^1.98.0"
+  }
+}
