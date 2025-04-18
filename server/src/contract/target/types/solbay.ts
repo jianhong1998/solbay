@@ -5,162 +5,108 @@
  * IDL can be found at `target/idl/solbay.json`.
  */
 export type Solbay = {
-  "address": "EmDFTTKK7pefKKqzFQpzuPmbK4oxkMX7YNYyrJx22EZo",
-  "metadata": {
-    "name": "solbay",
-    "version": "0.1.0",
-    "spec": "0.1.0",
-    "description": "Created with Anchor"
-  },
-  "instructions": [
+  address: 'EmDFTTKK7pefKKqzFQpzuPmbK4oxkMX7YNYyrJx22EZo';
+  metadata: {
+    name: 'solbay';
+    version: '0.1.0';
+    spec: '0.1.0';
+    description: 'Created with Anchor';
+  };
+  instructions: [
     {
-      "name": "close",
-      "discriminator": [
-        98,
-        165,
-        201,
-        177,
-        108,
-        65,
-        206,
-        96
-      ],
-      "accounts": [
+      name: 'close';
+      discriminator: [98, 165, 201, 177, 108, 65, 206, 96];
+      accounts: [
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
+          name: 'payer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "solbay",
-          "writable": true
-        }
-      ],
-      "args": []
+          name: 'solbay';
+          writable: true;
+        },
+      ];
+      args: [];
     },
     {
-      "name": "decrement",
-      "discriminator": [
-        106,
-        227,
-        168,
-        59,
-        248,
-        27,
-        150,
-        101
-      ],
-      "accounts": [
+      name: 'decrement';
+      discriminator: [106, 227, 168, 59, 248, 27, 150, 101];
+      accounts: [
         {
-          "name": "solbay",
-          "writable": true
-        }
-      ],
-      "args": []
+          name: 'solbay';
+          writable: true;
+        },
+      ];
+      args: [];
     },
     {
-      "name": "increment",
-      "discriminator": [
-        11,
-        18,
-        104,
-        9,
-        104,
-        174,
-        59,
-        33
-      ],
-      "accounts": [
+      name: 'increment';
+      discriminator: [11, 18, 104, 9, 104, 174, 59, 33];
+      accounts: [
         {
-          "name": "solbay",
-          "writable": true
-        }
-      ],
-      "args": []
+          name: 'solbay';
+          writable: true;
+        },
+      ];
+      args: [];
     },
     {
-      "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
-      "accounts": [
+      name: 'initialize';
+      discriminator: [175, 175, 109, 31, 13, 152, 155, 237];
+      accounts: [
         {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
+          name: 'payer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "solbay",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": []
+          name: 'solbay';
+          writable: true;
+          signer: true;
+        },
+      ];
+      args: [];
     },
     {
-      "name": "set",
-      "discriminator": [
-        198,
-        51,
-        53,
-        241,
-        116,
-        29,
-        126,
-        194
-      ],
-      "accounts": [
+      name: 'set';
+      discriminator: [198, 51, 53, 241, 116, 29, 126, 194];
+      accounts: [
         {
-          "name": "solbay",
-          "writable": true
-        }
-      ],
-      "args": [
+          name: 'solbay';
+          writable: true;
+        },
+      ];
+      args: [
         {
-          "name": "value",
-          "type": "u8"
-        }
-      ]
-    }
-  ],
-  "accounts": [
+          name: 'value';
+          type: 'u8';
+        },
+      ];
+    },
+  ];
+  accounts: [
     {
-      "name": "solbay",
-      "discriminator": [
-        74,
-        10,
-        95,
-        170,
-        234,
-        102,
-        234,
-        57
-      ]
-    }
-  ],
-  "types": [
+      name: 'solbay';
+      discriminator: [74, 10, 95, 170, 234, 102, 234, 57];
+    },
+  ];
+  types: [
     {
-      "name": "solbay",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: 'solbay';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "count",
-            "type": "u8"
-          }
-        ]
-      }
-    }
-  ]
+            name: 'count';
+            type: 'u8';
+          },
+        ];
+      };
+    },
+  ];
 };

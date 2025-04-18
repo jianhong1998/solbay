@@ -74,3 +74,11 @@ install:
 init:
 	@chmod +x ./scripts/init-project.sh && \
 		./scripts/init-project.sh
+
+format:
+	@cd anchor && \
+		npm run format
+	@cd client && \
+		npm run format
+	@cd server && \
+		npm run format
