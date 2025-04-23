@@ -13,6 +13,7 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useCluster } from '../cluster/cluster-data-access';
+import { useLogger } from '@/utils/shared/logger';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -25,10 +26,11 @@ export const WalletButton = dynamic(
 );
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
+  const logger = useLogger();
   const { cluster } = useCluster();
   const endpoint = useMemo(() => cluster.endpoint, [cluster]);
   const onError = useCallback((error: WalletError) => {
-    console.error(error);
+    logger.error(error);
   }, []);
 
   return (

@@ -14,6 +14,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useTransactionToast } from '../ui/ui-layout';
+import { useLogger } from '@/utils/shared/logger';
 
 export function useGetBalance({ address }: { address: PublicKey }) {
   const { connection } = useConnection();
@@ -60,6 +61,7 @@ export function useTransferSol({ address }: { address: PublicKey }) {
   const transactionToast = useTransactionToast();
   const wallet = useWallet();
   const client = useQueryClient();
+  const logger = useLogger();
 
   return useMutation({
     mutationKey: [
@@ -85,10 +87,10 @@ export function useTransferSol({ address }: { address: PublicKey }) {
           'confirmed',
         );
 
-        console.log(signature);
+        logger.log(signature);
         return signature;
       } catch (error: unknown) {
-        console.log('error', `Transaction failed! ${error}`, signature);
+        logger.log('error', `Transaction failed! ${error}`, signature);
 
         return;
       }

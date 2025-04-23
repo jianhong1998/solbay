@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-solbay = "EmDFTTKK7pefKKqzFQpzuPmbK4oxkMX7YNYyrJx22EZo"
+solbay = "DsEJ8Xoffs9GSDhzPV3iUi7LskYSJxUKfhgotnWbUpme"
 
 [registry]
 url = "https://api.apr.dev"

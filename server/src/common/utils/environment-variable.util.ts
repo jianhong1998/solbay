@@ -20,22 +20,10 @@ type IEnvironmentVariableList = {
   // JWT Related
   jwtSecret: string;
   jwtExpire: string;
-
-  // Hashing Related
-  passwordHashSecret: string;
-
-  // SQS Related
-  sqsUrl: string;
-  sqsAwsRegion: string;
-
-  // Email Related
-  emailSender: string;
-  emailReplyTo: string;
 };
 
 type IFeatureFlagList = {
   // Feature Flag Related
-  enablePostmarkEmailService: boolean;
 };
 
 @Injectable()
@@ -67,15 +55,6 @@ export class EnvironmentVariableUtil {
       jwtSecret:
         this.configService.get('JWT_SECRET') ?? randomBytes(16).toString('hex'),
       jwtExpire: this.configService.get('JWT_EXPIRE') ?? '15 mins',
-      passwordHashSecret:
-        this.configService.get('PASSWORD_HASH_SECRET') ?? 'secret',
-      emailSender: this.configService.get('EMAIL_SENDER') ?? '',
-      emailReplyTo: this.configService.get('EMAIL_REPLY_TO') ?? '',
-
-      sqsAwsRegion:
-        this.configService.get('SQS_AWS_REGION') ?? 'ap-southeast-1',
-
-      sqsUrl: this.configService.get('AWS_SQS_URL') ?? '',
     };
 
     return this.environmentVariableList;
@@ -83,11 +62,7 @@ export class EnvironmentVariableUtil {
 
   public getFeatureFlags(): IFeatureFlagList {
     if (!this.featureFlagList) {
-      this.featureFlagList = {
-        enablePostmarkEmailService:
-          this.configService.get<boolean>('ENABLE_POSTMARK_EMAIL_SERVICE') ??
-          false,
-      };
+      this.featureFlagList = {};
     }
 
     return this.featureFlagList;

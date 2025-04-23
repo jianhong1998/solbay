@@ -7,6 +7,7 @@ import { ReactNode, useState } from 'react';
 import { AppModal } from '../ui/ui-layout';
 import { ClusterNetwork, useCluster } from './cluster-data-access';
 import { Connection } from '@solana/web3.js';
+import { useLogger } from '@/utils/shared/logger';
 
 export function ExplorerLink({
   path,
@@ -100,6 +101,7 @@ export function ClusterUiModal({
   const [name, setName] = useState('');
   const [network, setNetwork] = useState<ClusterNetwork | undefined>();
   const [endpoint, setEndpoint] = useState('');
+  const logger = useLogger();
 
   return (
     <AppModal
@@ -113,10 +115,10 @@ export function ClusterUiModal({
             addCluster({ name, network, endpoint });
             hideModal();
           } else {
-            console.log('Invalid cluster name');
+            logger.log('Invalid cluster name');
           }
         } catch {
-          console.log('Invalid cluster endpoint');
+          logger.log('Invalid cluster endpoint');
         }
       }}
       submitLabel="Save"

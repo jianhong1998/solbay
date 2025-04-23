@@ -32,6 +32,10 @@ anchor/build:
 	@chmod +x ./scripts/anchor-build.sh
 	@./scripts/anchor-build.sh
 
+anchor/keys-sync:
+	@cd anchor && \
+		anchor keys sync
+
 test/anchor:
 	@cd anchor && \
 		IS_TESTING_ON_CHAIN=false anchor test --skip-local-validator --skip-deploy
@@ -82,3 +86,4 @@ format:
 		npm run format
 	@cd server && \
 		npm run format
+

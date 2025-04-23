@@ -7,12 +7,8 @@ import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 import { AccountChecker } from '../account/account-ui';
-import {
-  ClusterChecker,
-  ClusterUiSelect,
-  ExplorerLink,
-} from '../cluster/cluster-ui';
-import { WalletButton } from '../solana/solana-provider';
+import { ClusterChecker, ExplorerLink } from '../cluster/cluster-ui';
+import { useAuthModule } from '@/hooks/auth-module/auth-module';
 
 export function UiLayout({
   children,
@@ -22,6 +18,7 @@ export function UiLayout({
   links: { label: string; path: string }[];
 }) {
   const pathname = usePathname();
+  const { Button: AuthButton } = useAuthModule();
 
   return (
     <div className="h-full flex flex-col">
@@ -47,8 +44,7 @@ export function UiLayout({
           </ul>
         </div>
         <div className="flex-none space-x-2">
-          <WalletButton />
-          <ClusterUiSelect />
+          <AuthButton />
         </div>
       </div>
       <ClusterChecker>

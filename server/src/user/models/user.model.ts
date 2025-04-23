@@ -1,3 +1,4 @@
+import { UUID } from 'crypto';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +10,7 @@ import {
 @Entity('user')
 export class UserModel {
   @PrimaryGeneratedColumn('uuid')
-  uuid: string;
+  uuid: UUID;
 
   @Column({
     name: 'public_key',

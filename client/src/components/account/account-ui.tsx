@@ -15,6 +15,7 @@ import {
   useRequestAirdrop,
   useTransferSol,
 } from './account-data-access';
+import { useLogger } from '@/utils/shared/logger';
 
 export function AccountBalance({ address }: { address: PublicKey }) {
   const query = useGetBalance({ address });
@@ -41,6 +42,7 @@ export function AccountBalanceCheck({ address }: { address: PublicKey }) {
   const { cluster } = useCluster();
   const mutation = useRequestAirdrop({ address });
   const query = useGetBalance({ address });
+  const logger = useLogger();
 
   if (query.isLoading) {
     return null;
@@ -55,7 +57,7 @@ export function AccountBalanceCheck({ address }: { address: PublicKey }) {
         <button
           className="btn btn-xs btn-neutral"
           onClick={() =>
-            mutation.mutateAsync(1).catch((err) => console.log(err))
+            mutation.mutateAsync(1).catch((err) => logger.log(err))
           }
         >
           Request Airdrop

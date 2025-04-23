@@ -13,8 +13,10 @@ import {
   AccountTokens,
   AccountTransactions,
 } from './account-ui';
+import { useLogger } from '@/utils/shared/logger';
 
 export default function AccountDetailFeature() {
+  const logger = useLogger();
   const params = useParams();
   const address = useMemo(() => {
     if (!params.address) {
@@ -23,7 +25,7 @@ export default function AccountDetailFeature() {
     try {
       return new PublicKey(params.address);
     } catch (e) {
-      console.log(`Invalid public key`, e);
+      logger.log(`Invalid public key`, e);
     }
   }, [params]);
   if (!address) {
