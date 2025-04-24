@@ -6,7 +6,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useSolbayProgram } from './solbay-data-access';
 
-export default function SolbayFeature() {
+export default function BuyerFeature() {
   const { publicKey, signTransaction } = useWallet();
   const { programId } = useSolbayProgram();
 

@@ -14,7 +14,8 @@ export const metadata = {
 const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'Clusters', path: '/clusters' },
-  { label: 'Solbay Program', path: '/solbay' },
+  { label: 'Buyer', path: '/buyer' },
+  { label: 'Seller', path: '/seller' },
 ];
 
 export default function RootLayout({
