@@ -129,15 +129,12 @@ export class AuthController {
 
   @Post('/logout')
   @HttpCode(200)
+  @Public()
   public async logout(
     @Body() reqBody: LogoutReqDTO,
     @User() user: UserModel | undefined,
     @Res() res: Response,
   ): Promise<void> {
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
     const finalResponse = await this.authService.processLogout({
       publicKey: new PublicKey(reqBody.publicKey),
       res,

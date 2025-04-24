@@ -6,7 +6,6 @@ mod states;
 
 use anchor_lang::prelude::*;
 pub use instructions::*;
-pub use states::*;
 
 declare_id!("DsEJ8Xoffs9GSDhzPV3iUi7LskYSJxUKfhgotnWbUpme");
 
@@ -17,32 +16,5 @@ pub mod solbay {
 
   pub fn login(context: Context<Login>) -> Result<()> {
     process_login(context)
-  }
-
-  /* ==================================================
-  Below are example
-  ================================================== */
-
-  pub fn close(_ctx: Context<CloseSolbay>) -> Result<()> {
-    Ok(())
-  }
-
-  pub fn decrement(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.solbay.count = ctx.accounts.solbay.count.checked_sub(1).unwrap();
-    Ok(())
-  }
-
-  pub fn increment(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.solbay.count = ctx.accounts.solbay.count.checked_add(1).unwrap();
-    Ok(())
-  }
-
-  pub fn initialize(_ctx: Context<InitializeSolbay>) -> Result<()> {
-    Ok(())
-  }
-
-  pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
-    ctx.accounts.solbay.count = value.clone();
-    Ok(())
   }
 }

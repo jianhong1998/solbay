@@ -4,7 +4,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useSolbayProgram } from './solbay-data-access';
-import { SolbayCreate, SolbayList } from './solbay-ui';
 
 export default function SolbayFeature() {
   const { publicKey, signTransaction } = useWallet();
@@ -15,9 +14,7 @@ export default function SolbayFeature() {
       <div>
         <AppHero
           title="Solbay"
-          subtitle={
-            'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment, decrement, set, and close).'
-          }
+          subtitle=""
         >
           <p className="mb-6">
             <ExplorerLink
@@ -25,9 +22,7 @@ export default function SolbayFeature() {
               label={ellipsify(programId.toString())}
             />
           </p>
-          <SolbayCreate />
         </AppHero>
-        <SolbayList />
       </div>
     );
 
