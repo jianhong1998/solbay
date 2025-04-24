@@ -23,10 +23,4 @@ export class ExampleService {
 
     return balance;
   }
-
-  public async getAllAccounts() {
-    const accounts = await this.program.account.solbay.all();
-
-    return accounts;
-  }
 }

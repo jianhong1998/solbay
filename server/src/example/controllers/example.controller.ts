@@ -13,10 +13,4 @@ export class ExampleController {
 
     return { balance };
   }
-
-  @Get('/account')
-  @Public()
-  public async getAllAccounts() {
-    return await this.exampleService.getAllAccounts();
-  }
 }
