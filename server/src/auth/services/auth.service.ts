@@ -94,17 +94,17 @@ export class AuthService {
 
   public async processLogout(params: {
     res: Response;
-    user: UserModel;
+    user: UserModel | undefined;
     publicKey: PublicKey;
   }): Promise<Response> {
     const logger = this.loggerUtil.createLogger('ProcessLogout');
     const { publicKey, res, user } = params;
 
-    if (user.publicKey !== publicKey.toBase58()) {
+    if (user && user.publicKey !== publicKey.toBase58()) {
       logger.warn(
         `Logout request failed: Public key (${publicKey.toBase58()}) and user (${user.uuid}) mismatch.`,
       );
-      throw new ForbiddenException('Public key missmatch.');
+      return res;
     }
 
     res.cookie(TOKEN_COOKIE_NAME, '', {
