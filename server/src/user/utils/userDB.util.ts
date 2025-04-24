@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  DeepPartial,
   EntityManager,
   FindOptionsRelations,
   FindOptionsWhere,
@@ -8,6 +9,10 @@ import {
 } from 'typeorm';
 
 import { UserModel } from '../models/user.model';
+
+type IUserModelCreationData = {
+  publicKey: string;
+};
 
 @Injectable()
 export class UserDBUtil {
@@ -48,5 +53,34 @@ export class UserDBUtil {
     });
 
     return users;
+  }
+
+  public async has(params: {
+    criterial: FindOptionsWhere<UserModel>;
+    entityManager?: EntityManager;
+    relation?: FindOptionsRelations<UserModel>;
+  }): Promise<boolean> {
+    const { criterial, entityManager, relation } = params;
+    const repo = entityManager?.getRepository(UserModel) ?? this.userRepo;
+
+    const count = await repo.count({
+      where: criterial,
+      relations: relation,
+    });
+
+    return count > 0;
+  }
+
+  public async create(params: {
+    userData: IUserModelCreationData;
+    entityManager?: EntityManager;
+  }): Promise<UserModel> {
+    const {
+      entityManager,
+      userData: { publicKey },
+    } = params;
+    const repo = entityManager?.getRepository(UserModel) ?? this.userRepo;
+    const user = await repo.save(repo.create({ publicKey }));
+    return user;
   }
 }

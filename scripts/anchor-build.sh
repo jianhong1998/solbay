@@ -1,8 +1,15 @@
+# Anchor build
+
 cd ./anchor
 anchor build
 
 cp ./target/deploy/solbay.so ./tests/fixtures
+
+
+# Format codes
+npm run format
 cd ..
+
 
 # Copy anchor src & target to client
 

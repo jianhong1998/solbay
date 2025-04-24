@@ -49,6 +49,18 @@ services:
         - path: ./server/package-lock.json
           action: rebuild
 
+  db-migration-service:
+    container_name: db-migration
+    build:
+      context: ./server
+      dockerfile: ../docker/local/Dockerfile.db-migration
+    env_file:
+      - ./server/.env
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     container_name: database
     image: postgres:16.4-alpine3.20

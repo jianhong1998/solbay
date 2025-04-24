@@ -2,7 +2,6 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -11,6 +10,9 @@ import { PUBLIC_DECORATOR_KEY } from 'src/common/constants';
 import { UserDBUtil } from 'src/user/utils/userDB.util';
 
 import { TokenUtil } from '../utils/token.util';
+import { UUID } from 'crypto';
+import { TOKEN_COOKIE_NAME } from '../constants';
+import { LoggerUtil } from 'src/common/utils/logger.util';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -21,10 +23,11 @@ export class AuthGuardService implements CanActivate {
     private readonly reflector: Reflector,
     private readonly userDBUtil: UserDBUtil,
     private readonly tokenUtil: TokenUtil,
+    private readonly loggerUtil: LoggerUtil,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const LOG_KEY = 'VerifyToken';
+    const logger = this.loggerUtil.createLogger('VerifyToken');
     const isPublic = this.reflector.getAllAndOverride<boolean>(
       PUBLIC_DECORATOR_KEY,
       [context.getHandler(), context.getClass()],
@@ -35,21 +38,17 @@ export class AuthGuardService implements CanActivate {
     const req = context.switchToHttp().getRequest<Request>();
 
     const token = this.extractTokenFromRequest(req);
-    const verificationCode = this.extractVerificationCodeFromRequest(req);
-    const isTokeValid = await this.tokenUtil.verifyToken(
-      token,
-      verificationCode,
-    );
+    const isTokeValid = await this.tokenUtil.verifyToken(token);
 
     if (!isTokeValid) {
-      Logger.log(`Token no longer valid: ${token}`, LOG_KEY);
+      logger.log(`Token no longer valid: ${token}`);
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
-    const { userId } = this.tokenUtil.decodeToken<{ userId: string }>(token);
+    const { userId } = this.tokenUtil.decodeToken<{ userId: UUID }>(token);
 
     if (!userId) {
-      Logger.warn(`Invalid userId in token: ${userId}`, LOG_KEY);
+      logger.warn(`Invalid userId in token: ${userId}`);
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
@@ -60,7 +59,7 @@ export class AuthGuardService implements CanActivate {
     });
 
     if (!user) {
-      Logger.log(`User not found: ${userId}`, LOG_KEY);
+      logger.log(`User not found: ${userId}`);
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
@@ -69,67 +68,30 @@ export class AuthGuardService implements CanActivate {
   }
 
   private extractTokenFromRequest(req: Request): string {
-    const LOG_KEY = 'ExtractTokenFromRequest';
+    const logger = this.loggerUtil.createLogger('ExtractTokenFromRequest');
 
     if (!req.cookies) {
-      Logger.log('Cookie is not found in request.', LOG_KEY);
+      logger.log('Cookie is not found in request.');
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
-    if (!('token' in req.cookies) || typeof req.cookies.token !== 'string') {
-      Logger.log(
+    if (
+      !(TOKEN_COOKIE_NAME in req.cookies) ||
+      typeof req.cookies[TOKEN_COOKIE_NAME] !== 'string'
+    ) {
+      logger.log(
         `Invalid token in request cookies: ${JSON.stringify(req.cookies)}.`,
-        LOG_KEY,
       );
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
-    const { token } = req.cookies;
+    const token = req.cookies[TOKEN_COOKIE_NAME];
 
     if (typeof token !== 'string') {
-      Logger.log(`Invalid token: (Type - ${typeof token}) ${token}`, LOG_KEY);
+      logger.log(`Invalid token: (Type - ${typeof token}) ${token}`);
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
     return token;
-  }
-
-  private extractVerificationCodeFromRequest(req: Request) {
-    const LOG_KEY = 'ExtractVerificationCodeFromRequest';
-
-    if (!req.headers.authorization) {
-      Logger.log(
-        `Verification code is not in request header authorization section`,
-        LOG_KEY,
-      );
-      throw new UnauthorizedException(this.unauthorizedMessage);
-    }
-
-    if (typeof req.headers.authorization !== 'string') {
-      const { authorization } = req.headers;
-      const authorizationType = typeof authorization;
-      let authorizationMessage = '';
-
-      if (typeof authorization === 'object') {
-        authorizationMessage = JSON.stringify(authorization);
-      } else {
-        authorizationMessage = String(authorization);
-      }
-
-      Logger.log(
-        `Invalid verification code: (Type - ${authorizationType}) ${authorizationMessage}`,
-        LOG_KEY,
-      );
-      throw new UnauthorizedException(this.unauthorizedMessage);
-    }
-
-    const [authLevel, verificationCode] = req.headers.authorization.split(' ');
-
-    if (authLevel.toLowerCase() !== 'bearer') {
-      Logger.error(`Invalid authLevel: ${authLevel}`);
-      throw new UnauthorizedException(this.unauthorizedMessage);
-    }
-
-    return verificationCode;
   }
 }

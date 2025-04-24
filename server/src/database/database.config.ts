@@ -16,7 +16,7 @@ export default class DatabaseConfig {
     let pathToRootFolder = '../../../';
 
     if (buildMode === 'webpack') pathToRootFolder = '../';
-    if (buildMode === 'swc') pathToRootFolder = '../../';
+    if (buildMode === 'swc') pathToRootFolder = '../../../';
 
     const rscaPath = join(
       __dirname,

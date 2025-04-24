@@ -173,9 +173,9 @@ dependencies = [
 
 [[package]]
 name = "anchor-lang-idl"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31cf97b4e6f7d6144a05e435660fcf757dbc3446d38d0e2b851d11ed13625bba"
+checksum = "32e8599d21995f68e296265aa5ab0c3cef582fd58afec014d01bd0bce18a4418"
 dependencies = [
  "anchor-lang-idl-spec",
  "anyhow",
@@ -667,9 +667,9 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-deque"
-version = "0.8.5"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "613f8cc01fe9cf1a3eb3d7f488fd2fa8388403e97039e2f73692932e291a770d"
+checksum = "9dd111b7b7f7d55b72c0a6ae361660ee5853c9af73f70c3c2ef6858b950e2e51"
 dependencies = [
  "crossbeam-epoch",
  "crossbeam-utils",
@@ -686,9 +686,9 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-utils"
-version = "0.8.20"
+version = "0.8.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22ec99545bb0ed0ea7bb9b8e1e9122ea386ff8a48c0922e43f36d45ab09e0e80"
+checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
 name = "crunchy"
@@ -913,9 +913,9 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 
 [[package]]
 name = "jobserver"
-version = "0.1.31"
+version = "0.1.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2b099aaa34a9751c5bf0878add70444e1ed2dd73f347be99003d4577277de6e"
+checksum = "48d1dbcbbeb6a7fec7e059840aa538bd62aaccf972c7346c4d9d2059312853d0"
 dependencies = [
  "libc",
 ]
@@ -1482,9 +1482,9 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "solana-frozen-abi"
-version = "1.18.19"
+version = "1.18.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d836521fc3fe09fbc45ccf194c7524a73865e2fa4f2f3316c987e33ffad037ec"
+checksum = "03ab2c30c15311b511c0d1151e4ab6bc9a3e080a37e7c6e7c2d96f5784cf9434"
 dependencies = [
  "block-buffer 0.10.4",
  "bs58 0.4.0",
@@ -1507,9 +1507,9 @@ dependencies = [
 
 [[package]]
 name = "solana-frozen-abi-macro"
-version = "1.18.19"
+version = "1.18.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce5a9e8a27bce6104994ca8b0fa16b496260fe9e093f76e68c4301fcf93de2d4"
+checksum = "c142f779c3633ac83c84d04ff06c70e1f558c876f13358bed77ba629c7417932"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1519,9 +1519,9 @@ dependencies = [
 
 [[package]]
 name = "solana-program"
-version = "1.18.19"
+version = "1.18.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b359778df37b366b137d51ba7cdd884ffb23df7d7602bf1a27f8593df19a290"
+checksum = "c10f4588cefd716b24a1a40dd32c278e43a560ab8ce4de6b5805c9d113afdfa1"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -1574,9 +1574,9 @@ dependencies = [
 
 [[package]]
 name = "solana-sdk-macro"
-version = "1.18.19"
+version = "1.18.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91222f769514bbeb30af1cbe05e6904e8364286dc6253017b1630e7835855b41"
+checksum = "1b75d0f193a27719257af19144fdaebec0415d1c9e9226ae4bd29b791be5e9bd"
 dependencies = [
  "bs58 0.4.0",
  "proc-macro2",
@@ -1754,9 +1754,9 @@ checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
 
 [[package]]
 name = "unicode-normalization"
-version = "0.1.23"
+version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a56d1686db2308d901306f92a263857ef59ea39678a5458e7cb17f01415101f5"
+checksum = "5033c97c4262335cded6d6fc3e5c18ab755e1a3dc96376350f3d8e9f009ad956"
 dependencies = [
  "tinyvec",
 ]

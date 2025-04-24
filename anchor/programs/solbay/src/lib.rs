@@ -8,12 +8,20 @@ use anchor_lang::prelude::*;
 pub use instructions::*;
 pub use states::*;
 
-declare_id!("EmDFTTKK7pefKKqzFQpzuPmbK4oxkMX7YNYyrJx22EZo");
+declare_id!("DsEJ8Xoffs9GSDhzPV3iUi7LskYSJxUKfhgotnWbUpme");
 
 #[program]
 pub mod solbay {
 
   use super::*;
+
+  pub fn login(context: Context<Login>) -> Result<()> {
+    process_login(context)
+  }
+
+  /* ==================================================
+  Below are example
+  ================================================== */
 
   pub fn close(_ctx: Context<CloseSolbay>) -> Result<()> {
     Ok(())
