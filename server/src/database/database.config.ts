@@ -6,7 +6,7 @@ import { DataSourceOptions } from 'typeorm';
 import { ENTITY_MODELS } from './entity-model';
 
 export default class DatabaseConfig {
-  private static synchroniseEnabledEnvSet = new Set(['dev', 'local']);
+  // private static synchroniseEnabledEnvSet = new Set(['dev', 'local']);
   private static sslEnabledEnvSet = new Set(['dev', 'staging', 'prod']);
 
   static getConfig(configService: ConfigService): DataSourceOptions {
@@ -35,9 +35,7 @@ export default class DatabaseConfig {
       entities: ENTITY_MODELS,
       migrations: [migrationPathName],
       migrationsRun: true,
-      synchronize: this.synchroniseEnabledEnvSet.has(
-        configService.get('NODE_ENV'),
-      ),
+      synchronize: false,
       ssl: this.sslEnabledEnvSet.has(configService.get('NODE_ENV'))
         ? {
             rejectUnauthorized: true,
