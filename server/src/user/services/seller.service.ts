@@ -4,6 +4,7 @@ import { LoggerUtil } from 'src/common/utils/logger.util';
 import { EntityManager } from 'typeorm';
 import { SellerModel } from '../models/seller.model';
 import { ISellerModelCreationData, SellerDBUtil } from '../utils/sellerDB.util';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class SellerService {
@@ -42,5 +43,49 @@ export class SellerService {
     });
 
     return createdSeller;
+  }
+
+  public async isUserSeller(params: {
+    userId: UUID;
+    entityManager?: EntityManager;
+  }): Promise<boolean> {
+    const { userId } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const isSellerExist = this.sellerDbUtil.has({
+      criterial: {
+        user: {
+          uuid: userId,
+        },
+      },
+      entityManager,
+      relation: {
+        user: true,
+      },
+    });
+
+    return isSellerExist;
+  }
+
+  public async getSellerByPublicKey(params: {
+    publicKey: string;
+    entityManager?: EntityManager;
+  }): Promise<SellerModel | null> {
+    const { publicKey: publicKeyString } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const seller = await this.sellerDbUtil.getOne({
+      criterial: {
+        user: {
+          publicKey: publicKeyString,
+        },
+      },
+      entityManager,
+      relation: {
+        user: true,
+      },
+    });
+
+    return seller;
   }
 }

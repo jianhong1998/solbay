@@ -1,13 +1,14 @@
 'use client';
 
+import { getBaseUrl } from '@/app/action';
+import { useWallet } from '@solana/wallet-adapter-react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { getBaseUrl } from '@/app/action';
-
 const useServerAxios = () => {
   const [baseUrl, setBaseUrl] = useState<string | null>(null);
+  const { publicKey } = useWallet();
 
   const [isInitialized, setIsInitialized] = useState<boolean>(
     () => baseUrl !== null,
@@ -17,8 +18,11 @@ const useServerAxios = () => {
     return axios.create({
       baseURL: baseUrl ?? '',
       withCredentials: true,
+      headers: {
+        'x-public-key': publicKey?.toBase58() ?? '',
+      },
     });
-  }, [baseUrl]);
+  }, [baseUrl, publicKey]);
 
   useEffect(() => {
     getBaseUrl()

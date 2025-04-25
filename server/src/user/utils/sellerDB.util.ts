@@ -25,14 +25,16 @@ export class SellerDBUtil {
     criterial: FindOptionsWhere<SellerModel>;
     entityManager?: EntityManager;
     relation?: FindOptionsRelations<SellerModel>;
+    withDeleted?: boolean;
   }): Promise<SellerModel | null> {
-    const { criterial, entityManager, relation } = params;
+    const { criterial, entityManager, relation, withDeleted } = params;
     const repo = entityManager?.getRepository(SellerModel) ?? this.sellerRepo;
 
     const seller = await repo.findOne({
       where: criterial,
       transaction: true,
       relations: relation,
+      withDeleted,
     });
 
     return seller;
