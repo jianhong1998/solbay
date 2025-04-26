@@ -1,7 +1,22 @@
 # Anchor build
 
 cd ./anchor
-anchor build
+# Temporary commented as anchor having some issue with build IDL. The fix will only release in v0.31.1
+# anchor build
+
+# ================================================================================
+# START - Temporary fix for building IDL
+# ================================================================================
+anchor build --no-idl
+
+cd ./programs/solbay
+
+RUSTUP_TOOLCHAIN=nightly-2025-04-01 anchor idl build -o ../../target/idl/solbay.json -t ../../target/types/solbay.ts
+cd ../../
+
+# ================================================================================
+# END - Temporary fix for building IDL
+# ================================================================================
 
 cp ./target/deploy/solbay.so ./tests/fixtures
 
