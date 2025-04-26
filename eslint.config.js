@@ -1,15 +1,16 @@
 // eslint.config.js
+import eslint from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import prettierPlugin from 'eslint-plugin-prettier';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import tseslint from 'typescript-eslint';
+import globals from 'globals';
 import path from 'node:path';
+import tseslint from 'typescript-eslint';
 
 const tseslintRecommendedTypeCheckedRules = Object.assign(
   {},
@@ -24,9 +25,9 @@ export default [
     files: [
       './server/src/**/*.{ts}',
       './client/src/**/*.{ts,tsx}',
-      './anchor/test/**/*.{ts}',
+      './anchor/**/*.{ts}',
     ],
-    ignores: ['next.config.mjs', 'postcss.config.mjs'],
+    // ignores: ['next.config.mjs', 'postcss.config.mjs'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -95,16 +96,12 @@ export default [
         projectService: true,
         tsconfigRootDir: path.join(import.meta.dirname, 'server'),
       },
-      globals: {
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        process: 'readonly',
-        Buffer: 'readonly',
-      },
+      globals: globals.node,
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
       prettier: prettierPlugin,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       ...tseslintRecommendedTypeCheckedRules,
@@ -124,6 +121,52 @@ export default [
         },
       ],
       'no-unused-vars': 'off',
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+    },
+  },
+  /* Anchor Eslint */
+  {
+    files: [
+      './anchor/src/**/*.{ts,js}',
+      './anchor/target/**/*.{ts,js}',
+      './anchor/tests/**/*.{ts,js}',
+    ],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parser: tsParser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: path.join(import.meta.dirname, 'anchor'),
+      },
+      globals: { ...globals.node, ...globals.jest },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      prettier: prettierPlugin,
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      ...tseslintRecommendedTypeCheckedRules,
+      ...eslint.configs.recommended.rules,
+      ...eslintPluginPrettierRecommended.rules,
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      'no-unused-vars': 'off',
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
     },
   },
 ];

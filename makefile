@@ -90,9 +90,17 @@ format:
 		npm run format
 
 lint:
-	@npx eslint ./client
-	@npx eslint ./server
+	@echo "Checking lint issue in client..." && \
+		npx eslint ./client
+	@echo "Checking lint issue in server..." && \
+		npx eslint ./server
+	@echo "Checking lint issue in anchor tests..." && \
+		npx eslint ./anchor
 
 lint/fix:
-	@npx eslint ./client --fix
-	@npx eslint ./server --fix
+	@echo "Checking lint issue in client..." && \
+		npx eslint ./client --fix
+	@echo "Checking lint issue in server..." && \
+		npx eslint ./server --fix
+	@echo "Checking lint issue in anchor tests..." && \
+		npx eslint ./anchor --fix

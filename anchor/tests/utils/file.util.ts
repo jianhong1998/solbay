@@ -7,7 +7,7 @@ export class FileUtil {
     return existsSync(path);
   }
 
-  public static async readFile(path: string): Promise<string> {
+  public static readFile(path: string): string {
     if (!this.isFileExist(path)) throw new Error('File not exist');
 
     return readFileSync(path, { encoding: 'utf8' });
