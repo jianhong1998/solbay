@@ -6,18 +6,19 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { SellerService } from '../services/seller.service';
+import { User } from 'src/common/decorators';
+
+import { CheckIsUserSellerResDTO } from '../dtos/seller/check-is-user-seller.dto';
 import {
   CreateSellerReqDTO,
   CreateSellerResDTO,
 } from '../dtos/seller/create-seller.dto';
-import { User } from 'src/common/decorators';
-import { UserModel } from '../models/user.model';
-import { CheckIsUserSellerResDTO } from '../dtos/seller/check-is-user-seller.dto';
 import {
   GetSellerWithoutSensitiveDataResDTO,
   GetSellerWithSensitiveDataResDTO,
 } from '../dtos/seller/get-seller.dto';
+import { UserModel } from '../models/user.model';
+import { SellerService } from '../services/seller.service';
 
 @Controller('seller')
 export class SellerController {

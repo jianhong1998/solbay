@@ -1,10 +1,11 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { UUID } from 'crypto';
 import { LoggerUtil } from 'src/common/utils/logger.util';
 import { EntityManager } from 'typeorm';
+
 import { SellerModel } from '../models/seller.model';
 import { ISellerModelCreationData, SellerDBUtil } from '../utils/sellerDB.util';
-import { UUID } from 'crypto';
 
 @Injectable()
 export class SellerService {

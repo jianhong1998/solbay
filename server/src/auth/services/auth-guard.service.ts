@@ -46,11 +46,23 @@ export class AuthGuardService implements CanActivate {
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
-    const publicKeyString = req.headers['x-public-key'];
+    const publicKeyString = req.headers['x-public-key'] as unknown as
+      | undefined
+      | string
+      | string[];
 
-    if (!publicKeyString) {
+    if (typeof publicKeyString === 'undefined') {
       logger.log(`Public key is invalid: ${publicKeyString}`);
       throw new BadRequestException(`Public key not found in request`);
+    }
+
+    if (Array.isArray(publicKeyString)) {
+      logger.log(
+        `Receive invalid public key in request header: ${JSON.stringify(publicKeyString)}`,
+      );
+      throw new BadRequestException(
+        `Invalid pubic key: ${JSON.stringify(publicKeyString)}`,
+      );
     }
 
     const { userId } = this.tokenUtil.decodeToken<{ userId: UUID }>(token);

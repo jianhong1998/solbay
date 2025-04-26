@@ -1,10 +1,11 @@
 'use client';
 
-import { getBaseUrl } from '@/app/action';
 import { useWallet } from '@solana/wallet-adapter-react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+
+import { getBaseUrl } from '@/app/action';
 
 const useServerAxios = () => {
   const [baseUrl, setBaseUrl] = useState<string | null>(null);

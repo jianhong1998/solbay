@@ -1,6 +1,7 @@
+import { NextPage } from 'next';
+
 import { AppHero } from '@/components/ui/ui-layout';
 import { PageContext } from '@/types/page-context.type';
-import { NextPage } from 'next';
 
 const SellerPage: NextPage<PageContext> = () => {
   return (

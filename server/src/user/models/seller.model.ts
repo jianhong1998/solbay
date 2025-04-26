@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   Relation,
 } from 'typeorm';
+
 import { UserModel } from './user.model';
 
 @Entity('seller')
