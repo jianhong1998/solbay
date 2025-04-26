@@ -22,6 +22,7 @@ type IEnvironmentVariableList = {
   jwtExpire: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type IFeatureFlagList = {
   // Feature Flag Related
 };

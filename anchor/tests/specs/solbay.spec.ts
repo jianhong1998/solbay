@@ -1,14 +1,15 @@
 import { Connection } from '@solana/web3.js';
-import { ProgramUtil } from '../utils/program.util';
+
 import { Solbay } from '../../target/types/solbay';
+import { ProgramUtil } from '../utils/program.util';
 
 describe('Sample Test', () => {
   let connection: Connection;
 
-  beforeAll(async () => {
+  beforeAll(() => {
     const programUtil = new ProgramUtil<Solbay>();
 
-    const provider = await programUtil.getProvider();
+    const provider = programUtil.getProvider();
     connection = provider.connection;
   }, 30000);
 

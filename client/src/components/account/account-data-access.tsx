@@ -13,8 +13,10 @@ import {
 } from '@solana/web3.js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useTransactionToast } from '../ui/ui-layout';
+
 import { useLogger } from '@/utils/shared/logger';
+
+import { useTransactionToast } from '../ui/ui-layout';
 
 export function useGetBalance({ address }: { address: PublicKey }) {
   const { connection } = useConnection();

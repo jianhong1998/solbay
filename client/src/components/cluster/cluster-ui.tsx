@@ -1,13 +1,15 @@
 'use client';
 
 import { useConnection } from '@solana/wallet-adapter-react';
+import { Connection } from '@solana/web3.js';
 import { IconTrash } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
+
+import { useLogger } from '@/utils/shared/logger';
+
 import { AppModal } from '../ui/ui-layout';
 import { ClusterNetwork, useCluster } from './cluster-data-access';
-import { Connection } from '@solana/web3.js';
-import { useLogger } from '@/utils/shared/logger';
 
 export function ExplorerLink({
   path,

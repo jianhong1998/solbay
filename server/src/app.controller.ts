@@ -13,13 +13,13 @@ export class AppController {
 
   @Get('/')
   @Public()
-  async getHello(): Promise<void> {
-    await this.appService.healthCheck();
+  getHello(): void {
+    this.appService.healthCheck();
   }
 
   @Get('/version')
   @Public()
-  async checkVersion(): Promise<{ version: string }> {
-    return await this.appService.getVersion();
+  checkVersion(): { version: string } {
+    return this.appService.getVersion();
   }
 }

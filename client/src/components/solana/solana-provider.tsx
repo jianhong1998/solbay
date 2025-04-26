@@ -1,21 +1,23 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import '@solana/wallet-adapter-react-ui/styles.css';
+
 import { AnchorProvider } from '@coral-xyz/anchor';
 import { WalletError } from '@solana/wallet-adapter-base';
 import {
   AnchorWallet,
+  ConnectionProvider,
   useConnection,
   useWallet,
-  ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import dynamic from 'next/dynamic';
 import { ReactNode, useCallback, useMemo } from 'react';
-import { useCluster } from '../cluster/cluster-data-access';
+
 import { useLogger } from '@/utils/shared/logger';
 
-require('@solana/wallet-adapter-react-ui/styles.css');
+import { useCluster } from '../cluster/cluster-data-access';
 
 export const WalletButton = dynamic(
   async () =>
@@ -29,9 +31,12 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
   const logger = useLogger();
   const { cluster } = useCluster();
   const endpoint = useMemo(() => cluster.endpoint, [cluster]);
-  const onError = useCallback((error: WalletError) => {
-    logger.error(error);
-  }, []);
+  const onError = useCallback(
+    (error: WalletError) => {
+      logger.error(error);
+    },
+    [logger],
+  );
 
   return (
     <ConnectionProvider endpoint={endpoint}>

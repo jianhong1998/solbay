@@ -65,9 +65,11 @@ airdrop/fee-payer:
 	@solana airdrop 10 -k ./keypairs/fee-payer.json
 
 install:
+	@rm -rf ./node_modules
 	@rm -rf ./client/node_modules
 	@rm -rf ./anchor/node_modules
 	@rm -rf ./server/node_modules
+	@npm i
 	@cd client && \
 		npm i
 	@cd anchor && \
@@ -87,3 +89,18 @@ format:
 	@cd server && \
 		npm run format
 
+lint:
+	@echo "Checking lint issue in client..." && \
+		npx eslint ./client
+	@echo "Checking lint issue in server..." && \
+		npx eslint ./server
+	@echo "Checking lint issue in anchor tests..." && \
+		npx eslint ./anchor
+
+lint/fix:
+	@echo "Checking lint issue in client..." && \
+		npx eslint ./client --fix
+	@echo "Checking lint issue in server..." && \
+		npx eslint ./server --fix
+	@echo "Checking lint issue in anchor tests..." && \
+		npx eslint ./anchor --fix

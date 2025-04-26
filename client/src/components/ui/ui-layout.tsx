@@ -6,9 +6,10 @@ import * as React from 'react';
 import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
+import { useAuthModule } from '@/hooks/auth-module/auth-module';
+
 import { AccountChecker } from '../account/account-ui';
 import { ClusterChecker, ExplorerLink } from '../cluster/cluster-ui';
-import { useAuthModule } from '@/hooks/auth-module/auth-module';
 
 export function UiLayout({
   children,

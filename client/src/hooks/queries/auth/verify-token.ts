@@ -1,12 +1,13 @@
 'use client';
 
-import { useServerAxios } from '@/hooks/axios/server-axios-client';
-import { useLogger } from '@/utils/shared/logger';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+
+import { useServerAxios } from '@/hooks/axios/server-axios-client';
+import { useLogger } from '@/utils/shared/logger';
 
 type IVerifyTokenResDTO = {
   isTokenValid: boolean;

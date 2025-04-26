@@ -1,6 +1,7 @@
 import { SYSTEM_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/native/system';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { AccountInfoBytes, AddedAccount } from 'solana-bankrun';
+
 import { FileUtil } from './file.util';
 
 export class AccountUtil {
@@ -22,7 +23,7 @@ export class AccountUtil {
     };
   }
 
-  public static async getAccount(filePath?: string) {
+  public static getAccount(filePath?: string) {
     if (!filePath) {
       return new Keypair();
     }
@@ -34,8 +35,10 @@ export class AccountUtil {
       return new Keypair();
     }
 
-    const secretKeyFileContent = await FileUtil.readFile(filePath);
-    const secretKeyArray = Uint8Array.from(JSON.parse(secretKeyFileContent));
+    const secretKeyFileContent = FileUtil.readFile(filePath);
+    const secretKeyArray = Uint8Array.from(
+      JSON.parse(secretKeyFileContent) as number[],
+    );
 
     return Keypair.fromSecretKey(secretKeyArray);
   }

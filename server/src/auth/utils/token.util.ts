@@ -9,17 +9,17 @@ export class TokenUtil {
     private readonly loggerUtil: LoggerUtil,
   ) {}
 
-  public async generateToken<T extends object>(
+  public generateToken<T extends object>(
     payload: T,
-  ): Promise<{
+  ): {
     token: string;
-  }> {
+  } {
     const token = this.jwtService.sign(payload);
 
     return { token };
   }
 
-  public async verifyToken(token: string): Promise<boolean> {
+  public verifyToken(token: string): boolean {
     const logger = this.loggerUtil.createLogger('VerifyToken');
 
     try {

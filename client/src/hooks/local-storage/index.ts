@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { LocalStorageKey } from './local-storage-key.enum';
+import { useEffect, useState } from 'react';
+
 import { useLogger } from '@/utils/shared/logger';
+
+import { LocalStorageKey } from './local-storage-key.enum';
 
 interface IUseLocalStorageReturn<T> {
   value: T;

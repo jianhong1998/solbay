@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserDBUtil } from '../utils/userDB.util';
-import { PublicKey } from '@solana/web3.js';
-import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { PublicKey } from '@solana/web3.js';
 import { LoggerUtil } from 'src/common/utils/logger.util';
+import { EntityManager } from 'typeorm';
+
 import { UserModel } from '../models/user.model';
+import { UserDBUtil } from '../utils/userDB.util';
 
 @Injectable()
 export class UserService {

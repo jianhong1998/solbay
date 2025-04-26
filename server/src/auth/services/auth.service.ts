@@ -1,13 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-
+import { Injectable } from '@nestjs/common';
 import { PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { UUID } from 'crypto';
+import { Response } from 'express';
 import { LoggerUtil } from 'src/common/utils/logger.util';
 import { TransactionVerificationUtil } from 'src/solana-connection/utils/transaction-verification.util';
-import { TokenUtil } from '../utils/token.util';
 import { UserModel } from 'src/user/models/user.model';
-import { Response } from 'express';
+
 import { TOKEN_COOKIE_NAME } from '../constants';
+import { TokenUtil } from '../utils/token.util';
 
 @Injectable()
 export class AuthService {
@@ -16,8 +16,8 @@ export class AuthService {
     private readonly loggerUtil: LoggerUtil,
   ) {}
 
-  public async generateToken(userId: UUID): Promise<{ token: string }> {
-    const { token } = await this.tokenUtil.generateToken({
+  public generateToken(userId: UUID): { token: string } {
+    const { token } = this.tokenUtil.generateToken({
       userId,
     });
 
@@ -92,11 +92,11 @@ export class AuthService {
     return true;
   }
 
-  public async processLogout(params: {
+  public processLogout(params: {
     res: Response;
     user: UserModel | undefined;
     publicKey: PublicKey;
-  }): Promise<Response> {
+  }): Response {
     const logger = this.loggerUtil.createLogger('ProcessLogout');
     const { publicKey, res, user } = params;
 
