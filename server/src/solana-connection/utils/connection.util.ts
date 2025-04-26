@@ -1,14 +1,15 @@
-import {
-  SOLANA_CLUSTER_PROVIDER,
-  FEE_PAYER,
-  SOLANA_CLUSTER_TYPE,
-} from '../constant';
 import { AnchorProvider, Program, setProvider } from '@coral-xyz/anchor';
-import { getSolbayProgram, getSolbayProgramId } from '../../contract/src/index';
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
 import { clusterApiUrl, Connection, Keypair } from '@solana/web3.js';
+
+import { getSolbayProgram, getSolbayProgramId } from '../../contract/src/index';
 import { Solbay } from '../../contract/target/types/solbay';
 import { ClusterType } from '../cluster.type';
-import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import {
+  FEE_PAYER,
+  SOLANA_CLUSTER_PROVIDER,
+  SOLANA_CLUSTER_TYPE,
+} from '../constant';
 
 interface IConnectionMapValue {
   connection: Connection;

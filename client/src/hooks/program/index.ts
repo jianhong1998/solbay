@@ -1,11 +1,13 @@
 'use client';
 
-import { useCluster } from '@/components/cluster/cluster-data-access';
-import { useAnchorProvider } from '@/components/solana/solana-provider';
+import { Program } from '@coral-xyz/anchor';
 import { getSolbayProgram, getSolbayProgramId, Solbay } from '@project/anchor';
 import { useMemo } from 'react';
+
+import { useCluster } from '@/components/cluster/cluster-data-access';
+import { useAnchorProvider } from '@/components/solana/solana-provider';
+
 import { ClusterType } from './cluster-type';
-import { Program } from '@coral-xyz/anchor';
 
 export const useProgram = (): Program<Solbay> => {
   const { cluster } = useCluster();

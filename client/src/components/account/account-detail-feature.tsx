@@ -1,9 +1,10 @@
 'use client';
 
 import { PublicKey } from '@solana/web3.js';
+import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { useParams } from 'next/navigation';
+import { useLogger } from '@/utils/shared/logger';
 
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { AppHero, ellipsify } from '../ui/ui-layout';
@@ -13,7 +14,6 @@ import {
   AccountTokens,
   AccountTransactions,
 } from './account-ui';
-import { useLogger } from '@/utils/shared/logger';
 
 export default function AccountDetailFeature() {
   const logger = useLogger();
@@ -27,7 +27,7 @@ export default function AccountDetailFeature() {
     } catch (e) {
       logger.log(`Invalid public key`, e);
     }
-  }, [params]);
+  }, [params, logger]);
   if (!address) {
     return <div>Error loading account</div>;
   }

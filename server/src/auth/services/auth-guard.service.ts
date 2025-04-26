@@ -5,14 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { UUID } from 'crypto';
 import { Request } from 'express';
 import { PUBLIC_DECORATOR_KEY } from 'src/common/constants';
+import { LoggerUtil } from 'src/common/utils/logger.util';
 import { UserDBUtil } from 'src/user/utils/userDB.util';
 
-import { TokenUtil } from '../utils/token.util';
-import { UUID } from 'crypto';
 import { TOKEN_COOKIE_NAME } from '../constants';
-import { LoggerUtil } from 'src/common/utils/logger.util';
+import { TokenUtil } from '../utils/token.util';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -38,7 +38,7 @@ export class AuthGuardService implements CanActivate {
     const req = context.switchToHttp().getRequest<Request>();
 
     const token = this.extractTokenFromRequest(req);
-    const isTokeValid = await this.tokenUtil.verifyToken(token);
+    const isTokeValid = this.tokenUtil.verifyToken(token);
 
     if (!isTokeValid) {
       logger.log(`Token no longer valid: ${token}`);
@@ -88,7 +88,7 @@ export class AuthGuardService implements CanActivate {
     const token = req.cookies[TOKEN_COOKIE_NAME];
 
     if (typeof token !== 'string') {
-      logger.log(`Invalid token: (Type - ${typeof token}) ${token}`);
+      logger.log(`Invalid token: (Type - ${typeof token}) ${String(token)}`);
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 

@@ -2,34 +2,31 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   Post,
   Res,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { PublicKey } from '@solana/web3.js';
 import { Response } from 'express';
+import { User } from 'src/common/decorators';
 import { Public } from 'src/common/decorators/public.decorator';
-
 import { EnvironmentVariableUtil } from 'src/common/utils/environment-variable.util';
 import { LoggerUtil } from 'src/common/utils/logger.util';
+import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
+import { UserModel } from 'src/user/models/user.model';
+import { UserService } from 'src/user/services/user.service';
 import { EntityManager } from 'typeorm';
 
-import { AuthService } from '../services/auth.service';
-import { UserService } from 'src/user/services/user.service';
-import { LoginReqDTO } from '../dtos/login.dto';
-import { PublicKey } from '@solana/web3.js';
 import { TOKEN_COOKIE_NAME } from '../constants';
-import { User } from 'src/common/decorators';
-import { UserModel } from 'src/user/models/user.model';
-import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
+import { LoginReqDTO } from '../dtos/login.dto';
+import { LogoutReqDTO } from '../dtos/logout.dto';
 import {
   IVerifyTokenReqDTO,
   IVerifyTokenResDTO,
 } from '../dtos/verify-token.dto';
-import { LogoutReqDTO } from '../dtos/logout.dto';
+import { AuthService } from '../services/auth.service';
 
 @Controller('/auth')
 export class AuthController {
@@ -78,7 +75,7 @@ export class AuthController {
       throw new Error('Failed to create user data');
     }
 
-    const { token } = await this.authService.generateToken(user.uuid);
+    const { token } = this.authService.generateToken(user.uuid);
 
     res
       .cookie(TOKEN_COOKIE_NAME, token, {
@@ -93,7 +90,7 @@ export class AuthController {
 
   @Get('/signer')
   @Public()
-  public async getSigner() {
+  public getSigner() {
     const signer = ConnectionUtil.getSigner();
     return {
       publicKey: signer.publicKey.toBase58(),
@@ -102,10 +99,10 @@ export class AuthController {
 
   @Post('/verify-token')
   @HttpCode(200)
-  public async verifyToken(
+  public verifyToken(
     @User() user: UserModel,
     @Body() reqBody: IVerifyTokenReqDTO,
-  ): Promise<IVerifyTokenResDTO> {
+  ): IVerifyTokenResDTO {
     const logger = this.loggerUtil.createLogger('VerifyTokenEndpoint');
 
     if (!user) {
@@ -130,12 +127,12 @@ export class AuthController {
   @Post('/logout')
   @HttpCode(200)
   @Public()
-  public async logout(
+  public logout(
     @Body() reqBody: LogoutReqDTO,
     @User() user: UserModel | undefined,
     @Res() res: Response,
-  ): Promise<void> {
-    const finalResponse = await this.authService.processLogout({
+  ): void {
+    const finalResponse = this.authService.processLogout({
       publicKey: new PublicKey(reqBody.publicKey),
       res,
       user,

@@ -5,11 +5,11 @@ import { ConfigService } from '@nestjs/config';
 export class AppService {
   constructor(private readonly configService: ConfigService) {}
 
-  public async healthCheck(): Promise<boolean> {
+  public healthCheck(): boolean {
     return true;
   }
 
-  public async getVersion(): Promise<{ version: string }> {
+  public getVersion(): { version: string } {
     const version = this.configService.get('VERSION');
 
     return {

@@ -1,11 +1,12 @@
 'use client';
 
-import { useLogin } from '@/hooks/queries/auth/login';
-import { useLogout } from '@/hooks/queries/auth/logout';
-import { useVerifyToken } from '@/hooks/queries/auth/verify-token';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { ButtonHTMLAttributes, forwardRef, useEffect, useState } from 'react';
+
+import { useLogin } from '@/hooks/queries/auth/login';
+import { useLogout } from '@/hooks/queries/auth/logout';
+import { useVerifyToken } from '@/hooks/queries/auth/verify-token';
 
 type AuthButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>;
 
@@ -88,7 +89,7 @@ export const useAuthModule = () => {
     loginFn().then(() => {
       setIsLogin(true);
     });
-  }, [connected, verifyTokenData, isVerifyTokenPending]);
+  }, [connected, verifyTokenData, isVerifyTokenPending, loginFn]);
 
   const loginButton = forwardRef<HTMLButtonElement, AuthButtonProps>(
     ({ ...props }, ref) => {

@@ -5,9 +5,12 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { IconRefresh } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { AppModal, ellipsify } from '../ui/ui-layout';
+
+import { useLogger } from '@/utils/shared/logger';
+
 import { useCluster } from '../cluster/cluster-data-access';
 import { ExplorerLink } from '../cluster/cluster-ui';
+import { AppModal, ellipsify } from '../ui/ui-layout';
 import {
   useGetBalance,
   useGetSignatures,
@@ -15,7 +18,6 @@ import {
   useRequestAirdrop,
   useTransferSol,
 } from './account-data-access';
-import { useLogger } from '@/utils/shared/logger';
 
 export function AccountBalance({ address }: { address: PublicKey }) {
   const query = useGetBalance({ address });

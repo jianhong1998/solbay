@@ -1,8 +1,9 @@
 'use client';
 
-import { useServerAxios } from '@/hooks/axios/server-axios-client';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMutation } from '@tanstack/react-query';
+
+import { useServerAxios } from '@/hooks/axios/server-axios-client';
 
 export const useLogout = () => {
   const { publicKey } = useWallet();

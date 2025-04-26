@@ -30,7 +30,7 @@
     "**/*.ts",
     "**/*.spec.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    "src/contract/**/*.json"
   ],
   "exclude": ["node_modules"]
 }

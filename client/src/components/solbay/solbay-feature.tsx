@@ -1,8 +1,9 @@
 'use client';
 
 import { useWallet } from '@solana/wallet-adapter-react';
-import { AppHero, ellipsify } from '../ui/ui-layout';
+
 import { ExplorerLink } from '../cluster/cluster-ui';
+import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useSolbayProgram } from './solbay-data-access';
 
 export default function SolbayFeature() {

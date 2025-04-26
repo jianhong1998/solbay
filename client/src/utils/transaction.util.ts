@@ -52,9 +52,7 @@ export class TransactionUtil {
       commitment = 'confirmed',
     } = params;
 
-    let transactionId: string;
-
-    transactionId = await connection.sendRawTransaction(
+    const transactionId = await connection.sendRawTransaction(
       transaction.serialize(),
     );
 
