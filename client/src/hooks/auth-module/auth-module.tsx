@@ -22,11 +22,13 @@ type LogoutButtonProps = AuthButtonProps & {
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
   ({ className, loginHandler, isLoading, ...props }, ref) => {
+    const disabledClassName = isLoading ? 'btn-disabled' : '';
+
     return (
       <button
         {...props}
         ref={ref}
-        className={'btn btn-primary' + (className ?? '')}
+        className={['btn btn-primary', className, disabledClassName].join(' ')}
         onClick={loginHandler}
       >
         {isLoading && <span className="loading loading-spinner"></span>}
@@ -38,11 +40,17 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 
 const LogoutButton = forwardRef<HTMLButtonElement, LogoutButtonProps>(
   ({ logoutHandler, className, isLoading, ...props }, ref) => {
+    const disabledClassName = isLoading ? 'btn-disabled' : '';
+
     return (
       <button
         {...props}
         ref={ref}
-        className={'btn btn-error btn-outline' + (className ?? '')}
+        className={[
+          'btn btn-error btn-outline',
+          className,
+          disabledClassName,
+        ].join(' ')}
         onClick={logoutHandler}
       >
         {isLoading && <span className="loading loading-spinner"></span>}
@@ -118,6 +126,7 @@ export const useAuthModule = () => {
   );
 
   return {
+    isUserLoggedIn: isLogin,
     Button: isLogin ? loginButton : logoutButton,
   };
 };

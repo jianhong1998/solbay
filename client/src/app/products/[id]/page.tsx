@@ -1,7 +1,7 @@
-"use client";
+'use client';
 // app/products/[id]/page.tsx
+import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
-import { useRouter, useParams } from 'next/navigation';
 
 const Cars = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const Cars = () => {
       <h1>hihi {id}</h1>
       <button onClick={handleClick}>go back to home page</button>
     </>
-  )
+  );
 };
 
 export default Cars;
