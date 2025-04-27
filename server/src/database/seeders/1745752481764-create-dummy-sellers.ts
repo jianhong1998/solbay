@@ -12,6 +12,11 @@ export class CreateDummySellers1745752481764 implements Seeder {
       sellerName: 'Fake Trading Pte Ltd',
       sellerEmail: 'sales@facker-trading.com',
     },
+    {
+      publicKey: '8QWwxoteMcgNhEbwXZWGbmGeG2BzHkPEoiJw6scPFrAt',
+      sellerName: 'Dummy Trading Pte Ltd',
+      sellerEmail: 'sales@dummy-trading.com',
+    },
   ];
 
   public async run(
