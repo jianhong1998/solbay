@@ -1,7 +1,7 @@
 'use client';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
@@ -13,7 +13,10 @@ export const useLogin = () => {
   const { connection } = useConnection();
   const program = useProgram();
   const { publicKey, signTransaction, disconnect } = useWallet();
+
   const serverAxios = useServerAxios();
+  const queryClient = useQueryClient();
+
   const logger = useLogger();
 
   return useMutation<void, Error, void>({
@@ -60,6 +63,11 @@ export const useLogin = () => {
       }
 
       logger.log(error.message);
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: ['seller', publicKey?.toBase58() ?? null],
+      });
     },
     retryDelay: 0,
     retry: (_count, error) => {

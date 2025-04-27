@@ -1,8 +1,6 @@
 'use client';
 
-import { AppHero } from '../ui/ui-layout';
 import Hero from './hero';
-
 
 export default function DashboardFeature() {
   return (

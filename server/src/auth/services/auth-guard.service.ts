@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -45,6 +46,25 @@ export class AuthGuardService implements CanActivate {
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
+    const publicKeyString = req.headers['x-public-key'] as unknown as
+      | undefined
+      | string
+      | string[];
+
+    if (typeof publicKeyString === 'undefined') {
+      logger.log(`Public key is invalid: ${publicKeyString}`);
+      throw new BadRequestException(`Public key not found in request`);
+    }
+
+    if (Array.isArray(publicKeyString)) {
+      logger.log(
+        `Receive invalid public key in request header: ${JSON.stringify(publicKeyString)}`,
+      );
+      throw new BadRequestException(
+        `Invalid pubic key: ${JSON.stringify(publicKeyString)}`,
+      );
+    }
+
     const { userId } = this.tokenUtil.decodeToken<{ userId: UUID }>(token);
 
     if (!userId) {
@@ -60,6 +80,13 @@ export class AuthGuardService implements CanActivate {
 
     if (!user) {
       logger.log(`User not found: ${userId}`);
+      throw new UnauthorizedException(this.unauthorizedMessage);
+    }
+
+    if (user.publicKey !== publicKeyString) {
+      logger.log(
+        `Public key (${publicKeyString}) is unmatched with user (${user.uuid})`,
+      );
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
