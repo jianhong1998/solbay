@@ -48,6 +48,11 @@ test/anchor/onchain/skip-deploy:
 	@cd anchor && \
 		IS_TESTING_ON_CHAIN=true anchor test --skip-local-validator --skip-deploy
 
+db/data/up:
+	@cd server && \
+		npm run build && \
+		npm run seed:run
+
 deploy:
 	@$(MAKE) anchor/build
 	@cd ./anchor && \

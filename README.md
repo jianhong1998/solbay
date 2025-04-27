@@ -35,6 +35,19 @@ make deploy
 make deploy/with-airdrop
 ```
 
+### Seed Dummy Data
+
+Prerequisites:
+
+1. Database is running.
+2. Database schema up-to-date.
+
+Use command `make up/build` to setup database and executing migration script.
+
+```
+make db/data/up
+```
+
 ### Test smart contract
 
 ```
