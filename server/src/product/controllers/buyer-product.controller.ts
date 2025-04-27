@@ -5,7 +5,7 @@ import { GetProductListResDTO } from '../dtos/get-product-list.dto';
 import { ProductService } from '../services/product.service';
 
 @Controller('/product')
-export class ProductController {
+export class BuyerProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get('/')
