@@ -14,11 +14,13 @@
 
 ### Init project setup
 
-Run command below:
+1. Run command below:
 
 ```
 make init
 ```
+
+2. (Optional) Copy program keypair to `./anchor/target/deploy/solbay-keypair.json`
 
 ### Start project
 
@@ -44,4 +46,48 @@ make test/anchor/onchain
 
 # With local test validator (manual deploy)
 make test/anchor/onchain/skip-deploy
+```
+
+## Useful Code Formating Commands
+
+### ESLint check
+
+```
+# Lint check
+make lint
+
+# Lint check (with auto-fix)
+make lint/fix
+```
+
+### Prettier code format
+
+```
+make format
+```
+
+## Database Migration Commands
+
+### Pre-Request
+
+Ensure `./server/.env` file is ready and contain necessary environment variables for database connection.
+
+### Generating a new migration script
+
+1. Ensure database is running and schemas up-to-date. Command `make up/build` will spin up entire application including database and run migration script automatically.
+
+2. Run command below to generate a new database migration script
+
+```
+cd server
+npm run migration:generate --name="<MIGRATION_SCRIPT_FILE_NAME>"
+```
+
+### Running migration script
+
+Although when spinning up the application, there is a migration service to auto-execute database migration script. In case of required executing the scripts manually, can run command below:
+
+```
+cd server
+npm run migration:run
 ```
