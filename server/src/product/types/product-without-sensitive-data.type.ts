@@ -6,7 +6,7 @@ export type IProductWithoutSensitiveData = Omit<
   ProductModel,
   'seller' | 'deletedAt' | 'createdAt' | 'updatedAt'
 > & {
-  seller: {
+  seller?: {
     id: UUID;
     name: string;
   };
@@ -20,7 +20,7 @@ export class ProductWithoutSensitiveData
   description: string;
   priceInLamport: number;
   isPublish: boolean;
-  seller: { id: UUID; name: string };
+  seller?: { id: UUID; name: string };
 
   constructor(product: ProductModel) {
     const { uuid, name, description, isPublish, priceInLamport } = product;
@@ -31,9 +31,11 @@ export class ProductWithoutSensitiveData
     this.priceInLamport = priceInLamport;
     this.isPublish = isPublish;
 
-    this.seller = {
-      id: product.seller?.uuid,
-      name: product.seller?.name,
-    };
+    if (product.seller) {
+      this.seller = {
+        id: product.seller.uuid,
+        name: product.seller.name,
+      };
+    }
   }
 }

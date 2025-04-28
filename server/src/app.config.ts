@@ -20,8 +20,11 @@ export class AppConfig {
     inject: [ConfigService],
     useFactory: (configService: ConfigService) =>
       DatabaseConfig.getConfig(configService),
-    dataSourceFactory: async (options) =>
-      await new DataSource(options).initialize(),
+    dataSourceFactory: async (options) => {
+      if (!options)
+        throw new Error('Undefined option when initialize database');
+      return await new DataSource(options).initialize();
+    },
   });
 
   public static jwtModule = JwtModule.registerAsync({

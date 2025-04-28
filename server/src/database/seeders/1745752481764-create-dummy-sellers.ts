@@ -40,6 +40,11 @@ export class CreateDummySellers1745752481764 implements Seeder {
 
       const pendingSellerList = savedUsers.map((user) => {
         const sellerData = sellerDataMap.get(user.publicKey);
+        if (!sellerData)
+          throw new Error(
+            'Unexpected error: seller not found in sellerDataMap',
+          );
+
         return manager.create(SellerModel, {
           user,
           email: sellerData.sellerEmail,

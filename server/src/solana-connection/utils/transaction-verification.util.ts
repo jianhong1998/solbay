@@ -66,7 +66,12 @@ export class TransactionVerificationUtil {
   ): string {
     const discriminator = ConnectionUtil.getProgram().idl.instructions.find(
       (ix) => ix.name === instructionName,
-    ).discriminator;
+    )?.discriminator;
+
+    if (!discriminator)
+      throw new Error(
+        `Instruction name (${instructionName}) not found in program IDL`,
+      );
 
     return Buffer.from(discriminator).toString('hex');
   }

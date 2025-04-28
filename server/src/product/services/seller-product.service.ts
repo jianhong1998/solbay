@@ -14,20 +14,18 @@ export class SellerProductService {
   ) {}
 
   public async getProducts(params: {
-    userId: UUID;
+    sellerId: UUID;
     criterial?: FindOptionsWhere<ProductModel>;
     entityManger?: EntityManager;
   }): Promise<ProductModel[]> {
-    const { criterial, userId } = params;
+    const { criterial, sellerId } = params;
     const entityManager = params.entityManger ?? this.entityManager;
 
     const productList = await this.productDbUtil.getAll({
       criterial: {
         ...criterial,
         seller: {
-          user: {
-            uuid: userId,
-          },
+          uuid: sellerId,
         },
       },
       entityManager,
