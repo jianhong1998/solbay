@@ -21,7 +21,7 @@ const options: DataSourceOptions & SeederOptions = {
   seeds: ['dist/src/database/seeders/**/*{.js,.ts}'],
   factories: ['dist/src/database/factories/**/*{.js,.ts}'],
   seedTracking: false,
-  ssl: sslEnabledEnvSet.has(process.env.NODE_ENV)
+  ssl: sslEnabledEnvSet.has(process.env.NODE_ENV ?? 'local')
     ? {
         rejectUnauthorized: true,
         ca: [pemCa],

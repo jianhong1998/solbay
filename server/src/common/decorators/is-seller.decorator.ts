@@ -1,0 +1,5 @@
+import { SetMetadata } from '@nestjs/common';
+
+import { IS_SELLER_DECORATOR_KEY } from '../constants';
+
+export const IsSeller = () => SetMetadata(IS_SELLER_DECORATOR_KEY, true);

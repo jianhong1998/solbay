@@ -36,7 +36,7 @@ export default class DatabaseConfig {
       migrations: [migrationPathName],
       migrationsRun: true,
       synchronize: false,
-      ssl: this.sslEnabledEnvSet.has(configService.get('NODE_ENV'))
+      ssl: this.sslEnabledEnvSet.has(configService.get('NODE_ENV') ?? 'local')
         ? {
             rejectUnauthorized: true,
             ca: [pemCa],

@@ -8,6 +8,7 @@ export class CreateDummyProducts1745753265765 implements Seeder {
 
   private readonly sellerPublicKeys = [
     '5ZqJV6Jv2cdn34jMUmyDe9kr81i98R1uUELjKP3fabF4',
+    '8QWwxoteMcgNhEbwXZWGbmGeG2BzHkPEoiJw6scPFrAt',
   ];
 
   private readonly numberOfProductPerSeller = 6;

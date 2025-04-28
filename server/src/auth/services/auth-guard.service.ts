@@ -2,14 +2,19 @@ import {
   BadRequestException,
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UUID } from 'crypto';
 import { Request } from 'express';
-import { PUBLIC_DECORATOR_KEY } from 'src/common/constants';
+import {
+  IS_SELLER_DECORATOR_KEY,
+  PUBLIC_DECORATOR_KEY,
+} from 'src/common/constants';
 import { LoggerUtil } from 'src/common/utils/logger.util';
+import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
 import { UserDBUtil } from 'src/user/utils/userDB.util';
 
 import { TOKEN_COOKIE_NAME } from '../constants';
@@ -25,14 +30,21 @@ export class AuthGuardService implements CanActivate {
     private readonly userDBUtil: UserDBUtil,
     private readonly tokenUtil: TokenUtil,
     private readonly loggerUtil: LoggerUtil,
+    private readonly sellerDBUtil: SellerDBUtil,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const logger = this.loggerUtil.createLogger('VerifyToken');
-    const isPublic = this.reflector.getAllAndOverride<boolean>(
-      PUBLIC_DECORATOR_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const isPublic =
+      this.reflector.getAllAndOverride<boolean>(PUBLIC_DECORATOR_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]) ?? false;
+    const shouldVerifyUserIsSeller =
+      this.reflector.getAllAndOverride<boolean>(IS_SELLER_DECORATOR_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]) ?? false;
 
     if (isPublic) return true;
 
@@ -90,7 +102,24 @@ export class AuthGuardService implements CanActivate {
       throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
+    const seller = await this.sellerDBUtil.getOne({
+      criterial: {
+        user: {
+          uuid: user.uuid,
+        },
+      },
+      relation: {
+        user: true,
+      },
+    });
+
+    if (shouldVerifyUserIsSeller && !seller)
+      throw new ForbiddenException(
+        'Please register your info for getting seller access',
+      );
+
     req.user = user;
+    req.seller = seller ?? undefined;
     return true;
   }
 

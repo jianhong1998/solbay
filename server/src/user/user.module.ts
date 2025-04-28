@@ -14,6 +14,6 @@ import { UserDBUtil } from './utils/userDB.util';
   imports: [TypeOrmModule.forFeature([UserModel, SellerModel]), CommonModule],
   providers: [UserDBUtil, UserService, SellerService, SellerDBUtil],
   controllers: [SellerController],
-  exports: [UserDBUtil, UserService, SellerService],
+  exports: [UserDBUtil, SellerDBUtil, UserService, SellerService],
 })
 export class UserModule {}
