@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "login",
-      "discriminator": [
-        25,
-        137,
-        95,
-        67,
-        72,
-        162,
-        93,
-        236
-      ],
+      "discriminator": [25, 137, 95, 67, 72, 162, 93, 236],
       "accounts": [
         {
           "name": "system_program",
