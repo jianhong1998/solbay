@@ -18,6 +18,12 @@ const SellerProductDashboard: FC = () => {
     useGetSellerProductList(publicKey);
 
   useEffect(() => {
+    if (publicKey) return;
+
+    router.replace('/seller');
+  }, [publicKey, router]);
+
+  useEffect(() => {
     if (!getSellerProductListError) return;
 
     const errorStatus = ErrorHandler.extractStatusCodeFromError(
@@ -26,6 +32,8 @@ const SellerProductDashboard: FC = () => {
     const errorMessage = ErrorHandler.extractErrorMessage(
       getSellerProductListError,
     );
+
+    console.log({ errorStatus, errorMessage });
 
     switch (errorStatus) {
       case 401:

@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 import SellerRegisterForm from '@/components/form/seller-register-form/seller-register-form';
-import { AppHero } from '@/components/ui/ui-layout';
+import { AppHero } from '@/components/ui/hero/app-hero';
 import { useGetSeller } from '@/hooks/queries/seller/get-seller/get-seller';
 import { PageContext } from '@/types/page-context.type';
 import { ErrorHandler } from '@/utils/shared/error-handler';
@@ -43,6 +43,7 @@ const SellerPage: NextPage<PageContext> = () => {
       <AppHero
         title="Welcome to Solbay Seller Hub"
         subtitle="Please login to continue"
+        padding={64}
       />
     );
   }

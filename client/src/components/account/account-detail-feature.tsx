@@ -7,7 +7,8 @@ import { useMemo } from 'react';
 import { useLogger } from '@/utils/shared/logger';
 
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { AppHero, ellipsify } from '../ui/ui-layout';
+import { AppHero } from '../ui/hero/app-hero';
+import { ellipsify } from '../ui/ui-layout';
 import {
   AccountBalance,
   AccountButtons,
@@ -44,6 +45,7 @@ export default function AccountDetailFeature() {
             />
           </div>
         }
+        padding={64}
       >
         <div className="my-4">
           <AccountButtons address={address} />

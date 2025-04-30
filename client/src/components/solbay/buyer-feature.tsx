@@ -3,7 +3,8 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { AppHero, ellipsify } from '../ui/ui-layout';
+import { AppHero } from '../ui/hero/app-hero';
+import { ellipsify } from '../ui/ui-layout';
 import { useSolbayProgram } from './solbay-data-access';
 
 export default function BuyerFeature() {
@@ -16,6 +17,7 @@ export default function BuyerFeature() {
         <AppHero
           title="Solbay"
           subtitle=""
+          padding={64}
         >
           <p className="mb-6">
             <ExplorerLink

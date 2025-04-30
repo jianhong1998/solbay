@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
 
-type IGetSellerResponse = {
+export type IGetSellerResponse = {
   uuid: string;
   name: string;
   email?: string;
