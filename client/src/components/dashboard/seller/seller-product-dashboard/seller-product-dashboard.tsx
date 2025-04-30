@@ -56,7 +56,11 @@ const SellerProductDashboard: FC = () => {
   }
 
   if (!sellerProductList.products.length) {
-    return <div>No product listed yet.</div>;
+    return (
+      <div className="mt-4">
+        <p className="text-lg">No product listed yet.</p>
+      </div>
+    );
   }
 
   return (
