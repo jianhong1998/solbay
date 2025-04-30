@@ -1,10 +1,13 @@
 import React from 'react';
 
+import PrimaryButton from './buttons/primary-button';
+
 interface ICard {
   title: string;
   price: number;
-  description: string;
-  imageUrl: string;
+  description?: string;
+  imageUrl?: string;
+  showBuy?: boolean;
 }
 
 const Card: React.FC<ICard> = (props) => {
@@ -13,6 +16,7 @@ const Card: React.FC<ICard> = (props) => {
     price = '-',
     description = '-',
     imageUrl = 'https://placehold.co/600x400',
+    showBuy,
   } = props;
   return (
     <div className="card bg-base-100 shadow-sm h-full">
@@ -38,7 +42,14 @@ const Card: React.FC<ICard> = (props) => {
         <div>
           <p className="text-sm">Price: {price} SOL</p>
           <div className="card-actions justify-end mt-2">
-            <button className="btn btn-primary btn-sm">Buy Now</button>
+            {showBuy && (
+              <PrimaryButton
+                className="btn-sm"
+                buttonStyle="contained"
+              >
+                Buy
+              </PrimaryButton>
+            )}
           </div>
         </div>
       </div>

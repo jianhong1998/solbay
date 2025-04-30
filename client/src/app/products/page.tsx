@@ -24,6 +24,7 @@ const ProductList = () => {
             imageUrl={
               'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp'
             }
+            showBuy
           />
         </div>
         <div className="h-[28rem]">
@@ -34,6 +35,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/61MC8BK0w0L._AC_SL1500_.jpg'
             }
+            showBuy
           />
         </div>
         <div className="h-[28rem]">
@@ -44,6 +46,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/51QSOQIOVEL._AC_SL1500_.jpg'
             }
+            showBuy
           />
         </div>
 
@@ -55,6 +58,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/51MQ1lgN2gL._AC_SX466_.jpg'
             }
+            showBuy
           />
         </div>
       </div>

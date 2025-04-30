@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { AppHero } from '../ui/ui-layout';
+import { AppHero } from '../ui/hero/app-hero';
 import { ClusterUiModal } from './cluster-ui';
 import { ClusterUiTable } from './cluster-ui';
 
@@ -14,6 +14,7 @@ export default function ClusterFeature() {
       <AppHero
         title="Clusters"
         subtitle="Manage and select your Solana clusters"
+        padding={64}
       >
         <ClusterUiModal
           show={showModal}

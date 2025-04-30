@@ -30,9 +30,15 @@ export class ErrorHandler {
     return GeneralErrorMessage.SOMETHING_WENT_WRONG;
   }
 
-  public static extractStatusCodeFromError(error: unknown): number | null {
+  public static extractStatusCodeFromError(
+    error: unknown,
+  ): number | 'ERR_NETWORK' | null {
     if (!error || !axios.isAxiosError(error)) {
       return null;
+    }
+
+    if (!error.response?.status && error.code === 'ERR_NETWORK') {
+      return error.code;
     }
 
     return error.response?.status ?? null;
@@ -41,6 +47,10 @@ export class ErrorHandler {
   private static extractErrorMessageFromAxiosError(
     error: AxiosError,
   ): string | null {
+    if (this.extractStatusCodeFromError(error) === 'ERR_NETWORK') {
+      return GeneralErrorMessage.NETWORK_ERROR;
+    }
+
     const data = error.response?.data;
 
     if (!data) {
