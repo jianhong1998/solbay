@@ -51,7 +51,7 @@ export function UiLayout({
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      <div className="flex-grow mx-4 lg:mx-auto">
+      <div className="flex-grow mx-4 lg:mx-auto lg:w-11/12">
         <Suspense
           fallback={
             <div className="text-center my-32">

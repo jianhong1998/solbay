@@ -14,7 +14,9 @@ export const AppHero: FC<AppHeroProps> = ({
   padding,
 }) => {
   return (
-    <div className={`hero ${padding ? `py-[${padding}px]` : ''}`}>
+    <div
+      className={`hero ${padding ? `py-[${padding}px]` : ''} justify-center`}
+    >
       <div className="hero-content text-center">
         <div className="max-w-2xl">
           {typeof title === 'string' ? (

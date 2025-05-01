@@ -77,7 +77,7 @@ export class AuthGuardService implements CanActivate {
       );
     }
 
-    const { userId } = this.tokenUtil.decodeToken<{ userId: UUID }>(token);
+    const { userId } = this.tokenUtil.decodeToken<{ userId?: UUID }>(token);
 
     if (!userId) {
       logger.warn(`Invalid userId in token: ${userId}`);

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
+import ProductDetailsDisplay from '@/components/product/product-details-display/product-details-display';
 import PrimaryButton from '@/components/ui/buttons/primary-button';
 import Loading from '@/components/ui/loading/loading';
 import { useGetSellerProductDetails } from '@/hooks/queries/products/sellers/get-seller-product';
@@ -23,7 +24,7 @@ const SellerProductDetailsDashboard: FC<SellerProductDetailsDashboardProps> = ({
   const router = useRouter();
 
   const {
-    data: productDetails,
+    data: productDetailsData,
     isFetching: isFetchingProductDetails,
     error: getProductDetailsError,
   } = useGetSellerProductDetails(productId);
@@ -72,7 +73,15 @@ const SellerProductDetailsDashboard: FC<SellerProductDetailsDashboardProps> = ({
     );
   }
 
-  return <div>{productDetails?.product.name}</div>;
+  if (!productDetailsData) return <></>;
+
+  return (
+    <ProductDetailsDisplay
+      productDetails={productDetailsData.product}
+      sellerId={sellerId}
+      sellerMode
+    />
+  );
 };
 
 export default SellerProductDetailsDashboard;

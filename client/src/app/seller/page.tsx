@@ -5,7 +5,7 @@ import SellerPreLoginDashboard from '@/components/dashboard/seller/seller-dashbo
 import { AppHero } from '@/components/ui/hero/app-hero';
 import { TOKEN_COOKIE_NAME } from '@/constants/cookie.constant';
 
-const LoginHind = () => {
+const LoginPrompt = () => {
   return (
     <AppHero
       title="Welcome to Solbay Seller Hub"
@@ -19,7 +19,7 @@ const SellerPage: NextPage = async () => {
   const cookieStore = cookies();
   const token = cookieStore.get(TOKEN_COOKIE_NAME);
 
-  if (!token) return <LoginHind />;
+  if (!token) return <LoginPrompt />;
 
   return <SellerPreLoginDashboard />;
 };

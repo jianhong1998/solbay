@@ -30,10 +30,8 @@ export default function BuyerFeature() {
     );
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="hero py-[64px]">
-        <div className="hero-content text-center">Not Logged In Yet</div>
-      </div>
+    <div className="max-w-4xl mx-auto justify-center">
+      <div className="text-center text-xl font-bold">Not Logged In Yet</div>
     </div>
   );
 }
