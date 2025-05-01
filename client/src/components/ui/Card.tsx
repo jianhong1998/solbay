@@ -8,6 +8,7 @@ interface ICard {
   description?: string;
   imageUrl?: string;
   showBuy?: boolean;
+  onClickFn?: () => void;
 }
 
 const Card: React.FC<ICard> = (props) => {
@@ -17,9 +18,13 @@ const Card: React.FC<ICard> = (props) => {
     description = '-',
     imageUrl = 'https://placehold.co/600x400',
     showBuy,
+    onClickFn,
   } = props;
   return (
-    <div className="card bg-base-100 shadow-sm h-full">
+    <div
+      className={`card bg-base-100 shadow-sm h-full ${onClickFn ? 'cursor-pointer' : ''}`}
+      onClick={onClickFn}
+    >
       {' '}
       {/* Ensure card takes full height */}
       <figure className="w-full h-72">

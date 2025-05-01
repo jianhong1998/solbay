@@ -1,8 +1,10 @@
 import { UUID } from 'crypto';
+import { ProductModel } from 'src/product/models/product.model';
 import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -36,4 +38,7 @@ export class SellerModel {
   })
   @JoinColumn({ name: 'user_uuid' })
   user?: Relation<UserModel>;
+
+  @OneToMany(() => ProductModel, (product) => product.seller)
+  products?: Relation<ProductModel[]>;
 }

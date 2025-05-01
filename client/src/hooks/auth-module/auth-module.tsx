@@ -2,6 +2,7 @@
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { useRouter } from 'next/navigation';
 import { ButtonHTMLAttributes, forwardRef, useEffect, useState } from 'react';
 
 import { useLogin } from '@/hooks/queries/auth/login';
@@ -63,6 +64,8 @@ const LogoutButton = forwardRef<HTMLButtonElement, LogoutButtonProps>(
 export const useAuthModule = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
+  const router = useRouter();
+
   const { connected, disconnect } = useWallet();
   const { setVisible: setWalletModalVisible } = useWalletModal();
 
@@ -86,8 +89,7 @@ export const useAuthModule = () => {
   };
 
   useEffect(() => {
-    if (!connected) return;
-    if (isVerifyTokenPending) return;
+    if (!connected || isVerifyTokenPending) return;
 
     if (verifyTokenData) {
       setIsLogin(true);
@@ -97,7 +99,11 @@ export const useAuthModule = () => {
     loginFn().then(() => {
       setIsLogin(true);
     });
-  }, [connected, verifyTokenData, isVerifyTokenPending, loginFn]);
+  }, [connected, verifyTokenData, isVerifyTokenPending, loginFn, router]);
+
+  useEffect(() => {
+    router.refresh();
+  }, [isLogin, router]);
 
   const loginButton = forwardRef<HTMLButtonElement, AuthButtonProps>(
     ({ ...props }, ref) => {

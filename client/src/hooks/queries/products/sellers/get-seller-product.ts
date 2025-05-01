@@ -1,6 +1,6 @@
 'use client';
 
-import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
@@ -10,11 +10,16 @@ type IGetSellerProductListResponse = {
   products: Array<IProductWithoutSensitiveData>;
 };
 
-export const useGetSellerProductList = (publicKey: PublicKey | null) => {
+type IGetSellerProductDetailsResponse = {
+  product: IProductWithoutSensitiveData;
+};
+
+export const useGetSellerProductList = () => {
   const serverAxios = useServerAxios();
+  const { publicKey } = useWallet();
 
   return useQuery<IGetSellerProductListResponse, Error>({
-    queryKey: ['seller-product', 'list'],
+    queryKey: ['seller-product', 'list', { publicKey }],
     queryFn: async () => {
       const url = '/seller-product';
       const res = await serverAxios.get<IGetSellerProductListResponse>(url);
@@ -22,5 +27,26 @@ export const useGetSellerProductList = (publicKey: PublicKey | null) => {
       return res.data;
     },
     enabled: serverAxios.isInitialized && Boolean(publicKey),
+  });
+};
+
+export const useGetSellerProductDetails = (productId: string) => {
+  const serverAxios = useServerAxios();
+  const { publicKey } = useWallet();
+
+  return useQuery<IGetSellerProductDetailsResponse, Error>({
+    queryKey: ['seller-product', 'one', { productId, publicKey }],
+    queryFn: async () => {
+      const url = encodeURI(`/seller-product/${productId}`);
+      const res = await serverAxios.get<IGetSellerProductDetailsResponse>(url);
+
+      return res.data;
+    },
+    enabled: Boolean(publicKey) && serverAxios.isInitialized,
+    staleTime: 5000,
+    retry: false,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
   });
 };

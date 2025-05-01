@@ -1,6 +1,6 @@
 'use client';
 
-import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
@@ -11,11 +11,12 @@ export type IGetSellerResponse = {
   email?: string;
 };
 
-export const useGetSeller = (publicKey: PublicKey | null) => {
+export const useGetSeller = () => {
   const serverAxios = useServerAxios();
+  const { publicKey } = useWallet();
 
   return useQuery<IGetSellerResponse, Error>({
-    queryKey: ['seller', publicKey?.toBase58() ?? null],
+    queryKey: ['seller', { publicKey }],
     queryFn: async () => {
       const url = encodeURI(`/seller/${publicKey?.toBase58()}`);
       const result = await serverAxios.get<IGetSellerResponse>(url);
