@@ -1,14 +1,7 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "types": [
-      "jest",
-      "node"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["jest", "node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,12 +21,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@project/anchor": [
-        "./src/contract/src"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "@project/anchor": ["./src/contract/src"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -44,7 +33,5 @@
     "src/contract/**/*.json",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
