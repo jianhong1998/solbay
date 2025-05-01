@@ -66,7 +66,7 @@ export const useLogin = () => {
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({
-        queryKey: ['seller', publicKey?.toBase58() ?? null],
+        queryKey: ['seller', { publicKey }],
       });
     },
     retryDelay: 0,

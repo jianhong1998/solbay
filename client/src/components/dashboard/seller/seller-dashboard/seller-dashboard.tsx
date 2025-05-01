@@ -1,8 +1,7 @@
 'use client';
 
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/navigation';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import PrimaryButton from '@/components/ui/buttons/primary-button';
 import { AppHero } from '@/components/ui/hero/app-hero';
@@ -11,14 +10,7 @@ import { useGetSeller } from '@/hooks/queries/seller/get-seller/get-seller';
 const SellerDashboard: FC = () => {
   const router = useRouter();
 
-  const { publicKey } = useWallet();
-  const { data: sellerData } = useGetSeller(publicKey);
-
-  useEffect(() => {
-    if (!sellerData) {
-      router.replace('/seller');
-    }
-  }, [sellerData, router]);
+  const { data: sellerData } = useGetSeller();
 
   if (!sellerData) {
     return <></>;

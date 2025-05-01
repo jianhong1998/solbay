@@ -1,67 +1,27 @@
-'use client';
-
-import { useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { cookies } from 'next/headers';
 
-import SellerRegisterForm from '@/components/form/seller-register-form/seller-register-form';
+import SellerPreLoginDashboard from '@/components/dashboard/seller/seller-dashboard/seller-pre-login-dashboard';
 import { AppHero } from '@/components/ui/hero/app-hero';
-import { useGetSeller } from '@/hooks/queries/seller/get-seller/get-seller';
-import { PageContext } from '@/types/page-context.type';
-import { ErrorHandler } from '@/utils/shared/error-handler';
+import { TOKEN_COOKIE_NAME } from '@/constants/cookie.constant';
 
-const SellerPage: NextPage<PageContext> = () => {
-  const router = useRouter();
-
-  const { publicKey, connected: isWalletConnected } = useWallet();
-
-  const { data: getSellerData, error: getSellerError } =
-    useGetSeller(publicKey);
-
-  useEffect(() => {
-    if (getSellerError) {
-      const statusCode =
-        ErrorHandler.extractStatusCodeFromError(getSellerError);
-      if (statusCode === 404) {
-        return;
-      }
-
-      const errorMessage = ErrorHandler.extractErrorMessage(getSellerError);
-
-      toast.error(errorMessage);
-    }
-  }, [getSellerError]);
-
-  if (getSellerData) {
-    router.replace(`/seller/${getSellerData.uuid}`);
-  }
-
-  if (!isWalletConnected) {
-    return (
-      <AppHero
-        title="Welcome to Solbay Seller Hub"
-        subtitle="Please login to continue"
-        padding={64}
-      />
-    );
-  }
-
-  if (
-    !getSellerData &&
-    ErrorHandler.extractStatusCodeFromError(getSellerError) === 404
-  ) {
-    return <SellerRegisterForm />;
-  }
-
+const LoginHind = () => {
   return (
-    <div className="w-full h-full flex flex-col justify-center">
-      <div>
-        <span className="loading loading-spinner"></span>
-      </div>
-    </div>
+    <AppHero
+      title="Welcome to Solbay Seller Hub"
+      subtitle="Please login to continue"
+      padding={64}
+    />
   );
+};
+
+const SellerPage: NextPage = async () => {
+  const cookieStore = cookies();
+  const token = cookieStore.get(TOKEN_COOKIE_NAME);
+
+  if (!token) return <LoginHind />;
+
+  return <SellerPreLoginDashboard />;
 };
 
 export default SellerPage;

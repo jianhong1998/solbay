@@ -1,6 +1,5 @@
 'use client';
 
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -13,15 +12,12 @@ import { ErrorHandler } from '@/utils/shared/error-handler';
 const SellerProductDashboard: FC = () => {
   const router = useRouter();
 
-  const { publicKey } = useWallet();
   const { data: sellerProductList, error: getSellerProductListError } =
-    useGetSellerProductList(publicKey);
+    useGetSellerProductList();
 
-  useEffect(() => {
-    if (publicKey) return;
-
-    router.replace('/seller');
-  }, [publicKey, router]);
+  const generateProductOnClickHandler = (productId: string) => () => {
+    router.replace(`product/${productId}`);
+  };
 
   useEffect(() => {
     if (!getSellerProductListError) return;
@@ -73,6 +69,7 @@ const SellerProductDashboard: FC = () => {
               price={NumberDisplayHelper.convertLamportToSol(
                 product.priceInLamport,
               )}
+              onClickFn={generateProductOnClickHandler(product.uuid)}
             />
           </div>
         );
