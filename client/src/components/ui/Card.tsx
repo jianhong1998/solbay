@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 
 import PrimaryButton from './buttons/primary-button';
 
@@ -7,8 +7,8 @@ interface ICard {
   price: number;
   description?: string;
   imageUrl?: string;
-  showBuy?: boolean;
-  onClickFn?: () => void;
+  cardOnClickFn?: MouseEventHandler<HTMLDivElement>;
+  buyButtonOnClickFn?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const Card: React.FC<ICard> = (props) => {
@@ -17,8 +17,8 @@ const Card: React.FC<ICard> = (props) => {
     price = '-',
     description = '-',
     imageUrl = 'https://placehold.co/600x400',
-    showBuy,
-    onClickFn,
+    cardOnClickFn: onClickFn,
+    buyButtonOnClickFn,
   } = props;
   return (
     <div
@@ -47,10 +47,14 @@ const Card: React.FC<ICard> = (props) => {
         <div>
           <p className="text-sm">Price: {price} SOL</p>
           <div className="card-actions justify-end mt-2">
-            {showBuy && (
+            {buyButtonOnClickFn && (
               <PrimaryButton
                 className="btn-sm"
                 buttonStyle="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  buyButtonOnClickFn?.(e);
+                }}
               >
                 Buy
               </PrimaryButton>

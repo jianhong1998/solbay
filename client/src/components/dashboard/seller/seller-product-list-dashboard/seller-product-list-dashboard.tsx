@@ -77,7 +77,7 @@ const SellerProductDashboard: FC = () => {
   }
 
   return (
-    <>
+    <div className="mx-auto sm:max-w-md lg:max-w-4xl">
       <div className="flex flex-row items-center gap-3 mt-3">
         <Title>Products</Title>
         <PrimaryButton
@@ -96,13 +96,13 @@ const SellerProductDashboard: FC = () => {
                 price={NumberDisplayHelper.convertLamportToSol(
                   product.priceInLamport,
                 )}
-                onClickFn={generateProductOnClickHandler(product.uuid)}
+                cardOnClickFn={generateProductOnClickHandler(product.uuid)}
               />
             </div>
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 
