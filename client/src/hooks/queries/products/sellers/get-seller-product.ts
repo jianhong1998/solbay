@@ -35,7 +35,11 @@ export const useGetSellerProductDetails = (productId: string) => {
   const { publicKey } = useWallet();
 
   return useQuery<IGetSellerProductDetailsResponse, Error>({
-    queryKey: ['seller-product', 'one', { productId, publicKey }],
+    queryKey: [
+      'seller-product',
+      'one',
+      { productId, publicKey: publicKey?.toBase58() ?? null },
+    ],
     queryFn: async () => {
       const url = encodeURI(`/seller-product/${productId}`);
       const res = await serverAxios.get<IGetSellerProductDetailsResponse>(url);

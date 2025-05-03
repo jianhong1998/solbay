@@ -1,21 +1,19 @@
-'use client';
-// app/products/[id]/page.tsx
-import { useParams, useRouter } from 'next/navigation';
+import { NextPage } from 'next';
 import React from 'react';
 
-const Cars = () => {
-  const router = useRouter();
-  const { id } = useParams();
+import BuyerProductDetailsDashboard from '@/components/dashboard/buyer/product-details-dashboard/buyer-product-details-dashboard';
+import { PageContext } from '@/types/page-context.type';
 
-  const handleClick = () => {
-    router.push('/');
-  };
-  return (
-    <>
-      <h1>hihi {id}</h1>
-      <button onClick={handleClick}>go back to home page</button>
-    </>
-  );
+type BuyerProductDetailsPageProps = {
+  id: string;
 };
 
-export default Cars;
+const BuyerProductDetailsPage: NextPage<
+  PageContext<BuyerProductDetailsPageProps>
+> = async ({ params }) => {
+  const { id } = await params;
+
+  return <BuyerProductDetailsDashboard productId={id} />;
+};
+
+export default BuyerProductDetailsPage;

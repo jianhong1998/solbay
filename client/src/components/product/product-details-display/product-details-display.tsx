@@ -30,7 +30,7 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
     if (sellerMode) {
       router.push(`/seller/${sellerId}/product`);
     } else {
-      router.push('/product');
+      router.push('/products');
     }
   };
 
