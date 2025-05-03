@@ -1,12 +1,24 @@
 'use client';
 
+import { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import Card from '../../components/ui/Card';
+import Card from '@/components/ui/Card';
+import { useGetBuyerProductList } from '@/hooks/queries/products/buyers/get-product';
+import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-display-helper';
 
-const ProductList = () => {
+const ProductList: NextPage = () => {
+  const router = useRouter();
+
+  const { data: productList } = useGetBuyerProductList();
+
   // TODO: Implement buy feature
   const buyButtonOnClickFn = () => {};
+
+  const generateViewProductDetailsHandler = (productId: string) => () => {
+    router.push(`/products/${productId}`);
+  };
 
   return (
     <>
@@ -18,54 +30,29 @@ const ProductList = () => {
           Explore things you might like
         </p>
       </div>
+      {!Boolean(productList?.products.length) && (
+        <div className="flex flex-col justify-center items-center w-full">
+          <h1 className="text-lg text-gray-400">
+            Sellers not yet published their products
+          </h1>
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] gap-4 p-4">
-        <div className="h-[28rem]">
-          <Card
-            title="Nike Shoe"
-            price={0.2}
-            description={
-              'I am only selling one shoe because I only have 1 feet.'
-            }
-            imageUrl={
-              'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp'
-            }
-            buyButtonOnClickFn={buyButtonOnClickFn}
-          />
-        </div>
-        <div className="h-[28rem]">
-          <Card
-            title="Wireless Keyboard"
-            price={0.18}
-            description={'Comes with RGB lights and free keycaps'}
-            imageUrl={
-              'https://m.media-amazon.com/images/I/61MC8BK0w0L._AC_SL1500_.jpg'
-            }
-            buyButtonOnClickFn={buyButtonOnClickFn}
-          />
-        </div>
-        <div className="h-[28rem]">
-          <Card
-            title="JBL Headphones"
-            price={1.2}
-            description={'Brand new set with replacement ear cushions'}
-            imageUrl={
-              'https://m.media-amazon.com/images/I/51QSOQIOVEL._AC_SL1500_.jpg'
-            }
-            buyButtonOnClickFn={buyButtonOnClickFn}
-          />
-        </div>
-
-        <div className="h-[28rem]">
-          <Card
-            title="Pokemon Gacha Machine"
-            price={0.01}
-            description={'If you like pokemon then this is a good gift'}
-            imageUrl={
-              'https://m.media-amazon.com/images/I/51MQ1lgN2gL._AC_SX466_.jpg'
-            }
-            buyButtonOnClickFn={buyButtonOnClickFn}
-          />
-        </div>
+        {productList?.products.map((product) => (
+          <div
+            key={product.uuid}
+            className="h-[28rem]"
+          >
+            <Card
+              title={product.name}
+              price={NumberDisplayHelper.convertLamportToSol(
+                product.priceInLamport,
+              )}
+              cardOnClickFn={generateViewProductDetailsHandler(product.uuid)}
+              buyButtonOnClickFn={buyButtonOnClickFn}
+            />
+          </div>
+        ))}
       </div>
     </>
   );

@@ -25,7 +25,7 @@ const Hero = () => {
         </p>
 
         <CustomButton
-          title="View Products"
+          title="Browse Products"
           containerStyles="bg-primary-blue text-white rounded-full mt-10"
           handleClick={handleClick}
         />
