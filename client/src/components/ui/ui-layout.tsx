@@ -1,15 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { useAuthModule } from '@/hooks/auth-module/auth-module';
-
 import { AccountChecker } from '../account/account-ui';
 import { ClusterChecker, ExplorerLink } from '../cluster/cluster-ui';
+import NavBarProvider from './navbar/navbar';
 
 export function UiLayout({
   children,
@@ -18,51 +15,25 @@ export function UiLayout({
   children: ReactNode;
   links: { label: string; path: string }[];
 }) {
-  const pathname = usePathname();
-  const { Button: AuthButton } = useAuthModule();
-
   return (
     <div className="h-full flex flex-col">
-      <div className="navbar bg-base-300 dark:text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0">
-        <div className="flex-1">
-          <Link
-            className="btn btn-ghost normal-case text-xl"
-            href="/"
+      <NavBarProvider links={links}>
+        <ClusterChecker>
+          <AccountChecker />
+        </ClusterChecker>
+        <div className="flex-grow mx-4 lg:mx-auto lg:w-11/12">
+          <Suspense
+            fallback={
+              <div className="text-center my-32">
+                <span className="loading loading-spinner loading-lg"></span>
+              </div>
+            }
           >
-            Solbay
-          </Link>
-          <ul className="menu menu-horizontal px-1 space-x-2">
-            {links.map(({ label, path }) => (
-              <li key={path}>
-                <Link
-                  className={pathname.startsWith(path) ? 'active' : ''}
-                  href={path}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+            {children}
+          </Suspense>
+          <Toaster position="bottom-right" />
         </div>
-        <div className="flex-none space-x-2">
-          <AuthButton />
-        </div>
-      </div>
-      <ClusterChecker>
-        <AccountChecker />
-      </ClusterChecker>
-      <div className="flex-grow mx-4 lg:mx-auto lg:w-11/12">
-        <Suspense
-          fallback={
-            <div className="text-center my-32">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
-        <Toaster position="bottom-right" />
-      </div>
+      </NavBarProvider>
     </div>
   );
 }
