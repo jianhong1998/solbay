@@ -33,6 +33,10 @@ export class ProductModel {
   @Column({
     type: 'bigint',
     nullable: false,
+    transformer: {
+      to: (value: number) => value.toString(),
+      from: (value: string) => Number.parseInt(value, 10),
+    },
   })
   priceInLamport: number;
 

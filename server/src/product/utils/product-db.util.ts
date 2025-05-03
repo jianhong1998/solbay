@@ -14,6 +14,7 @@ export type IProductModelCreationData = {
   name: string;
   description: string;
   priceInLamport: number;
+  isPublish: boolean;
   seller: SellerModel;
 };
 
@@ -88,6 +89,7 @@ export class ProductDBUtil {
       description: productData.description,
       priceInLamport: productData.priceInLamport,
       seller: productData.seller,
+      isPublish: productData.isPublish,
     });
 
     const savedProduct = await repo.save(product);
