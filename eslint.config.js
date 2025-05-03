@@ -91,6 +91,7 @@ export default [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
+      'no-console': 'warn',
     },
   },
   /* Server Eslint */
