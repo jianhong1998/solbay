@@ -27,7 +27,7 @@ const NavBarProvider: FC<NavBarProviderProps> = ({ links, children }) => {
         className="drawer-toggle"
       />
       <div className="drawer-content flex flex-col">
-        <div className="flex navbar bg-base-300 dark:text-neutral-content w-full lg:px-3">
+        <div className="flex navbar bg-base-300 dark:text-neutral-content w-full lg:px-3 sticky top-0 z-10">
           <div className="flex-1">
             <NavbarTriggerButton labelHtmlFor={toggleCheckBoxId} />
             <Link
@@ -58,7 +58,7 @@ const NavBarProvider: FC<NavBarProviderProps> = ({ links, children }) => {
       </div>
 
       {/* [Mobile only] Side bar */}
-      <div className="drawer-side">
+      <div className="drawer-side z-20">
         <label
           htmlFor={toggleCheckBoxId}
           aria-label="close sidebar"
