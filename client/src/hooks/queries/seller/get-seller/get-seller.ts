@@ -14,11 +14,12 @@ export type IGetSellerResponse = {
 export const useGetSeller = () => {
   const serverAxios = useServerAxios();
   const { publicKey } = useWallet();
+  const publicKeyString = publicKey?.toBase58() ?? null;
 
   return useQuery<IGetSellerResponse, Error>({
-    queryKey: ['seller', { publicKey }],
+    queryKey: ['seller', { publicKey: publicKeyString }],
     queryFn: async () => {
-      const url = encodeURI(`/seller/${publicKey?.toBase58()}`);
+      const url = encodeURI(`/seller/${publicKeyString}`);
       const result = await serverAxios.get<IGetSellerResponse>(url);
 
       return result.data;

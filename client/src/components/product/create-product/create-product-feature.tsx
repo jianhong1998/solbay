@@ -66,6 +66,7 @@ const CreateProductFeature: FC = () => {
       <CreateProductForm
         productData={productData}
         updateProductDataFn={updateProductData}
+        isLoading={isAddProductPending}
       />
       <div className="flex flex-row justify-between w-full mt-10">
         <PrimaryButton
@@ -77,7 +78,8 @@ const CreateProductFeature: FC = () => {
         </PrimaryButton>
         <PrimaryButton
           onClick={addProductHandler}
-          disabled={!isReadyForCreate || isAddProductPending}
+          disabled={!isReadyForCreate}
+          loading={isAddProductPending}
         >
           Create Product
         </PrimaryButton>
