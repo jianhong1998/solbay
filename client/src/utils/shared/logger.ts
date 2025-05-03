@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 export const useLogger = () => {
   const log = (message: unknown, ...optionalParams: unknown[]) => {
     if (optionalParams.length > 0) {

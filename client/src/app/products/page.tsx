@@ -1,8 +1,13 @@
+'use client';
+
 import React from 'react';
 
 import Card from '../../components/ui/Card';
 
 const ProductList = () => {
+  // TODO: Implement buy feature
+  const buyButtonOnClickFn = () => {};
+
   return (
     <>
       <div className="flex flex-col space-y-4 p-20">
@@ -24,7 +29,7 @@ const ProductList = () => {
             imageUrl={
               'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp'
             }
-            showBuy
+            buyButtonOnClickFn={buyButtonOnClickFn}
           />
         </div>
         <div className="h-[28rem]">
@@ -35,7 +40,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/61MC8BK0w0L._AC_SL1500_.jpg'
             }
-            showBuy
+            buyButtonOnClickFn={buyButtonOnClickFn}
           />
         </div>
         <div className="h-[28rem]">
@@ -46,7 +51,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/51QSOQIOVEL._AC_SL1500_.jpg'
             }
-            showBuy
+            buyButtonOnClickFn={buyButtonOnClickFn}
           />
         </div>
 
@@ -58,7 +63,7 @@ const ProductList = () => {
             imageUrl={
               'https://m.media-amazon.com/images/I/51MQ1lgN2gL._AC_SX466_.jpg'
             }
-            showBuy
+            buyButtonOnClickFn={buyButtonOnClickFn}
           />
         </div>
       </div>

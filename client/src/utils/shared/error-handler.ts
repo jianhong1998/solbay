@@ -65,12 +65,14 @@ export class ErrorHandler {
       return this.getPrimitiveMessage(data);
     }
 
-    if (
-      typeof data === 'object' &&
-      'message' in data &&
-      typeof data.message === 'string'
-    ) {
-      return data.message;
+    if (typeof data === 'object' && 'message' in data) {
+      if (typeof data.message === 'string') {
+        return data.message;
+      }
+
+      if (typeof data.message === 'object' && Array.isArray(data.message)) {
+        return data.message.map((message) => String(message)).join('. ');
+      }
     }
 
     return null;

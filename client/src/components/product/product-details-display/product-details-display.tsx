@@ -92,7 +92,14 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           </div>
 
           {/* Product Description */}
-          <div className="text-wrap">{productDetails.description}</div>
+          <div className="text-wrap">
+            {productDetails.description.split('\n').map((value) => (
+              <>
+                <p key={value.slice(0, 20)}>{value}</p>
+                <br />
+              </>
+            ))}
+          </div>
         </div>
       </div>
     </div>
