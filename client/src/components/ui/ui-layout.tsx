@@ -1,15 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { useAuthModule } from '@/hooks/auth-module/auth-module';
-
 import { AccountChecker } from '../account/account-ui';
 import { ClusterChecker, ExplorerLink } from '../cluster/cluster-ui';
+import NavBar from './navbar/navbar';
 
 export function UiLayout({
   children,
@@ -18,12 +15,10 @@ export function UiLayout({
   children: ReactNode;
   links: { label: string; path: string }[];
 }) {
-  const pathname = usePathname();
-  const { Button: AuthButton } = useAuthModule();
-
   return (
     <div className="h-full flex flex-col">
-      <div className="navbar bg-base-300 dark:text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0">
+      <NavBar links={links} />
+      {/* <div className="navbar bg-base-300 dark:text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0">
         <div className="flex-1">
           <Link
             className="btn btn-ghost normal-case text-xl"
@@ -47,7 +42,7 @@ export function UiLayout({
         <div className="flex-none space-x-2">
           <AuthButton />
         </div>
-      </div>
+      </div> */}
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
