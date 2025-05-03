@@ -29,4 +29,22 @@ export class ProductService {
 
     return productList;
   }
+
+  public async getProductDetails(params: {
+    criterial: FindOptionsWhere<ProductModel>;
+    entityManager?: EntityManager;
+  }): Promise<ProductModel | null> {
+    const { criterial } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const product = await this.productDbUtil.getOne({
+      criterial,
+      entityManager,
+      relation: {
+        seller: true,
+      },
+    });
+
+    return product;
+  }
 }

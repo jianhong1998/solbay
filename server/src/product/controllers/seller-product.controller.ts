@@ -12,6 +12,7 @@ import { UUID } from 'crypto';
 import { IsSeller } from 'src/common/decorators/is-seller.decorator';
 import { Seller } from 'src/common/decorators/seller.decorator';
 import { SellerModel } from 'src/user/models/seller.model';
+import { validate } from 'uuid';
 
 import {
   CreateProductReqDTO,
@@ -42,6 +43,10 @@ export class SellerProductController {
     @Seller() seller: SellerModel,
     @Param('productId') productId: UUID,
   ): Promise<GetProductDetailsResDTO> {
+    if (!validate(productId)) {
+      throw new NotFoundException('Product does not exist');
+    }
+
     const isCorrectSeller = await this.sellerProductService.verifyProductSeller(
       {
         productId,

@@ -1,6 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { UUID } from 'crypto';
 import { Public } from 'src/common/decorators';
+import { validate } from 'uuid';
 
+import { GetProductDetailsResDTO } from '../dtos/get-product-details.dto';
 import { GetProductListResDTO } from '../dtos/get-product-list.dto';
 import { ProductService } from '../services/product.service';
 
@@ -18,5 +21,24 @@ export class BuyerProductController {
     });
 
     return new GetProductListResDTO(products);
+  }
+
+  @Get('/:productId')
+  public async getProductDetailsForSeller(
+    @Param('productId') productId: UUID,
+  ): Promise<GetProductDetailsResDTO> {
+    if (!validate(productId)) {
+      throw new NotFoundException('Product does not exist');
+    }
+
+    const product = await this.productService.getProductDetails({
+      criterial: {
+        uuid: productId,
+      },
+    });
+
+    if (!product) throw new NotFoundException(`Product does not exist`);
+
+    return new GetProductDetailsResDTO(product);
   }
 }
