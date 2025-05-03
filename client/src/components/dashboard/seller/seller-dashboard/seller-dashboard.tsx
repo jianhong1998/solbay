@@ -38,7 +38,7 @@ const SellerDashboard: FC = () => {
           padding={64}
         >
           <PrimaryButton onClick={redirectToViewProductListPage}>
-            View Products
+            My Products
           </PrimaryButton>
         </AppHero>
       </div>
