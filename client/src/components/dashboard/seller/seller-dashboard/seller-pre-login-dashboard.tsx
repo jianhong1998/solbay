@@ -52,7 +52,7 @@ const SellerPreLoginDashboard: FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center">
+    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
       <Loading
         loadingStyle="spinner"
         size="lg"

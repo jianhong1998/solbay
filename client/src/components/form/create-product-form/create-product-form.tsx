@@ -11,11 +11,13 @@ import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-displa
 type CreateProductFormProps = {
   productData: IProductCreationData;
   updateProductDataFn: (productData: IProductCreationData) => void;
+  isLoading?: boolean;
 };
 
 const CreateProductForm: FC<CreateProductFormProps> = ({
   productData,
   updateProductDataFn,
+  isLoading,
 }) => {
   const nameOnChangeHandler: Dispatch<SetStateAction<string>> = (value) => {
     const updatedName = value.toString();
@@ -46,28 +48,37 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
   };
 
   return (
-    <div>
-      {/* Name */}
-      <TextInput
-        value={productData.name}
-        setValue={nameOnChangeHandler}
-        label="Product Name"
-        className="w-full"
-      />
-      <TextAreaInput
-        value={productData.description}
-        setValue={descriptionOnChangeHandler}
-        label="Product Description"
-        className="w-full h-64"
-      />
-      <PriceInput
-        value={NumberDisplayHelper.convertLamportToSol(
-          productData.priceInLamport,
-        )}
-        setValue={priceOnChangeHandler}
-        label="Unit Price"
-      />
-    </div>
+    <>
+      <div>
+        {/* Name */}
+        <TextInput
+          value={productData.name}
+          setValue={nameOnChangeHandler}
+          label="Product Name"
+          className="w-full"
+          disabled={isLoading}
+        />
+
+        {/* Description */}
+        <TextAreaInput
+          value={productData.description}
+          setValue={descriptionOnChangeHandler}
+          label="Product Description"
+          className="w-full h-64"
+          disabled={isLoading}
+        />
+
+        {/* Price */}
+        <PriceInput
+          value={NumberDisplayHelper.convertLamportToSol(
+            productData.priceInLamport,
+          )}
+          setValue={priceOnChangeHandler}
+          label="Unit Price"
+          disabled={isLoading}
+        />
+      </div>
+    </>
   );
 };
 

@@ -53,7 +53,7 @@ export const useSellerRegister = () => {
       toast.success('Registered as seller successfully!');
 
       await queryClient.invalidateQueries({
-        queryKey: ['seller', publicKeyString],
+        queryKey: ['seller', { publicKey: publicKeyString }],
       });
     },
   });

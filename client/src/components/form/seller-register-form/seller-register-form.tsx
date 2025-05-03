@@ -34,18 +34,18 @@ const SellerRegisterForm: FC<SellerRegisterFormProps> = () => {
         <TextInput
           setValue={setSellerName}
           value={sellerName}
-          placeholder="Display Seller Name"
-          label="Name"
+          label="Store Name"
           onEnterPressed={submitHandler}
           className="w-full"
+          disabled={isSellerRegisterPending}
         />
         <TextInput
           setValue={setEmailAddress}
           value={emailAddress}
-          placeholder="Email Address"
           label="Email address"
           onEnterPressed={submitHandler}
           className="w-full"
+          disabled={isSellerRegisterPending}
         />
         <PrimaryButton
           onClick={submitHandler}
