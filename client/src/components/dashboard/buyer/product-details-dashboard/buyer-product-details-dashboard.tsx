@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
@@ -18,8 +17,6 @@ type BuyerProductDetailsDashboardProps = {
 const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
   productId,
 }) => {
-  const router = useRouter();
-
   const {
     data: productDetailsData,
     isFetched: isGetProductDetailsExecuted,
@@ -34,7 +31,7 @@ const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
     );
 
     toast.error(errorMessage);
-  }, [getProductDetailsError, router]);
+  }, [getProductDetailsError]);
 
   if (!productDetailsData) {
     if (isGetProductDetailsExecuted) {

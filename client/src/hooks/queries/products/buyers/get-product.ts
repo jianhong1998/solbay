@@ -48,7 +48,7 @@ export const useGetBuyerProductDetails = (productId: string) => {
 
       return res.data;
     },
-    enabled: Boolean(publicKey) && serverAxios.isInitialized,
+    enabled: serverAxios.isInitialized,
     staleTime: 5_000,
     retry: false,
     refetchOnMount: true,
