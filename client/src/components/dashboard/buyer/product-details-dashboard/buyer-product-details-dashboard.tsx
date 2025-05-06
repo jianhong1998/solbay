@@ -22,7 +22,7 @@ const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
 
   const {
     data: productDetailsData,
-    isFetching: isFetchingProductDetails,
+    isFetched: isGetProductDetailsExecuted,
     error: getProductDetailsError,
   } = useGetBuyerProductDetails(productId);
 
@@ -37,10 +37,10 @@ const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
   }, [getProductDetailsError, router]);
 
   if (!productDetailsData) {
-    if (isFetchingProductDetails) {
-      return <FullPageLoading />;
-    } else {
+    if (isGetProductDetailsExecuted) {
       return <ProductNotFound />;
+    } else {
+      return <FullPageLoading />;
     }
   }
 
