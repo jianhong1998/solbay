@@ -41,6 +41,14 @@ export class ProductModel {
   priceInLamport: number;
 
   @Column({
+    name: 'available_quantity',
+    type: 'int',
+    nullable: false,
+    default: 1,
+  })
+  availableQuantity: number;
+
+  @Column({
     type: 'boolean',
     nullable: false,
     default: false,

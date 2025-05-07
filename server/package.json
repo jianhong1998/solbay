@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "typeorm": " ts-node -r dotenv/config ./node_modules/typeorm/cli.js -d dist/config/data-source.js",
     "typeorm-extension": "ts-node -r dotenv/config ./node_modules/typeorm-extension/bin/cli.cjs -d dist/config/data-source.js",
-    "migration:generate": "npm run build && npm run typeorm -- migration:generate -p src/database/migrations/$npm_config_name",
+    "migration:generate": "npm run build && npm run typeorm -- migration:generate -p src/database/migrations/$npm_config_name && npm run format",
     "migration:run": "npm run typeorm -- migration:run",
     "seed:create": "npx typeorm-extension seed:create -n src/database/seeders/$npm_config_name",
     "seed:run": "npm run typeorm-extension -- seed:run"
