@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+# Format then ESLint check
+make format lint
+
+# Check if the command was successful
+if [ $? -ne 0 ]; then
+  echo "Error: make format lint failed. Please fix errors and try again."
+  exit 1
+fi
+
+# Get the list of staged files before formatting/linting
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Check if any staged files were modified by make format lint
+if [ -n "$STAGED_FILES" ]; then
+  # Re-stage only the files that were originally staged and modified
+  echo "Re-staging modified files..."
+  echo "$STAGED_FILES" | while IFS= read -r file; do
+    if [ -f "$file" ]; then
+      git add "$file"
+    fi
+  done
+fi
+
+echo "Pre-commit checks passed."
+exit 0
