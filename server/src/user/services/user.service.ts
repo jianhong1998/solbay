@@ -38,7 +38,7 @@ export class UserService {
 
       await this.userDbUtil.create({
         entityManager,
-        userData: {
+        creationData: {
           publicKey: publicKeyString,
         },
       });

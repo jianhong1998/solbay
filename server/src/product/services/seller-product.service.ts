@@ -107,7 +107,7 @@ export class SellerProductService {
     const entityManager = params?.entityManager ?? this.entityManager;
 
     const product = await this.productDBUtil.create({
-      productData: {
+      creationData: {
         seller,
         name,
         description,

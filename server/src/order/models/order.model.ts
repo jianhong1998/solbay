@@ -26,7 +26,7 @@ export class OrderModel {
   quantity: number;
 
   @Column({
-    name: 'on_chain_data_pubkey',
+    name: 'data_key',
     type: 'char',
     nullable: false,
     length: 44,

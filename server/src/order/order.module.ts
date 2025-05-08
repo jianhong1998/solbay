@@ -6,6 +6,7 @@ import { LogisticInfoModel } from './models/logistic-info.model';
 import { LogisticTrackingInfoModel } from './models/logistic-tracking-info.model';
 import { OrderModel } from './models/order.model';
 import { OrderService } from './services/order.service';
+import { OrderDBUtil } from './utils/order-db.util';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { OrderService } from './services/order.service';
       LogisticTrackingInfoModel,
     ]),
   ],
-  providers: [OrderService],
+  providers: [OrderService, OrderDBUtil],
   controllers: [OrderController],
   exports: [OrderService],
 })
