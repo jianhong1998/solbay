@@ -10,10 +10,7 @@ type IUserModelCreationData = {
 };
 
 @Injectable()
-export class UserDBUtil extends BaseDBUtil<
-  typeof UserModel,
-  IUserModelCreationData
-> {
+export class UserDBUtil extends BaseDBUtil<UserModel, IUserModelCreationData> {
   constructor(
     @InjectRepository(UserModel)
     userRepo: Repository<UserModel>,

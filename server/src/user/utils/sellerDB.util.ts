@@ -12,7 +12,7 @@ export type ISellerModelCreationData = Omit<SellerModel, 'uuid' | 'user'> & {
 
 @Injectable()
 export class SellerDBUtil extends BaseDBUtil<
-  typeof SellerModel,
+  SellerModel,
   ISellerModelCreationData
 > {
   constructor(

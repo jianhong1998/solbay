@@ -9,7 +9,7 @@ import { IOrderModelCreationData } from '../types/order-model-creation-data.type
 
 @Injectable()
 export class OrderDBUtil extends BaseDBUtil<
-  typeof OrderModel,
+  OrderModel,
   IOrderModelCreationData
 > {
   constructor(

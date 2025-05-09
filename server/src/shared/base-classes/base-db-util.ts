@@ -1,31 +1,30 @@
-import { ModelContructorType } from 'src/database/entity-model';
+import { ModelConstructorType } from 'src/database/entity-model';
 import {
   EntityManager,
+  EntityTarget,
   FindOptionsRelations,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
 
-type Model<T extends ModelContructorType> = InstanceType<T>;
-
 export abstract class BaseDBUtil<
-  T extends ModelContructorType,
+  ModelType extends InstanceType<ModelConstructorType>,
   CreationDataType extends object,
 > {
   constructor(
-    private readonly model: T,
-    protected readonly repo: Repository<Model<T>>,
+    private readonly model: EntityTarget<ModelType>,
+    protected readonly repo: Repository<ModelType>,
   ) {}
 
   public async getOne(params: {
-    criterial: FindOptionsWhere<Model<T>>;
+    criterial: FindOptionsWhere<ModelType>;
     entityManager?: EntityManager;
-    relation?: FindOptionsRelations<Model<T>>;
+    relation?: FindOptionsRelations<ModelType>;
     withDeleted?: boolean;
-  }): Promise<Model<T> | null> {
+  }): Promise<ModelType | null> {
     const { criterial, entityManager, relation, withDeleted } = params;
     const repo =
-      (entityManager?.getRepository(this.model) as Repository<Model<T>>) ??
+      (entityManager?.getRepository(this.model) as Repository<ModelType>) ??
       this.repo;
 
     return await repo.findOne({
@@ -38,13 +37,13 @@ export abstract class BaseDBUtil<
 
   public async getAll(options?: {
     entityManager?: EntityManager;
-    relation?: FindOptionsRelations<Model<T>>;
-    criterial?: FindOptionsWhere<Model<T>>;
-  }): Promise<Model<T>[]> {
+    relation?: FindOptionsRelations<ModelType>;
+    criterial?: FindOptionsWhere<ModelType>;
+  }): Promise<ModelType[]> {
     const repo =
-      (options?.entityManager?.getRepository(this.model) as Repository<
-        Model<T>
-      >) ?? this.repo;
+      (options?.entityManager?.getRepository(
+        this.model,
+      ) as Repository<ModelType>) ?? this.repo;
 
     return await repo.find({
       where: options?.criterial,
@@ -54,13 +53,13 @@ export abstract class BaseDBUtil<
   }
 
   public async has(params: {
-    criterial: FindOptionsWhere<Model<T>>;
+    criterial: FindOptionsWhere<ModelType>;
     entityManager?: EntityManager;
-    relation?: FindOptionsRelations<Model<T>>;
+    relation?: FindOptionsRelations<ModelType>;
   }): Promise<boolean> {
     const { criterial, entityManager, relation } = params;
     const repo =
-      (entityManager?.getRepository(this.model) as Repository<Model<T>>) ??
+      (entityManager?.getRepository(this.model) as Repository<ModelType>) ??
       this.repo;
 
     const count = await repo.count({
@@ -74,16 +73,16 @@ export abstract class BaseDBUtil<
   public abstract create(params: {
     creationData: CreationDataType;
     entityManager?: EntityManager;
-  }): Promise<Model<T>>;
+  }): Promise<ModelType>;
 
   public async delete(params: {
-    criterial: FindOptionsWhere<Model<T>>;
+    criterial: FindOptionsWhere<ModelType>;
     entityManager?: EntityManager;
-    relation?: FindOptionsRelations<Model<T>>;
-  }): Promise<Model<T> | null> {
+    relation?: FindOptionsRelations<ModelType>;
+  }): Promise<ModelType | null> {
     const { criterial, entityManager, relation } = params;
     const repo =
-      (entityManager?.getRepository(this.model) as Repository<Model<T>>) ??
+      (entityManager?.getRepository(this.model) as Repository<ModelType>) ??
       this.repo;
 
     const existingData = await repo.findOne({

@@ -16,7 +16,7 @@ export type IProductModelCreationData = {
 
 @Injectable()
 export class ProductDBUtil extends BaseDBUtil<
-  typeof ProductModel,
+  ProductModel,
   IProductModelCreationData
 > {
   constructor(

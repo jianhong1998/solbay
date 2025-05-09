@@ -14,5 +14,4 @@ export const ENTITY_MODELS = [
   LogisticTrackingInfoModel,
 ];
 
-export type ModelContructorType = (typeof ENTITY_MODELS)[number];
-export type ModelType = InstanceType<ModelContructorType>;
+export type ModelConstructorType = (typeof ENTITY_MODELS)[number];
