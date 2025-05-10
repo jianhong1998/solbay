@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PUBLIC_KEY_BASE_58_LENGTH } from 'src/common/constants/app.constant';
 import { BaseDBUtil } from 'src/shared/base-classes/base-db-util';
 import { EntityManager, Repository } from 'typeorm';
 
@@ -38,16 +37,9 @@ export class OrderDBUtil extends BaseDBUtil<
     if (orderData.quantity <= 0)
       throw new Error(`Quantity must be greater than 0`);
 
-    if (orderData.onChainDataPubkey.length != PUBLIC_KEY_BASE_58_LENGTH) {
-      throw new Error(
-        `Invalid public key length: ${orderData.onChainDataPubkey.length}`,
-      );
-    }
-
     const order = repo.create({
       totalAmountInLamport: orderData.totalAmountInLamport,
       quantity: orderData.quantity,
-      onChainDataPubkey: orderData.onChainDataPubkey,
       product: orderData.product,
       logisticInfo: orderData.logisticInfo,
     });

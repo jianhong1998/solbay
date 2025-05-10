@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateOrderRelatedTable1746613086326
+export class CreateOrderRelatedTable1746881429961
   implements MigrationInterface
 {
-  name = 'CreateOrderRelatedTable1746613086326';
+  name = 'CreateOrderRelatedTable1746881429961';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -37,7 +37,7 @@ export class CreateOrderRelatedTable1746613086326
             CREATE TABLE "order" (
                 "uuid" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "quantity" integer NOT NULL DEFAULT '1',
-                "on_chain_data_pubkey" character(44) NOT NULL,
+                "data_key" character(44),
                 "total_amount_in_lamport" bigint NOT NULL,
                 "product_uuid" uuid NOT NULL,
                 "logistic_info_uuid" uuid NOT NULL,

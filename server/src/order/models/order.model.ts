@@ -28,10 +28,10 @@ export class OrderModel {
   @Column({
     name: 'data_key',
     type: 'char',
-    nullable: false,
+    nullable: true,
     length: 44,
   })
-  onChainDataPubkey: string;
+  onChainDataPubkey: string | null;
 
   @Column({
     name: 'total_amount_in_lamport',
