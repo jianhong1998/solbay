@@ -8,4 +8,8 @@ export class NumberDisplayHelper {
   public static convertUsdcToMicroUsdc(usdc: number): number {
     return usdc * 1_000_000;
   }
+
+  public static convertNumberToDisplayString(num: number): string {
+    return num.toLocaleString('en-US');
+  }
 }

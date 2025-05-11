@@ -1,5 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 
+import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-display-helper';
+
 import PrimaryButton from './buttons/primary-button';
 
 interface ICard {
@@ -14,7 +16,7 @@ interface ICard {
 const Card: React.FC<ICard> = (props) => {
   const {
     title = 'Placeholder Title',
-    price = '-',
+    price,
     description = '-',
     imageUrl = 'https://placehold.co/600x400',
     cardOnClickFn: onClickFn,
@@ -45,7 +47,13 @@ const Card: React.FC<ICard> = (props) => {
           {/* Limit description to 2 lines */}
         </div>
         <div>
-          <p className="text-sm">Price: {price} USDC</p>
+          <p className="text-sm">
+            Price:{' '}
+            {price > 0
+              ? NumberDisplayHelper.convertNumberToDisplayString(price)
+              : '-'}{' '}
+            USDC
+          </p>
           <div className="card-actions justify-end mt-2">
             {buyButtonOnClickFn && (
               <PrimaryButton
