@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
@@ -18,11 +17,9 @@ type BuyerProductDetailsDashboardProps = {
 const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
   productId,
 }) => {
-  const router = useRouter();
-
   const {
     data: productDetailsData,
-    isFetching: isFetchingProductDetails,
+    isFetched: isGetProductDetailsExecuted,
     error: getProductDetailsError,
   } = useGetBuyerProductDetails(productId);
 
@@ -34,13 +31,13 @@ const BuyerProductDetailsDashboard: FC<BuyerProductDetailsDashboardProps> = ({
     );
 
     toast.error(errorMessage);
-  }, [getProductDetailsError, router]);
+  }, [getProductDetailsError]);
 
   if (!productDetailsData) {
-    if (isFetchingProductDetails) {
-      return <FullPageLoading />;
-    } else {
+    if (isGetProductDetailsExecuted) {
       return <ProductNotFound />;
+    } else {
+      return <FullPageLoading />;
     }
   }
 

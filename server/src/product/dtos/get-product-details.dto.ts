@@ -10,7 +10,8 @@ export class GetProductDetailsResDTO {
       name: product.name,
       description: product.description,
       isPublish: product.isPublish,
-      priceInLamport: product.priceInLamport,
+      priceInMicroUsdc: product.priceInMicroUsdc,
+      availableQuantity: product.availableQuantity,
     };
 
     if (product.seller) {

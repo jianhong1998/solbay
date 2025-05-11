@@ -1,0 +1,2 @@
+export const PUBLIC_KEY_BASE_58_LENGTH = 44;
+export const SOLBAY_PLATFORM_CODE = 'solb';

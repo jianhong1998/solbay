@@ -24,6 +24,7 @@ export class BuyerProductController {
   }
 
   @Get('/:productId')
+  @Public()
   public async getProductDetailsForSeller(
     @Param('productId') productId: UUID,
   ): Promise<GetProductDetailsResDTO> {

@@ -18,18 +18,27 @@ export class ProductWithoutSensitiveData
   uuid: UUID;
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   isPublish: boolean;
+  availableQuantity: number;
   seller?: { id: UUID; name: string };
 
   constructor(product: ProductModel) {
-    const { uuid, name, description, isPublish, priceInLamport } = product;
+    const {
+      uuid,
+      name,
+      description,
+      isPublish,
+      priceInMicroUsdc,
+      availableQuantity,
+    } = product;
 
     this.uuid = uuid;
     this.name = name;
     this.description = description;
-    this.priceInLamport = priceInLamport;
+    this.priceInMicroUsdc = priceInMicroUsdc;
     this.isPublish = isPublish;
+    this.availableQuantity = availableQuantity;
 
     if (product.seller) {
       this.seller = {

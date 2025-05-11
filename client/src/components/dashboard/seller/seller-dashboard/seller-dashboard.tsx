@@ -13,7 +13,7 @@ import SellerNotFoundDashboard from './seller-not-found';
 const SellerDashboard: FC = () => {
   const router = useRouter();
 
-  const { data: sellerData, isFetching: isFetchingSellerData } = useGetSeller();
+  const { data: sellerData, isFetched: isGetSellerExecuted } = useGetSeller();
 
   const redirectToViewProductListPage = () => {
     if (!sellerData) return;
@@ -22,10 +22,10 @@ const SellerDashboard: FC = () => {
   };
 
   if (!sellerData) {
-    if (isFetchingSellerData) {
-      return <FullPageLoading />;
-    } else {
+    if (isGetSellerExecuted) {
       return <SellerNotFoundDashboard />;
+    } else {
+      return <FullPageLoading />;
     }
   }
 

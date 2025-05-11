@@ -15,13 +15,15 @@ const CreateProductFeature: FC = () => {
   const [productData, setProductData] = useState<IProductCreationData>({
     name: '',
     description: '',
-    priceInLamport: 0,
+    priceInMicroUsdc: 0,
   });
   const isReadyForCreate = useMemo(() => {
-    const { description, name, priceInLamport } = productData;
+    const { description, name, priceInMicroUsdc } = productData;
 
     return (
-      Boolean(description.length) && Boolean(name.length) && priceInLamport > 0
+      Boolean(description.length) &&
+      Boolean(name.length) &&
+      priceInMicroUsdc > 0
     );
   }, [productData]);
 
@@ -41,14 +43,14 @@ const CreateProductFeature: FC = () => {
   };
 
   const addProductHandler = async () => {
-    const { description, name, priceInLamport } = productData;
+    const { description, name, priceInMicroUsdc } = productData;
 
     if (!isReadyForCreate) return;
 
     await addProductFn({
       name,
       description,
-      priceInLamport,
+      priceInMicroUsdc: priceInMicroUsdc,
       isPublish: true, // TODO: (Enhancement) publish feature
     });
   };

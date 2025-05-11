@@ -47,8 +47,8 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
 
       if (value < 0) return;
 
-      /* Case: max decimal to 9 */
-      if (originalValue.split('.')[1]?.length > 9) return;
+      /* Case: max decimal to 6 for USDC */
+      if (originalValue.split('.')[1]?.length > 6) return;
 
       /* Case: Handling value ends with 0, eg: 0.10 */
       if (originalValue.charAt(originalValue.length - 1) === '0') {
@@ -93,7 +93,7 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
             />
           </div>
           <div className="px-3 border border-gray-300 rounded-tr-md rounded-br-md flex flex-row items-center">
-            <p className="text-gray-400">SOL</p>
+            <p className="text-gray-400">USDC</p>
           </div>
         </div>
 

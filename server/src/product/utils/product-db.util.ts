@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseDBUtil } from 'src/common/base-classes/base-db-util';
+import { LoggerUtil } from 'src/common/utils/logger.util';
 import { SellerModel } from 'src/user/models/seller.model';
 import {
   EntityManager,
@@ -13,81 +15,35 @@ import { ProductModel } from '../models/product.model';
 export type IProductModelCreationData = {
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   isPublish: boolean;
   seller: SellerModel;
 };
 
 @Injectable()
-export class ProductDBUtil {
+export class ProductDBUtil extends BaseDBUtil<
+  ProductModel,
+  IProductModelCreationData
+> {
   constructor(
-    @InjectRepository(ProductModel)
-    private readonly productRepo: Repository<ProductModel>,
-  ) {}
+    private readonly loggerUtil: LoggerUtil,
 
-  public async getOne(params: {
-    criterial: FindOptionsWhere<ProductModel>;
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<ProductModel>;
-    withDeleted?: boolean;
-  }): Promise<ProductModel | null> {
-    const { criterial, entityManager, relation, withDeleted } = params;
-    const repo = entityManager?.getRepository(ProductModel) ?? this.productRepo;
-
-    const product = await repo.findOne({
-      where: criterial,
-      transaction: true,
-      relations: relation,
-      withDeleted,
-    });
-
-    return product;
-  }
-
-  public async getAll(options?: {
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<ProductModel>;
-    criterial?: FindOptionsWhere<ProductModel>;
-  }) {
-    const repo =
-      options?.entityManager?.getRepository(ProductModel) ?? this.productRepo;
-
-    const products = await repo.find({
-      where: options?.criterial,
-      relations: options?.relation,
-      transaction: true,
-    });
-
-    return products;
-  }
-
-  public async has(params: {
-    criterial: FindOptionsWhere<ProductModel>;
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<ProductModel>;
-  }): Promise<boolean> {
-    const { criterial, entityManager, relation } = params;
-    const repo = entityManager?.getRepository(ProductModel) ?? this.productRepo;
-
-    const count = await repo.count({
-      where: criterial,
-      relations: relation,
-    });
-
-    return count > 0;
+    @InjectRepository(ProductModel) productRepo: Repository<ProductModel>,
+  ) {
+    super(ProductModel, productRepo);
   }
 
   public async create(params: {
-    productData: IProductModelCreationData;
+    creationData: IProductModelCreationData;
     entityManager?: EntityManager;
   }): Promise<ProductModel> {
-    const { entityManager, productData } = params;
-    const repo = entityManager?.getRepository(ProductModel) ?? this.productRepo;
+    const { entityManager, creationData: productData } = params;
+    const repo = entityManager?.getRepository(ProductModel) ?? this.repo;
 
     const product = repo.create({
       name: productData.name,
       description: productData.description,
-      priceInLamport: productData.priceInLamport,
+      priceInMicroUsdc: productData.priceInMicroUsdc,
       seller: productData.seller,
       isPublish: productData.isPublish,
     });
@@ -95,5 +51,59 @@ export class ProductDBUtil {
     const savedProduct = await repo.save(product);
 
     return savedProduct;
+  }
+
+  /**
+   * Update product available quantity.
+   * @param quantityDiff Number of difference with the current number. Positive number for addition (more availability), negative number for deduction (less availability)
+   * @throws If product not found will throw error.
+   * @throws If the new available quantity is negative will throw error.
+   * @returns Updated product available quantity.
+   */
+  public async updateProductAvailableQuantity(params: {
+    criterial: FindOptionsWhere<ProductModel>;
+    quantityDiff: number;
+    relation?: FindOptionsRelations<ProductModel>;
+    entityManager?: EntityManager;
+  }): Promise<number> {
+    const { criterial, relation, quantityDiff, entityManager } = params;
+    const repo = entityManager?.getRepository(ProductModel) ?? this.repo;
+    const logger = this.loggerUtil.createLogger(
+      'ProductDBUtil - updateProductAvailableQuantity',
+    );
+
+    const product = await repo.findOne({
+      where: criterial,
+      relations: relation,
+      transaction: true,
+    });
+
+    if (!product) {
+      logger.error(
+        `Product not found for criterial: ${JSON.stringify(criterial)}`,
+      );
+      throw new Error('Product not found');
+    }
+
+    const newProductAvailableQuantity =
+      product.availableQuantity + quantityDiff;
+
+    if (product.availableQuantity < 0) {
+      throw new Error(
+        `Invalid new product available quantity (${newProductAvailableQuantity})`,
+      );
+    }
+
+    product.availableQuantity = newProductAvailableQuantity;
+    const updatedProduct = await repo.save(product, {
+      transaction: true,
+    });
+
+    if (!updatedProduct) {
+      logger.error(`Product ${product.uuid} not found.`);
+      throw new Error('Product not found');
+    }
+
+    return updatedProduct.availableQuantity;
   }
 }

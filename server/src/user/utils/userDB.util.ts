@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  EntityManager,
-  FindOptionsRelations,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
+import { BaseDBUtil } from 'src/common/base-classes/base-db-util';
+import { EntityManager, Repository } from 'typeorm';
 
 import { UserModel } from '../models/user.model';
 
@@ -14,71 +10,23 @@ type IUserModelCreationData = {
 };
 
 @Injectable()
-export class UserDBUtil {
+export class UserDBUtil extends BaseDBUtil<UserModel, IUserModelCreationData> {
   constructor(
     @InjectRepository(UserModel)
-    private readonly userRepo: Repository<UserModel>,
-  ) {}
-
-  public async getOne(params: {
-    criterial: FindOptionsWhere<UserModel>;
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<UserModel>;
-  }): Promise<UserModel | null> {
-    const { criterial, entityManager, relation } = params;
-    const repo = entityManager?.getRepository(UserModel) ?? this.userRepo;
-
-    const user = await repo.findOne({
-      where: criterial,
-      transaction: true,
-      relations: relation,
-    });
-
-    return user;
-  }
-
-  public async getAll(options?: {
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<UserModel>;
-    credential?: FindOptionsWhere<UserModel>;
-  }) {
-    const repo =
-      options?.entityManager?.getRepository(UserModel) ?? this.userRepo;
-
-    const users = await repo.find({
-      where: options?.credential,
-      relations: options?.relation,
-      transaction: true,
-    });
-
-    return users;
-  }
-
-  public async has(params: {
-    criterial: FindOptionsWhere<UserModel>;
-    entityManager?: EntityManager;
-    relation?: FindOptionsRelations<UserModel>;
-  }): Promise<boolean> {
-    const { criterial, entityManager, relation } = params;
-    const repo = entityManager?.getRepository(UserModel) ?? this.userRepo;
-
-    const count = await repo.count({
-      where: criterial,
-      relations: relation,
-    });
-
-    return count > 0;
+    userRepo: Repository<UserModel>,
+  ) {
+    super(UserModel, userRepo);
   }
 
   public async create(params: {
-    userData: IUserModelCreationData;
+    creationData: IUserModelCreationData;
     entityManager?: EntityManager;
   }): Promise<UserModel> {
     const {
       entityManager,
-      userData: { publicKey },
+      creationData: { publicKey },
     } = params;
-    const repo = entityManager?.getRepository(UserModel) ?? this.userRepo;
+    const repo = entityManager?.getRepository(UserModel) ?? this.repo;
     const user = await repo.save(repo.create({ publicKey }));
     return user;
   }

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 import ProductDetailsDisplay from '@/components/product/product-details-display/product-details-display';
 import PrimaryButton from '@/components/ui/buttons/primary-button';
-import Loading from '@/components/ui/loading/loading';
+import FullPageLoading from '@/components/ui/loading/full-page-loading';
 import { useGetSellerProductDetails } from '@/hooks/queries/products/sellers/get-seller-product';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 
@@ -25,7 +25,7 @@ const SellerProductDetailsDashboard: FC<SellerProductDetailsDashboardProps> = ({
 
   const {
     data: productDetailsData,
-    isFetching: isFetchingProductDetails,
+    isFetched: isGetProductDetailsExecuted,
     error: getProductDetailsError,
   } = useGetSellerProductDetails(productId);
 
@@ -54,8 +54,8 @@ const SellerProductDetailsDashboard: FC<SellerProductDetailsDashboardProps> = ({
     toast.error(errorMessage);
   }, [getProductDetailsError, router]);
 
-  if (isFetchingProductDetails) {
-    return <Loading loadingStyle="spinner" />;
+  if (!isGetProductDetailsExecuted) {
+    return <FullPageLoading />;
   }
 
   if (isForbidden) {

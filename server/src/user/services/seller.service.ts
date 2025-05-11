@@ -39,7 +39,7 @@ export class SellerService {
     }
 
     const createdSeller = await this.sellerDbUtil.create({
-      sellerData,
+      creationData: sellerData,
       entityManager,
     });
 

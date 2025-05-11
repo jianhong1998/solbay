@@ -1,13 +1,15 @@
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-
 export class NumberDisplayHelper {
   private constructor() {}
 
-  public static convertLamportToSol(lamport: number): number {
-    return lamport / LAMPORTS_PER_SOL;
+  public static convertMicroUsdcToUsdc(microUsdc: number): number {
+    return microUsdc / 1_000_000;
   }
 
-  public static convertSolToLamport(sol: number): number {
-    return sol * LAMPORTS_PER_SOL;
+  public static convertUsdcToMicroUsdc(usdc: number): number {
+    return usdc * 1_000_000;
+  }
+
+  public static convertNumberToDisplayString(num: number): string {
+    return num.toLocaleString('en-US');
   }
 }

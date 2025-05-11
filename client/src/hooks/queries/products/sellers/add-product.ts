@@ -13,7 +13,7 @@ export type IAddProductResult = IProductWithoutSensitiveData;
 type IAddProductParams = {
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   isPublish: boolean;
 };
 
@@ -22,12 +22,12 @@ export const useAddProduct = () => {
 
   return useMutation<IAddProductResult, Error, IAddProductParams>({
     mutationKey: ['seller-product', 'create'],
-    mutationFn: async ({ name, description, priceInLamport, isPublish }) => {
+    mutationFn: async ({ name, description, priceInMicroUsdc, isPublish }) => {
       const url = '/seller-product';
       const result = await serverAxios.post<IAddProductResult>(url, {
         name,
         description,
-        priceInLamport,
+        priceInMicroUsdc,
         isPublish,
       });
 

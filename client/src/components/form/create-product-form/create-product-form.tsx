@@ -39,11 +39,12 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
 
   const priceOnChangeHandler: Dispatch<SetStateAction<number>> = (value) => {
     const priceInSol = Number.parseFloat(value.toString());
-    const priceInLamport = NumberDisplayHelper.convertSolToLamport(priceInSol);
+    const priceInMicroUsdc =
+      NumberDisplayHelper.convertUsdcToMicroUsdc(priceInSol);
 
     updateProductDataFn({
       ...productData,
-      priceInLamport,
+      priceInMicroUsdc: priceInMicroUsdc,
     });
   };
 
@@ -70,8 +71,8 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
 
         {/* Price */}
         <PriceInput
-          value={NumberDisplayHelper.convertLamportToSol(
-            productData.priceInLamport,
+          value={NumberDisplayHelper.convertMicroUsdcToUsdc(
+            productData.priceInMicroUsdc,
           )}
           setValue={priceOnChangeHandler}
           label="Unit Price"
