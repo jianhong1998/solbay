@@ -14,6 +14,25 @@ export type Solbay = {
   };
   instructions: [
     {
+      name: 'checkout';
+      discriminator: [7, 91, 236, 227, 107, 242, 64, 61];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'buyer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'order';
+        },
+      ];
+      args: [];
+    },
+    {
       name: 'login';
       discriminator: [25, 137, 95, 67, 72, 162, 93, 236];
       accounts: [
@@ -27,6 +46,26 @@ export type Solbay = {
         },
       ];
       args: [];
+    },
+  ];
+  accounts: [
+    {
+      name: 'order';
+      discriminator: [134, 173, 223, 185, 77, 86, 28, 51];
+    },
+  ];
+  types: [
+    {
+      name: 'order';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'orderId';
+            type: 'string';
+          },
+        ];
+      };
     },
   ];
 };

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from 'src/common/common.module';
 import { UserModule } from 'src/user/user.module';
 
 import { BuyerProductController } from './controllers/buyer-product.controller';
@@ -10,7 +11,7 @@ import { SellerProductService } from './services/seller-product.service';
 import { ProductDBUtil } from './utils/product-db.util';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductModel]), UserModule],
+  imports: [TypeOrmModule.forFeature([ProductModel]), UserModule, CommonModule],
   controllers: [BuyerProductController, SellerProductController],
   providers: [ProductService, ProductDBUtil, SellerProductService],
   exports: [ProductService],

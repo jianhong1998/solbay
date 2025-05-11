@@ -8,7 +8,7 @@ export default setSeederFactory(ProductModel, (faker) => {
   product.name = faker.commerce.productName();
   product.description = faker.commerce.productDescription();
   product.isPublish = true;
-  product.priceInLamport =
+  product.priceInMicroUsdc =
     faker.number.int({
       min: 1,
       max: 10,

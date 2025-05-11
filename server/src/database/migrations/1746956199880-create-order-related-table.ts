@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateOrderRelatedTable1746881429961
+export class CreateOrderRelatedTable1746956199880
   implements MigrationInterface
 {
-  name = 'CreateOrderRelatedTable1746881429961';
+  name = 'CreateOrderRelatedTable1746956199880';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -46,6 +46,20 @@ export class CreateOrderRelatedTable1746881429961
             )
         `);
     await queryRunner.query(`
+            ALTER TABLE "product" DROP COLUMN "priceInLamport"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product" DROP COLUMN "isPublish"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product"
+            ADD "price_in_micro_usdc" bigint NOT NULL
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product"
+            ADD "is_publish" boolean NOT NULL DEFAULT false
+        `);
+    await queryRunner.query(`
             ALTER TABLE "logistic_info"
             ADD CONSTRAINT "FK_98e313b6c630549923cf74e6b45" FOREIGN KEY ("logistic_tracking_info") REFERENCES "logistic_tracking_info"("uuid") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -68,6 +82,20 @@ export class CreateOrderRelatedTable1746881429961
         `);
     await queryRunner.query(`
             ALTER TABLE "logistic_info" DROP CONSTRAINT "FK_98e313b6c630549923cf74e6b45"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product" DROP COLUMN "is_publish"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product" DROP COLUMN "price_in_micro_usdc"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product"
+            ADD "isPublish" boolean NOT NULL DEFAULT false
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product"
+            ADD "priceInLamport" bigint NOT NULL
         `);
     await queryRunner.query(`
             DROP TABLE "order"

@@ -18,7 +18,7 @@ export class ProductWithoutSensitiveData
   uuid: UUID;
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   isPublish: boolean;
   availableQuantity: number;
   seller?: { id: UUID; name: string };
@@ -29,14 +29,14 @@ export class ProductWithoutSensitiveData
       name,
       description,
       isPublish,
-      priceInLamport,
+      priceInMicroUsdc,
       availableQuantity,
     } = product;
 
     this.uuid = uuid;
     this.name = name;
     this.description = description;
-    this.priceInLamport = priceInLamport;
+    this.priceInMicroUsdc = priceInMicroUsdc;
     this.isPublish = isPublish;
     this.availableQuantity = availableQuantity;
 

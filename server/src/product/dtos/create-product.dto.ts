@@ -54,8 +54,14 @@ export class CreateProductResDTO {
   };
 
   constructor(product: ProductModel) {
-    const { uuid, name, description, priceInLamport, isPublish, seller } =
-      product;
+    const {
+      uuid,
+      name,
+      description,
+      priceInMicroUsdc: priceInLamport,
+      isPublish,
+      seller,
+    } = product;
 
     this.uuid = uuid;
     this.name = name;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseDBUtil } from 'src/shared/base-classes/base-db-util';
+import { BaseDBUtil } from 'src/common/base-classes/base-db-util';
 import { EntityManager, Repository } from 'typeorm';
 
 import { OrderModel } from '../models/order.model';

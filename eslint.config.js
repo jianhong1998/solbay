@@ -58,6 +58,7 @@ export default [
       'simple-import-sort/exports': 'error',
       // Prettier integration
       'prettier/prettier': 'error',
+      'no-console': 'warn',
     },
   },
   /* Client NextJS Eslint */
@@ -133,6 +134,7 @@ export default [
       'no-unused-vars': 'off',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      'no-console': 'warn',
     },
   },
   /* Anchor Eslint */

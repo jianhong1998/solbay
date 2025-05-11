@@ -17,4 +17,8 @@ pub mod solbay {
   pub fn login(context: Context<Login>) -> Result<()> {
     process_login(context)
   }
+
+  pub fn checkout(context: Context<Checkout>) -> Result<()> {
+    process_checkout(context)
+  }
 }

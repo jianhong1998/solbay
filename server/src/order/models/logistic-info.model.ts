@@ -53,7 +53,7 @@ export class LogisticInfoModel {
 
   @Column({
     type: 'varchar',
-    length: '60',
+    length: 60,
     nullable: false,
   })
   country: string;

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthGuardService } from './auth/services/auth-guard.service';
 import { CommonModule } from './common/common.module';
 import { ExampleModule } from './example/example.module';
+import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     ProductModule,
     ExampleModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [

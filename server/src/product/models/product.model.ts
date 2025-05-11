@@ -31,6 +31,7 @@ export class ProductModel {
   description: string;
 
   @Column({
+    name: 'price_in_micro_usdc',
     type: 'bigint',
     nullable: false,
     transformer: {
@@ -38,7 +39,7 @@ export class ProductModel {
       from: (value: string) => Number.parseInt(value, 10),
     },
   })
-  priceInLamport: number;
+  priceInMicroUsdc: number;
 
   @Column({
     name: 'available_quantity',
@@ -49,6 +50,7 @@ export class ProductModel {
   availableQuantity: number;
 
   @Column({
+    name: 'is_publish',
     type: 'boolean',
     nullable: false,
     default: false,

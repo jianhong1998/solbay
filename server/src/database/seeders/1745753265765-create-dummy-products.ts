@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ProductModel } from 'src/product/models/product.model';
 import { SellerModel } from 'src/user/models/seller.model';
 import { DataSource, In } from 'typeorm';
