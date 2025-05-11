@@ -45,7 +45,7 @@ const Card: React.FC<ICard> = (props) => {
           {/* Limit description to 2 lines */}
         </div>
         <div>
-          <p className="text-sm">Price: {price} SOL</p>
+          <p className="text-sm">Price: {price} USDC</p>
           <div className="card-actions justify-end mt-2">
             {buyButtonOnClickFn && (
               <PrimaryButton

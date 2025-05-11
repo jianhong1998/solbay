@@ -93,7 +93,7 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
             />
           </div>
           <div className="px-3 border border-gray-300 rounded-tr-md rounded-br-md flex flex-row items-center">
-            <p className="text-gray-400">SOL</p>
+            <p className="text-gray-400">USDC</p>
           </div>
         </div>
 

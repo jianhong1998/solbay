@@ -81,10 +81,10 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           {/* Product Price */}
           <div>
             Price:{' '}
-            {NumberDisplayHelper.convertLamportToSol(
-              productDetails.priceInLamport,
+            {NumberDisplayHelper.convertMicroUsdcToUsdc(
+              productDetails.priceInMicroUsdc,
             )}{' '}
-            SOL
+            USDC
           </div>
 
           <div className="divider">

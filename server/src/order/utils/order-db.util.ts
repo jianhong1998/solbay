@@ -31,14 +31,14 @@ export class OrderDBUtil extends BaseDBUtil<
     if (!orderData.logisticInfo.uuid)
       throw new Error(`LogisticInfo must be saved before can create order`);
 
-    if (orderData.totalAmountInLamport <= 0)
+    if (orderData.totalAmountInMicroUsdc <= 0)
       throw new Error(`Amount must be greater than 0`);
 
     if (orderData.quantity <= 0)
       throw new Error(`Quantity must be greater than 0`);
 
     const order = repo.create({
-      totalAmountInLamport: orderData.totalAmountInLamport,
+      totalAmountInMicroUsdc: orderData.totalAmountInMicroUsdc,
       quantity: orderData.quantity,
       product: orderData.product,
       logisticInfo: orderData.logisticInfo,

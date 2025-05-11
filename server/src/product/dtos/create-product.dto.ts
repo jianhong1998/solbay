@@ -21,7 +21,7 @@ export class CreateProductReqDTO {
 
   @IsInt()
   @IsPositive()
-  priceInLamport: number;
+  priceInMicroUsdc: number;
 
   @IsBoolean()
   @IsNotEmpty()
@@ -43,7 +43,7 @@ export class CreateProductResDTO {
 
   @IsInt()
   @IsPositive()
-  priceInLamport: number;
+  priceInMicroUsdc: number;
 
   @IsBoolean()
   isPublish: boolean;
@@ -54,19 +54,13 @@ export class CreateProductResDTO {
   };
 
   constructor(product: ProductModel) {
-    const {
-      uuid,
-      name,
-      description,
-      priceInMicroUsdc: priceInLamport,
-      isPublish,
-      seller,
-    } = product;
+    const { uuid, name, description, priceInMicroUsdc, isPublish, seller } =
+      product;
 
     this.uuid = uuid;
     this.name = name;
     this.description = description;
-    this.priceInLamport = priceInLamport;
+    this.priceInMicroUsdc = priceInMicroUsdc;
     this.isPublish = isPublish;
 
     if (seller) {

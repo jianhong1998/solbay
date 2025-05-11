@@ -2,7 +2,7 @@ export type IProductWithoutSensitiveData = {
   uuid: string;
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   seller?: {
     id: string;
     name: string;

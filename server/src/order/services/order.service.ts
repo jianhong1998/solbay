@@ -39,7 +39,7 @@ export class OrderService {
 
     /* STEP: Verify if product available */
 
-    const totalAmountInLamport = this.orderHelper.calculateTotalPrice({
+    const totalAmountInMicroUsdc = this.orderHelper.calculateTotalPrice({
       product,
       quantity,
     });
@@ -62,7 +62,7 @@ export class OrderService {
         product,
         logisticInfo: createdLogisticInfo,
         quantity,
-        totalAmountInLamport,
+        totalAmountInMicroUsdc,
       };
 
       const createdOrder = await this.orderDBUtil.create({

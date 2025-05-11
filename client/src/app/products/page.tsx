@@ -50,8 +50,8 @@ const ProductList: NextPage = () => {
           >
             <Card
               title={product.name}
-              price={NumberDisplayHelper.convertLamportToSol(
-                product.priceInLamport,
+              price={NumberDisplayHelper.convertMicroUsdcToUsdc(
+                product.priceInMicroUsdc,
               )}
               cardOnClickFn={generateViewProductDetailsHandler(product.uuid)}
               buyButtonOnClickFn={generateBuyButtonOnClickFn(product.uuid)}

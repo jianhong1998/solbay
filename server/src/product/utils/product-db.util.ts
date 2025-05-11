@@ -15,7 +15,7 @@ import { ProductModel } from '../models/product.model';
 export type IProductModelCreationData = {
   name: string;
   description: string;
-  priceInLamport: number;
+  priceInMicroUsdc: number;
   isPublish: boolean;
   seller: SellerModel;
 };
@@ -43,7 +43,7 @@ export class ProductDBUtil extends BaseDBUtil<
     const product = repo.create({
       name: productData.name,
       description: productData.description,
-      priceInMicroUsdc: productData.priceInLamport,
+      priceInMicroUsdc: productData.priceInMicroUsdc,
       seller: productData.seller,
       isPublish: productData.isPublish,
     });

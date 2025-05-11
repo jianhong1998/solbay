@@ -82,8 +82,8 @@ const SellerProductDashboard: FC = () => {
               <div key={`product-${product.uuid}"`}>
                 <Card
                   title={product.name}
-                  price={NumberDisplayHelper.convertLamportToSol(
-                    product.priceInLamport,
+                  price={NumberDisplayHelper.convertMicroUsdcToUsdc(
+                    product.priceInMicroUsdc,
                   )}
                   cardOnClickFn={generateProductOnClickHandler(product.uuid)}
                 />

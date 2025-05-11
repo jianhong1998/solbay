@@ -34,7 +34,7 @@ export class OrderModel {
   onChainDataPubkey: string | null;
 
   @Column({
-    name: 'total_amount_in_lamport',
+    name: 'total_amount_in_micro_usdc',
     type: 'bigint',
     nullable: false,
     transformer: {
@@ -42,7 +42,7 @@ export class OrderModel {
       from: (value: string) => Number.parseInt(value, 10),
     },
   })
-  totalAmountInLamport: number;
+  totalAmountInMicroUsdc: number;
 
   @ManyToOne(() => ProductModel, {
     eager: true,

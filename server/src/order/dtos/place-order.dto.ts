@@ -93,7 +93,7 @@ class OrderDTO {
 
     this.uuid = order.uuid;
     this.quantity = order.quantity;
-    this.totalAmountInMicroUsdc = order.totalAmountInLamport;
+    this.totalAmountInMicroUsdc = order.totalAmountInMicroUsdc;
   }
 }
 
