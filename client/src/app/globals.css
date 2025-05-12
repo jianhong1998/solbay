@@ -4,11 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+/* html,
 body {
   height: 100%;
-  background-color: white; /* Set the background to white */
-}
+  background-color: white;
+} */
 
 .wallet-adapter-button-trigger {
   background: rgb(100, 26, 230) !important;
@@ -60,11 +60,11 @@ body {
 }
 
 .hero__title {
-  @apply 2xl:text-[68px] sm:text-[60px] text-[48px] font-extrabold text-gray-500;
+  @apply 2xl:text-[68px] sm:text-[60px] text-[48px] font-extrabold text-gray-500 dark:text-white;
 }
 
 .hero__subtitle {
-  @apply text-[27px] text-black-100 font-light mt-5;
+  @apply text-[27px] text-black-100 font-light mt-5 dark:text-gray-400;
 }
 
 .hero__image-container {

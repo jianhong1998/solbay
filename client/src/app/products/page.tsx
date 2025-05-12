@@ -27,17 +27,17 @@ const ProductList: NextPage = () => {
   return (
     <>
       <div className="flex flex-col space-y-4 p-20">
-        <h1 className="text-4xl text-gray-500 font-extrabold">
+        <h1 className="text-4xl text-gray-500 font-extrabold dark:text-gray-400">
           Product Catalogue
         </h1>
-        <p className="text-black-100 font-light">
+        <p className="text-black-100 font-light dark:text-gray-500">
           Explore things you might like
         </p>
       </div>
       {!isGetProductListExecuted && <FullPageLoading />}
       {!Boolean(productList?.products.length) && isGetProductListExecuted && (
         <div className="flex flex-col justify-center items-center w-full">
-          <h1 className="text-lg text-gray-400">
+          <h1 className="text-lg text-gray-400 dark:text-gray-500">
             Sellers not yet published their products
           </h1>
         </div>

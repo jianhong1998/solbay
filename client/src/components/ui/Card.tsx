@@ -24,7 +24,7 @@ const Card: React.FC<ICard> = (props) => {
   } = props;
   return (
     <div
-      className={`card bg-base-100 shadow-sm h-full ${onClickFn ? 'cursor-pointer' : ''}`}
+      className={`card bg-base-100 shadow-sm h-full dark:bg-gray-900 ${onClickFn ? 'cursor-pointer' : ''}`}
       onClick={onClickFn}
     >
       {' '}

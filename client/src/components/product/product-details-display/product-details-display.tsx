@@ -41,7 +41,7 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
       </div>
 
       {/* Card */}
-      <div className="shadow-xl rounded-3xl">
+      <div className="shadow-xl rounded-3xl dark:bg-gray-900">
         <figure className="w-full h-72">
           <img
             src={productImageUrl}
@@ -54,7 +54,7 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           {/* Product Name */}
           <div className="flex flex-row justify-between">
             <div>
-              <p className="text-2xl text-wrap font-bold">
+              <p className="text-2xl text-wrap font-bold dark:text-gray-300">
                 {productDetails.name}
               </p>
               <p className="tex-wrap text-gray-400">
