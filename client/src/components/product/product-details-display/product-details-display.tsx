@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 import LinkButton from '@/components/ui/buttons/link-button';
 import { IProductWithoutSensitiveData } from '@/types/product/product-without-sensitive-data.type';
@@ -96,10 +96,10 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           {/* Product Description */}
           <div className="text-wrap">
             {productDetails.description.split('\n').map((value) => (
-              <>
-                <p key={value.slice(0, 20)}>{value}</p>
+              <Fragment key={value.slice(0, 20)}>
+                <p>{value}</p>
                 <br />
-              </>
+              </Fragment>
             ))}
           </div>
         </div>

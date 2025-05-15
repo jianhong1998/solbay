@@ -37,8 +37,11 @@ export class OrderController {
     @Body() reqBody: CheckoutReqDTO,
     @User() buyer: UserModel,
   ): Promise<CheckoutResDTO> {
-    const { productId, logisticInfo, quantity } = reqBody;
+    const { logisticInfo, productQuantities } = reqBody;
     const logger = this.loggerUtil.createLogger('Checkout Endpoint');
+
+    // TODO: (Enhancement) Handle multiple product checkout
+    const [{ productId, quantity }] = productQuantities;
 
     const {
       order,

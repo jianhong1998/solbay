@@ -6,6 +6,8 @@ import CheckoutFeature from '@/components/checkout/checkout-feature';
 import { TOKEN_COOKIE_NAME } from '@/constants/cookie.constant';
 import { PageContext } from '@/types/page-context.type';
 
+import LoginRequired from './login-required';
+
 type CheckoutPageSearchParams = {
   productId?: string;
 };
@@ -17,7 +19,8 @@ const CheckoutPage: NextPage<
   const token = cookieStore.get(TOKEN_COOKIE_NAME);
   const { productId } = await searchParams;
 
-  if (!token || !productId) redirect('/products');
+  if (!productId) redirect('/products');
+  if (!token) return <LoginRequired />;
 
   return <CheckoutFeature productId={productId} />;
 };

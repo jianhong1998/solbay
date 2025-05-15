@@ -1,5 +1,7 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -62,17 +64,25 @@ class LogisticInfoCreationDTO implements ILogisticInfoCreationData {
 }
 
 export class CheckoutReqDTO {
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => ProductQuantityDTO)
+  productQuantities: ProductQuantityDTO[];
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LogisticInfoCreationDTO)
+  logisticInfo: LogisticInfoCreationDTO;
+}
+
+class ProductQuantityDTO {
   @IsUUID()
   productId: UUID;
 
   @IsNumber()
   @IsPositive()
   quantity: number;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => LogisticInfoCreationDTO)
-  logisticInfo: LogisticInfoCreationDTO;
 }
 
 class OrderDTO {

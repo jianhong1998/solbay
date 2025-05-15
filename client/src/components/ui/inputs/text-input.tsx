@@ -1,15 +1,14 @@
 import {
   ChangeEventHandler,
-  Dispatch,
   forwardRef,
   HTMLAttributes,
   KeyboardEventHandler,
-  SetStateAction,
 } from 'react';
 
 type TextInputProps = HTMLAttributes<HTMLInputElement> & {
   value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  // setValue: Dispatch<SetStateAction<string>>;
+  setValue: (value: string) => void;
   label?: string;
   labelClassName?: string;
   disabled?: boolean;
