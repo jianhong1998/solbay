@@ -29,4 +29,4 @@ COPY --from=db-migrate-build /apps/server/package*.json ./
 COPY --from=db-migrate-build /apps/server/ap-southeast-1-bundle.pem ./
 COPY --from=db-migrate-build /apps/server/dist ./dist
 
-CMD [ "sh", "-c", "node -r dotenv/config ./node_modules/typeorm/cli.js -d dist/config/data-source.js migration:run"]
+CMD [ "sh", "-c", "node -r dotenv/config ./node_modules/typeorm/cli.js -d dist/config/data-source.js migration:run && exit 0"]
