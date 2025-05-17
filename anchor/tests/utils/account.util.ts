@@ -1,5 +1,6 @@
 import { SYSTEM_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/native/system';
 import { Keypair, PublicKey } from '@solana/web3.js';
+import { join } from 'path';
 import { AccountInfoBytes, AddedAccount } from 'solana-bankrun';
 
 import { FileUtil } from './file.util';
@@ -41,5 +42,25 @@ export class AccountUtil {
     );
 
     return Keypair.fromSecretKey(secretKeyArray);
+  }
+}
+
+export class ProgramAccountHelper {
+  private static keypairPaths = {
+    feePayer: join(__dirname, '../../../keypairs/fee-payer.json'),
+    programOwner: join(__dirname, '../../../keypairs/program-owner.json'),
+    buyer: join(__dirname, '../../../keypairs/test-buyer.json'),
+    seller: join(__dirname, '../../../keypairs/test-seller.json'),
+    usdcAuthority: join(
+      __dirname,
+      '../../../keypairs/test-usdc-authority.json',
+    ),
+    usdcMint: join(__dirname, '../../../keypairs/test-usdc-mint.json'),
+  };
+
+  private constructor() {}
+
+  public static getAccountKeypair(accountName: keyof typeof this.keypairPaths) {
+    return AccountUtil.getAccount(this.keypairPaths[accountName]);
   }
 }
