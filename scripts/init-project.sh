@@ -9,3 +9,5 @@ make install
 # Generate keypairs for local env
 solana-keygen new -s --no-bip39-passphrase -o ./keypairs/fee-payer.json
 solana-keygen new -s --no-bip39-passphrase -o ./keypairs/program-owner.json
+solana-keygen new -s --no-bip39-passphrase -o ./keypairs/test-buyer.json
+solana-keygen new -s --no-bip39-passphrase -o ./keypairs/test-seller.json

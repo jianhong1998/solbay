@@ -89,4 +89,27 @@ export class SellerService {
 
     return seller;
   }
+
+  public async getSellerById(params: {
+    sellerId: UUID;
+    withUser?: boolean;
+    entityManager?: EntityManager;
+  }): Promise<SellerModel | null> {
+    const { sellerId, withUser = false } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    if (!sellerId) return null;
+
+    const seller = await this.sellerDbUtil.getOne({
+      criterial: {
+        uuid: sellerId,
+      },
+      relation: {
+        user: withUser,
+      },
+      entityManager,
+    });
+
+    return seller;
+  }
 }
