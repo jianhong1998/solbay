@@ -1,3 +1,3 @@
-mod checkout;
+mod purchase;
 
-pub use checkout::*;
+pub use purchase::*;
