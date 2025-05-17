@@ -18,7 +18,14 @@ pub mod solbay {
     process_login(context)
   }
 
-  pub fn purchase(context: Context<Purchase>) -> Result<()> {
-    process_purchase(context)
+  pub fn purchase(
+    context: Context<Purchase>,
+    order_id: String,
+    platform_code: String,
+    amount: u64,
+    seller_timeout: u64,
+    remarks: String,
+  ) -> Result<()> {
+    process_purchase(context, order_id, platform_code, amount, seller_timeout, remarks)
   }
 }

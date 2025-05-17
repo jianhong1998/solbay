@@ -1,7 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::Mint;
 
-use crate::{constants::{ OrderStatus, ANCHOR_DISCRIMINATOR, ORDER_SEED}, states::Order};
+use crate::{
+  constants::{OrderStatus, ANCHOR_DISCRIMINATOR, ORDER_SEED},
+  states::Order,
+};
 
 /**
  * Sample only
@@ -14,7 +17,7 @@ pub struct Purchase<'info> {
 
   #[account(mut)]
   pub buyer: Signer<'info>,
-  
+
   #[account()]
   pub seller: SystemAccount<'info>,
 
@@ -31,10 +34,16 @@ pub struct Purchase<'info> {
   pub order: Account<'info, Order>,
 }
 
-pub fn process_purchase(context: Context<Purchase>, amount: u64, seller_timeout: u64, platform_code: String, order_id: String, remarks: String ) -> Result<()> {
-
+pub fn process_purchase(
+  context: Context<Purchase>,
+  order_id: String,
+  platform_code: String,
+  amount: u64,
+  seller_timeout: u64,
+  remarks: String,
+) -> Result<()> {
   let order_entry = &mut context.accounts.order;
-  
+
   order_entry.is_fund_released = false;
   order_entry.fund_release_timeout = 0;
   order_entry.status = OrderStatus::PendingSellerShipOut.to_str();
@@ -44,12 +53,10 @@ pub fn process_purchase(context: Context<Purchase>, amount: u64, seller_timeout:
   order_entry.order_id = order_id;
   order_entry.remarks = remarks;
   order_entry.seller_ship_out_timeout = seller_timeout;
-  
+
   order_entry.seller_pubkey = context.accounts.seller.key();
   order_entry.buyer_pubkey = context.accounts.buyer.key();
   order_entry.token_mint_address = context.accounts.mint.key();
-
-
 
   /*
     1. Create order struct (data account)
@@ -62,18 +69,10 @@ pub fn process_purchase(context: Context<Purchase>, amount: u64, seller_timeout:
       - order id from client ✅
       - status from program decide (default: straight to pending selling ship out)
       - remarks from client ✅
-    
+
     2. make transaction to Escrow account
   */
 
-
-  
-  
-  
-  
-  
-  
-  
   //get buyer pubkey and seller's pubkey
 
   //
