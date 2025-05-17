@@ -102,7 +102,7 @@ export class OrderController {
     });
 
     return new CheckoutResDTO({
-      order,
+      orders: [order],
       orderStatus,
       serializedTransaction: TransactionUtil.serializeTransaction(transaction),
     });

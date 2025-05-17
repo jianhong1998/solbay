@@ -4,7 +4,6 @@ import * as React from 'react';
 import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { AccountChecker } from '../account/account-ui';
 import { ClusterChecker, ExplorerLink } from '../cluster/cluster-ui';
 import NavBarProvider from './navbar/navbar';
 
@@ -18,9 +17,7 @@ export function UiLayout({
   return (
     <div className="h-full flex flex-col">
       <NavBarProvider links={links}>
-        <ClusterChecker>
-          <AccountChecker />
-        </ClusterChecker>
+        <ClusterChecker></ClusterChecker>
         <div className="flex-grow mx-4 lg:mx-auto lg:w-11/12">
           <Suspense
             fallback={

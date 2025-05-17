@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { usePlaceOrder } from '@/hooks/queries/order/place-order';
 import { useGetBuyerProductDetails } from '@/hooks/queries/products/buyers/get-product';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 
@@ -53,6 +54,11 @@ const CheckoutFeature: FC<CheckoutFeatureProps> = ({ productId }) => {
     isStale: isProductDetailsStale,
     refetch: refetchProductDetailsFn,
   } = useGetBuyerProductDetails(productId);
+  const {
+    mutateAsync: placeOrderFn,
+    isPending: isPlaceOrderPending,
+    data: placeOrderResData,
+  } = usePlaceOrder();
 
   const handleQuantityChange = (params: {
     productId: string;
@@ -74,17 +80,20 @@ const CheckoutFeature: FC<CheckoutFeatureProps> = ({ productId }) => {
     router.push(`products/${productId}`);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     // TODO: Integrate with submit product
-    const _reqBodies = Object.entries(productQuantities).map(
+    const quantities = Object.entries(productQuantities).map(
       ([productUuid, quantity]) => {
         return {
           productId: productUuid,
           quantity,
-          logisticInfo: logisticInfoFormData,
         };
       },
     );
+    await placeOrderFn({
+      logisticInfo: logisticInfoFormData,
+      productQuantities: quantities,
+    });
   };
 
   /* Handling of error message */
@@ -110,6 +119,18 @@ const CheckoutFeature: FC<CheckoutFeatureProps> = ({ productId }) => {
 
     toast.error(errorMessage);
   }, [getProductDetailsError, router, productListPagePath]);
+
+  /* Handling transaction signing after order placed */
+  useEffect(() => {
+    if (!placeOrderResData) return;
+
+    const transactionData = encodeURI(placeOrderResData.transaction);
+    const orderId = encodeURI(
+      placeOrderResData.orders.map((order) => order.uuid).join(','),
+    );
+
+    router.push(`/payment?transaction=${transactionData}&orderId=${orderId}`);
+  }, [placeOrderResData, router]);
 
   /* Handling stale data refetching */
   useEffect(() => {
@@ -148,6 +169,7 @@ const CheckoutFeature: FC<CheckoutFeatureProps> = ({ productId }) => {
       setLogisticFormData={setLogisticInfoFormData}
       isAllLogisticInfoDataValid={isAllLogisticInfoDataValid}
       backButtonOnClickHandler={handleRedirectBack}
+      isCheckoutLoading={isPlaceOrderPending}
     />
   );
 };

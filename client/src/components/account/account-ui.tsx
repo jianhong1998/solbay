@@ -6,8 +6,6 @@ import { IconRefresh } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
-import { useLogger } from '@/utils/shared/logger';
-
 import { useCluster } from '../cluster/cluster-data-access';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { AppModal, ellipsify } from '../ui/ui-layout';
@@ -32,42 +30,6 @@ export function AccountBalance({ address }: { address: PublicKey }) {
       </h1>
     </div>
   );
-}
-export function AccountChecker() {
-  const { publicKey } = useWallet();
-  if (!publicKey) {
-    return null;
-  }
-  return <AccountBalanceCheck address={publicKey} />;
-}
-export function AccountBalanceCheck({ address }: { address: PublicKey }) {
-  const { cluster } = useCluster();
-  const mutation = useRequestAirdrop({ address });
-  const query = useGetBalance({ address });
-  const logger = useLogger();
-
-  if (query.isLoading) {
-    return null;
-  }
-  if (query.isError || !query.data) {
-    return (
-      <div className="alert alert-warning text-warning-content/80 rounded-none flex justify-center">
-        <span>
-          You are connected to <strong>{cluster.name}</strong> but your account
-          is not found on this cluster.
-        </span>
-        <button
-          className="btn btn-xs btn-neutral"
-          onClick={() =>
-            mutation.mutateAsync(1).catch((err) => logger.log(err))
-          }
-        >
-          Request Airdrop
-        </button>
-      </div>
-    );
-  }
-  return null;
 }
 
 export function AccountButtons({ address }: { address: PublicKey }) {

@@ -22,6 +22,7 @@ type CheckoutFeaturePresentationProps = {
   isAllLogisticInfoDataValid: boolean;
   checkoutButtonOnClickHandler: () => void;
   backButtonOnClickHandler: () => void;
+  isCheckoutLoading: boolean;
 };
 
 const CheckoutFeaturePresentation: FC<CheckoutFeaturePresentationProps> = ({
@@ -34,6 +35,7 @@ const CheckoutFeaturePresentation: FC<CheckoutFeaturePresentationProps> = ({
   isAllLogisticInfoDataValid,
   checkoutButtonOnClickHandler,
   backButtonOnClickHandler,
+  isCheckoutLoading,
 }) => {
   return (
     <div className="mb-5">
@@ -62,6 +64,7 @@ const CheckoutFeaturePresentation: FC<CheckoutFeaturePresentationProps> = ({
         <PrimaryButton
           onClick={checkoutButtonOnClickHandler}
           disabled={!isAllQuantitiesValid || !isAllLogisticInfoDataValid}
+          loading={isCheckoutLoading}
         >
           Checkout
         </PrimaryButton>

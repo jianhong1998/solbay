@@ -33,7 +33,7 @@ export function ExplorerLink({
   );
 }
 
-export function ClusterChecker({ children }: { children: ReactNode }) {
+export function ClusterChecker({ children }: { children?: ReactNode }) {
   const { cluster } = useCluster();
   const { connection } = useConnection();
 
