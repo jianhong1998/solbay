@@ -3,6 +3,7 @@
 mod constants;
 mod instructions;
 mod states;
+mod util;
 
 use anchor_lang::prelude::*;
 pub use instructions::*;
@@ -16,6 +17,10 @@ pub mod solbay {
 
   pub fn login(context: Context<Login>) -> Result<()> {
     process_login(context)
+  }
+
+  pub fn init_escrow(context: Context<InitEscrow>) -> Result<()> {
+    process_init_escrow(context)
   }
 
   pub fn purchase(

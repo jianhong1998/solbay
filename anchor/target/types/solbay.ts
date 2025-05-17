@@ -14,20 +14,40 @@ export type Solbay = {
   };
   instructions: [
     {
-      name: 'checkout';
-      discriminator: [7, 91, 236, 227, 107, 242, 64, 61];
+      name: 'initEscrow';
+      discriminator: [70, 46, 40, 23, 6, 11, 81, 139];
       accounts: [
         {
           name: 'systemProgram';
           address: '11111111111111111111111111111111';
         },
         {
-          name: 'buyer';
+          name: 'tokenProgram';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'signer';
           writable: true;
           signer: true;
         },
         {
-          name: 'order';
+          name: 'mint';
+        },
+        {
+          name: 'escrowTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
         },
       ];
       args: [];
@@ -47,6 +67,89 @@ export type Solbay = {
       ];
       args: [];
     },
+    {
+      name: 'purchase';
+      discriminator: [21, 93, 113, 154, 193, 160, 242, 168];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'buyer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'seller';
+        },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'order';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [111, 114, 100, 101, 114];
+              },
+              {
+                kind: 'arg';
+                path: 'orderId';
+              },
+              {
+                kind: 'arg';
+                path: 'platformCode';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'orderId';
+          type: 'string';
+        },
+        {
+          name: 'platformCode';
+          type: 'string';
+        },
+        {
+          name: 'amount';
+          type: 'u64';
+        },
+        {
+          name: 'sellerTimeout';
+          type: 'u64';
+        },
+        {
+          name: 'remarks';
+          type: 'string';
+        },
+      ];
+    },
   ];
   accounts: [
     {
@@ -61,7 +164,47 @@ export type Solbay = {
         kind: 'struct';
         fields: [
           {
+            name: 'isFundReleased';
+            type: 'bool';
+          },
+          {
+            name: 'sellerPubkey';
+            type: 'pubkey';
+          },
+          {
+            name: 'buyerPubkey';
+            type: 'pubkey';
+          },
+          {
+            name: 'amount';
+            type: 'u64';
+          },
+          {
+            name: 'sellerShipOutTimeout';
+            type: 'u64';
+          },
+          {
+            name: 'fundReleaseTimeout';
+            type: 'u64';
+          },
+          {
+            name: 'tokenMintAddress';
+            type: 'pubkey';
+          },
+          {
+            name: 'platformCode';
+            type: 'string';
+          },
+          {
             name: 'orderId';
+            type: 'string';
+          },
+          {
+            name: 'status';
+            type: 'string';
+          },
+          {
+            name: 'remarks';
             type: 'string';
           },
         ];
