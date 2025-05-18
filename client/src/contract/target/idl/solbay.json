@@ -16,8 +16,7 @@
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         },
         {
           "name": "signer",
@@ -70,8 +69,7 @@
           "address": "11111111111111111111111111111111"
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         },
         {
           "name": "buyer",

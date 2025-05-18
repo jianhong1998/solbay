@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, Token2022, TokenAccount};
+use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 use crate::{
   constants::{OrderStatus, ANCHOR_DISCRIMINATOR, ESCROW_SEED, ORDER_SEED},
@@ -11,7 +11,7 @@ use crate::{
 #[instruction(order_id: String, platform_code: String)]
 pub struct Purchase<'info> {
   pub system_program: Program<'info, System>,
-  pub token_program: Program<'info, Token2022>,
+  pub token_program: Interface<'info, TokenInterface>,
 
   #[account(mut)]
   pub buyer: Signer<'info>,

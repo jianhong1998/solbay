@@ -17,3 +17,5 @@ export const TEST_FEE_PAYER_ID_FILE_PATH = join(
   __dirname,
   '../../../temp/keypairs/fee-payer.json',
 );
+
+export * from './seeds';

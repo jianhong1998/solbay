@@ -3,7 +3,9 @@ import { Keypair, PublicKey } from '@solana/web3.js';
 import { join } from 'path';
 import { AccountInfoBytes, AddedAccount } from 'solana-bankrun';
 
+import { Seeds } from '../constants';
 import { FileUtil } from './file.util';
+import { ProgramUtil } from './program.util';
 
 export class AccountUtil {
   private constructor() {}
@@ -62,5 +64,17 @@ export class ProgramAccountHelper {
 
   public static getAccountKeypair(accountName: keyof typeof this.keypairPaths) {
     return AccountUtil.getAccount(this.keypairPaths[accountName]);
+  }
+
+  public static getEscrowAccountPublicKey(mintPublicKey: PublicKey): PublicKey {
+    const programUtil = new ProgramUtil();
+    const program = programUtil.getProgram();
+
+    const [publicKey] = PublicKey.findProgramAddressSync(
+      [Buffer.from(Seeds.escrowAccount), mintPublicKey.toBuffer()],
+      program.programId,
+    );
+
+    return publicKey;
   }
 }

@@ -23,7 +23,6 @@ export type Solbay = {
         },
         {
           name: 'tokenProgram';
-          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         },
         {
           name: 'signer';
@@ -77,7 +76,6 @@ export type Solbay = {
         },
         {
           name: 'tokenProgram';
-          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         },
         {
           name: 'buyer';

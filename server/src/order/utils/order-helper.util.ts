@@ -1,4 +1,5 @@
 import { BN } from '@coral-xyz/anchor';
+import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
 import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
@@ -55,6 +56,7 @@ export class OrderHelperUtil {
         buyer: buyerPublicKey,
         mint: USDC_MINT_PUBLICK_KEY_DEVNET,
         seller: sellerPublicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();
 

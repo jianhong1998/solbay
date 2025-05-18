@@ -1,12 +1,12 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, Token2022, TokenAccount};
+use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 use crate::constants::ESCROW_SEED;
 
 #[derive(Accounts)]
 pub struct InitEscrow<'info> {
   pub system_program: Program<'info, System>,
-  pub token_program: Program<'info, Token2022>,
+  pub token_program: Interface<'info, TokenInterface>,
 
   #[account(mut)]
   pub signer: Signer<'info>,
