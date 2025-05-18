@@ -1,8 +1,8 @@
 import { BN } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
 import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
+import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
 import { ProductModel } from 'src/product/models/product.model';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
@@ -48,15 +48,16 @@ export class OrderHelperUtil {
     const buyerPublicKey = new PublicKey(buyer.publicKey);
     const sellerPublicKey = new PublicKey(seller.publicKey);
     const amount = new BN(0);
+    const orderId = order.uuid;
+    const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(orderId));
 
     const instruction = await program.methods
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      .purchase(order.uuid, 'SOLB', order.totalAmountInMicroUsdc, amount, '')
+      .purchase(orderIdBytes, 'SOLB', order.totalAmountInMicroUsdc, amount, '')
       .accounts({
         buyer: buyerPublicKey,
         mint: USDC_MINT_PUBLICK_KEY_DEVNET,
         seller: sellerPublicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();
 

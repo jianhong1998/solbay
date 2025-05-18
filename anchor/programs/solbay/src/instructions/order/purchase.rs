@@ -1,17 +1,20 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use anchor_spl::{
+  token::Token,
+  token_interface::{Mint, TokenAccount},
+};
 
 use crate::{
   constants::{OrderStatus, ANCHOR_DISCRIMINATOR, ESCROW_SEED, ORDER_SEED},
   states::Order,
-  util::process_token_transfer,
+  util::{process_token_transfer, ProcessTokenTransfer},
 };
 
 #[derive(Accounts)]
-#[instruction(order_id: String, platform_code: String)]
+#[instruction(order_id: [u8; 16], platform_code: String)]
 pub struct Purchase<'info> {
   pub system_program: Program<'info, System>,
-  pub token_program: Interface<'info, TokenInterface>,
+  pub token_program: Program<'info, Token>,
 
   #[account(mut)]
   pub buyer: Signer<'info>,
@@ -26,7 +29,7 @@ pub struct Purchase<'info> {
     init,
     payer = buyer,
     space = ANCHOR_DISCRIMINATOR + Order::INIT_SPACE,
-    seeds = [ORDER_SEED , order_id.as_bytes(), platform_code.as_bytes()],
+    seeds = [ORDER_SEED , order_id.as_ref(), platform_code.as_bytes()],
     bump
   )]
   pub order: Account<'info, Order>,
@@ -40,11 +43,18 @@ pub struct Purchase<'info> {
     bump
   )]
   escrow_token_account: InterfaceAccount<'info, TokenAccount>,
+
+  #[account(
+    mut,
+    associated_token::mint = mint,
+    associated_token::authority = buyer
+  )]
+  buyer_associated_token_account: InterfaceAccount<'info, TokenAccount>,
 }
 
 pub fn process_purchase(
   context: Context<Purchase>,
-  order_id: String,
+  order_id: [u8; 16],
   platform_code: String,
   amount: u64,
   seller_timeout: u64,
@@ -71,6 +81,7 @@ pub fn process_purchase(
   let buyer = &context.accounts.buyer;
   let seller = &context.accounts.seller;
   let escrow_token_account = &context.accounts.escrow_token_account;
+  let buyer_token_account = &context.accounts.buyer_associated_token_account;
 
   order_entry.is_fund_released = false;
   order_entry.fund_release_timeout = 0;
@@ -86,11 +97,12 @@ pub fn process_purchase(
   order_entry.buyer_pubkey = buyer.key();
   order_entry.token_mint_address = mint.key();
 
-  process_token_transfer(
-    token_program.to_account_info(),
-    context.accounts.buyer.to_account_info(),
-    escrow_token_account.to_account_info(),
-    mint,
+  process_token_transfer(ProcessTokenTransfer {
+    from: buyer_token_account.to_account_info(),
+    program: token_program.to_account_info(),
+    authority: buyer.to_account_info(),
+    to: escrow_token_account.to_account_info(),
+    mint: mint.clone(),
     amount,
-  )
+  })
 }

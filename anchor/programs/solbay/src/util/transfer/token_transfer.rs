@@ -1,20 +1,23 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{transfer_checked, Mint, TransferChecked};
 
-pub fn process_token_transfer<'info>(
-  program: AccountInfo<'info>,
-  from: AccountInfo<'info>,
-  to: AccountInfo<'info>,
-  mint: &InterfaceAccount<'info, Mint>,
-  amount: u64,
-) -> Result<()> {
-  let cpi_accounts = TransferChecked {
-    authority: from.clone(),
-    mint: mint.to_account_info(),
-    from: from.clone(),
-    to: to.clone(),
-  };
-  let cpi_context = CpiContext::new(program, cpi_accounts);
+pub struct ProcessTokenTransfer<'info> {
+  pub program: AccountInfo<'info>,
+  pub authority: AccountInfo<'info>,
+  pub from: AccountInfo<'info>,
+  pub to: AccountInfo<'info>,
+  pub mint: InterfaceAccount<'info, Mint>,
+  pub amount: u64,
+}
 
-  transfer_checked(cpi_context, amount, mint.decimals)
+pub fn process_token_transfer<'info>(params: ProcessTokenTransfer) -> Result<()> {
+  let cpi_accounts = TransferChecked {
+    authority: params.authority,
+    mint: params.mint.to_account_info(),
+    from: params.from,
+    to: params.to,
+  };
+  let cpi_context = CpiContext::new(params.program, cpi_accounts);
+
+  transfer_checked(cpi_context, params.amount, params.mint.decimals)
 }

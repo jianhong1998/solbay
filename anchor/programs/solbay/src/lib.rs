@@ -25,7 +25,7 @@ pub mod solbay {
 
   pub fn purchase(
     context: Context<Purchase>,
-    order_id: String,
+    order_id: [u8; 16],
     platform_code: String,
     amount: u64,
     seller_timeout: u64,

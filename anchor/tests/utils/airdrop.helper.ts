@@ -22,11 +22,14 @@ export class AirdropHelper {
       amount * LAMPORTS_PER_SOL,
     );
 
-    await connection.confirmTransaction({
-      blockhash,
-      lastValidBlockHeight,
-      signature: transactionId,
-    });
+    await connection.confirmTransaction(
+      {
+        blockhash,
+        lastValidBlockHeight,
+        signature: transactionId,
+      },
+      'confirmed',
+    );
 
     return transactionId;
   }

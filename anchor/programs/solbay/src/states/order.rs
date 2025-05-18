@@ -10,11 +10,10 @@ pub struct Order {
   pub seller_ship_out_timeout: u64,
   pub fund_release_timeout: u64,
   pub token_mint_address: Pubkey,
+  pub order_id: [u8; 16],
 
   #[max_len(4)]
   pub platform_code: String,
-  #[max_len(36)]
-  pub order_id: String,
   #[max_len(25)]
   pub status: String,
   #[max_len(512)]

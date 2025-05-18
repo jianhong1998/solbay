@@ -1,8 +1,10 @@
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   createMint,
   getMint,
   getOrCreateAssociatedTokenAccount,
   mintTo,
+  TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 
@@ -14,8 +16,6 @@ export class MockUsdcUtil {
     ProgramAccountHelper.getAccountKeypair('usdcAuthority');
   private static readonly mintKeypair =
     ProgramAccountHelper.getAccountKeypair('usdcMint');
-  private static readonly payerKeypair =
-    ProgramAccountHelper.getAccountKeypair('feePayer');
 
   private constructor() {}
 
@@ -44,6 +44,9 @@ export class MockUsdcUtil {
         authority.publicKey,
         6,
         mintKeypair,
+        {
+          commitment: 'confirmed',
+        },
       );
     }
 
@@ -52,28 +55,45 @@ export class MockUsdcUtil {
 
   public static async mintMockUsdc(params: {
     connection: Connection;
-    recipientPublicKey: PublicKey;
+    recipient: Keypair;
     amount: number;
+    mint?: PublicKey;
+    mintAuthority?: Keypair;
   }): Promise<void> {
-    const { connection, recipientPublicKey, amount } = params;
+    const { connection, recipient, amount, mint, mintAuthority } = params;
 
-    const authority = this.authorityKeypair;
-    const mintKeypair = this.mintKeypair;
+    if (mint && !mintAuthority) {
+      throw new Error('mintAuthority is required when mint is provided.');
+    }
+
+    const authority = mintAuthority ?? this.authorityKeypair;
+    const mintPublicKey = mint ?? this.mintKeypair.publicKey;
 
     const associatedTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
-      this.payerKeypair,
-      mintKeypair.publicKey,
-      recipientPublicKey,
+      recipient,
+      mintPublicKey,
+      recipient.publicKey,
+      false,
+      'confirmed',
+      {
+        commitment: 'confirmed',
+        maxRetries: 2,
+      },
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID,
     );
 
     await mintTo(
       connection,
-      authority,
-      mintKeypair.publicKey,
+      recipient,
+      mintPublicKey,
       associatedTokenAccount.address,
       authority,
       amount * 1_000_000,
+      undefined,
+      { commitment: 'confirmed' },
+      TOKEN_PROGRAM_ID,
     );
   }
 }

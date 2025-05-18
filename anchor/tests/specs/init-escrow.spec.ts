@@ -1,5 +1,4 @@
 import { Program } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 
 import { Solbay } from '../../target/types/solbay';
@@ -46,7 +45,6 @@ describe('Test Init Escrow Token Account', () => {
       .accounts({
         mint: mockUsdc.mint,
         signer: escrowSigner.publicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();
 
