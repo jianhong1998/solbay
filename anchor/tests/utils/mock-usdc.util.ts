@@ -4,12 +4,12 @@ import {
   getOrCreateAssociatedTokenAccount,
   mintTo,
 } from '@solana/spl-token';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { airdropIfRequired } from '@solana-developers/helpers';
+import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 
 import { ProgramAccountHelper } from './account.util';
+import { AirdropHelper } from './airdrop.helper';
 
-export class UsdcUtil {
+export class MockUsdcUtil {
   private static readonly authorityKeypair =
     ProgramAccountHelper.getAccountKeypair('usdcAuthority');
   private static readonly mintKeypair =
@@ -19,11 +19,18 @@ export class UsdcUtil {
 
   private constructor() {}
 
-  public static async getMockUsdc(connection: Connection) {
-    const authority = this.authorityKeypair;
-    const mintKeypair = this.mintKeypair;
+  public static async getMockUsdc(
+    connection: Connection,
+    random: boolean = false,
+  ) {
+    const authority = random ? Keypair.generate() : this.authorityKeypair;
+    const mintKeypair = random ? Keypair.generate() : this.mintKeypair;
 
-    await airdropIfRequired(connection, authority.publicKey, 5, 1);
+    await AirdropHelper.requestAirdrop({
+      connection,
+      publicKey: authority.publicKey,
+      amount: 5,
+    });
 
     let mint: PublicKey;
 
