@@ -66,12 +66,28 @@ export class ProgramAccountHelper {
     return AccountUtil.getAccount(this.keypairPaths[accountName]);
   }
 
-  public static getEscrowAccountPublicKey(mintPublicKey: PublicKey): PublicKey {
+  public static getEscrowAccountPublicKey(
+    mintPublicKey: PublicKey,
+    account: 'escrow' | 'authority',
+  ): PublicKey {
     const programUtil = new ProgramUtil();
     const program = programUtil.getProgram();
 
+    let accountStaticSeed: Buffer;
+
+    switch (account) {
+      case 'authority':
+        accountStaticSeed = Buffer.from(Seeds.escrowAuthority);
+        break;
+      case 'escrow':
+        accountStaticSeed = Buffer.from(Seeds.escrowAccount);
+        break;
+      default:
+        throw new Error('Invalid account');
+    }
+
     const [publicKey] = PublicKey.findProgramAddressSync(
-      [Buffer.from(Seeds.escrowAccount), mintPublicKey.toBuffer()],
+      [accountStaticSeed, mintPublicKey.toBuffer()],
       program.programId,
     );
 

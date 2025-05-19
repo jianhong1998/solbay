@@ -34,6 +34,39 @@ export type Solbay = {
           name: 'mint';
         },
         {
+          name: 'authority';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
           name: 'escrowTokenAccount';
           writable: true;
           pda: {
@@ -41,6 +74,36 @@ export type Solbay = {
               {
                 kind: 'const';
                 value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
               },
               {
                 kind: 'account';
@@ -242,14 +305,237 @@ export type Solbay = {
         },
       ];
     },
+    {
+      name: 'sampleWithdraw';
+      discriminator: [192, 244, 163, 160, 43, 3, 73, 234];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'escrowConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowAuthority';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'recipientTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'signer';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89,
+              ];
+            };
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'amount';
+          type: 'u64';
+        },
+      ];
+    },
   ];
   accounts: [
+    {
+      name: 'escrowConfig';
+      discriminator: [138, 174, 227, 187, 239, 148, 1, 44];
+    },
     {
       name: 'order';
       discriminator: [134, 173, 223, 185, 77, 86, 28, 51];
     },
   ];
   types: [
+    {
+      name: 'escrowConfig';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'bumpEscrowConfig';
+            type: 'u8';
+          },
+          {
+            name: 'bumpEscrowTokenAccount';
+            type: 'u8';
+          },
+          {
+            name: 'bumpAuthority';
+            type: 'u8';
+          },
+        ];
+      };
+    },
     {
       name: 'order';
       type: {

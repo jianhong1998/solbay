@@ -4,7 +4,10 @@ use anchor_spl::{
   token_interface::{Mint, TokenAccount},
 };
 
-use crate::constants::ESCROW_SEED;
+use crate::{
+  constants::{ANCHOR_DISCRIMINATOR, ESCROW_AUTHORITY_SEED, ESCROW_CONFIG_SEED, ESCROW_SEED},
+  states::EscrowConfig,
+};
 
 #[derive(Accounts)]
 pub struct InitEscrow<'info> {
@@ -18,10 +21,20 @@ pub struct InitEscrow<'info> {
   pub mint: InterfaceAccount<'info, Mint>,
 
   #[account(
+    mut,
+    seeds = [
+      ESCROW_AUTHORITY_SEED,
+      mint.key().as_ref()
+    ],
+    bump
+  )]
+  pub authority: SystemAccount<'info>,
+
+  #[account(
     init,
     payer = signer,
     token::mint = mint,
-    token::authority = signer,
+    token::authority = authority,
     seeds = [
       ESCROW_SEED,
       mint.key().as_ref()
@@ -29,8 +42,26 @@ pub struct InitEscrow<'info> {
     bump
   )]
   pub escrow_token_account: InterfaceAccount<'info, TokenAccount>,
+
+  #[account(
+    init,
+    payer = signer,
+    space = ANCHOR_DISCRIMINATOR + EscrowConfig::INIT_SPACE,
+    seeds = [
+      ESCROW_CONFIG_SEED,
+      mint.key().as_ref()
+    ],
+    bump
+  )]
+  pub escrow_config: Box<Account<'info, EscrowConfig>>,
 }
 
-pub fn process_init_escrow(_context: Context<InitEscrow>) -> Result<()> {
+pub fn process_init_escrow(context: Context<InitEscrow>) -> Result<()> {
+  let escrow_config = &mut context.accounts.escrow_config;
+
+  escrow_config.bump_escrow_config = context.bumps.escrow_config;
+  escrow_config.bump_authority = context.bumps.authority;
+  escrow_config.bump_escrow_token_account = context.bumps.escrow_token_account;
+
   Ok(())
 }

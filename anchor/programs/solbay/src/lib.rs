@@ -33,4 +33,8 @@ pub mod solbay {
   ) -> Result<()> {
     process_purchase(context, order_id, platform_code, amount, seller_timeout, remarks)
   }
+
+  pub fn sample_withdraw(context: Context<SampleWithdraw>, amount: u64) -> Result<()> {
+    proceed_sample_withdraw(context, amount)
+  }
 }

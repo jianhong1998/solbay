@@ -1,4 +1,5 @@
 import {
+  Account,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createMint,
   getMint,
@@ -16,6 +17,8 @@ export class MockUsdcUtil {
     ProgramAccountHelper.getAccountKeypair('usdcAuthority');
   private static readonly mintKeypair =
     ProgramAccountHelper.getAccountKeypair('usdcMint');
+  private static readonly feePayerKeypair =
+    ProgramAccountHelper.getAccountKeypair('feePayer');
 
   private constructor() {}
 
@@ -55,12 +58,20 @@ export class MockUsdcUtil {
 
   public static async mintMockUsdc(params: {
     connection: Connection;
-    recipient: Keypair;
+    recipient: PublicKey;
     amount: number;
     mint?: PublicKey;
     mintAuthority?: Keypair;
+    accountType?: 'associated-token-account' | 'token-account';
   }): Promise<void> {
-    const { connection, recipient, amount, mint, mintAuthority } = params;
+    const {
+      connection,
+      recipient,
+      amount,
+      mint,
+      mintAuthority,
+      accountType = 'associated-token-account',
+    } = params;
 
     if (mint && !mintAuthority) {
       throw new Error('mintAuthority is required when mint is provided.');
@@ -69,29 +80,33 @@ export class MockUsdcUtil {
     const authority = mintAuthority ?? this.authorityKeypair;
     const mintPublicKey = mint ?? this.mintKeypair.publicKey;
 
-    const associatedTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      recipient,
-      mintPublicKey,
-      recipient.publicKey,
-      false,
-      'confirmed',
-      {
-        commitment: 'confirmed',
-        maxRetries: 2,
-      },
-      TOKEN_PROGRAM_ID,
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-    );
+    let recipientTokenAccount: Account | undefined;
+
+    if (accountType === 'associated-token-account') {
+      await getOrCreateAssociatedTokenAccount(
+        connection,
+        this.feePayerKeypair,
+        mintPublicKey,
+        recipient,
+        true,
+        'confirmed',
+        {
+          commitment: 'confirmed',
+          maxRetries: 2,
+        },
+        TOKEN_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+      );
+    }
 
     await mintTo(
       connection,
-      recipient,
+      this.feePayerKeypair,
       mintPublicKey,
-      associatedTokenAccount.address,
+      recipientTokenAccount?.address ?? recipient,
       authority,
       amount * 1_000_000,
-      undefined,
+      undefined, // multiSigners
       { commitment: 'confirmed' },
       TOKEN_PROGRAM_ID,
     );

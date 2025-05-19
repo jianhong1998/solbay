@@ -50,11 +50,14 @@ export class TransactionHelper {
     const transactionId = await connection.sendTransaction(transaction, {
       skipPreflight,
     });
-    await connection.confirmTransaction({
-      blockhash,
-      lastValidBlockHeight,
-      signature: transactionId,
-    });
+    await connection.confirmTransaction(
+      {
+        blockhash,
+        lastValidBlockHeight,
+        signature: transactionId,
+      },
+      'confirmed',
+    );
 
     return transactionId;
   }
