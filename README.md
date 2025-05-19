@@ -50,6 +50,18 @@ make db/data/up
 
 ### Test smart contract
 
+#### Recommended Test Steps
+
+```
+# Run the application and test-local-validator
+make down/clean up/build
+
+# Run test in another terminal
+make deploy/with-airdrop test/anchor/onchain/skip-deploy
+```
+
+#### All Test Related Commands
+
 ```
 # With bankrun
 make test/anchor

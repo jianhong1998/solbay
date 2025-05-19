@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { BN, Program } from '@coral-xyz/anchor';
-import { getAccount, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import * as anchor from '@coral-xyz/anchor';
+import {
+  getAccount,
+  getOrCreateAssociatedTokenAccount,
+  TOKEN_PROGRAM_ID,
+  transferChecked,
+} from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 
 import { Solbay } from '../../target/types/solbay';
 import { ProgramAccountHelper } from '../utils/account.util';
+import { AirdropHelper } from '../utils/airdrop.helper';
 import { ExplorerLinkHelper } from '../utils/explorer-link.helper';
 import { MockUsdcUtil } from '../utils/mock-usdc.util';
 import { ProgramUtil } from '../utils/program.util';
@@ -12,8 +18,9 @@ import { TransactionHelper } from '../utils/transaction.util';
 
 describe('Test Init Escrow Token Account', () => {
   let connection: Connection;
-  let program: Program<Solbay>;
-  let escrowSigner: Keypair;
+  let program: anchor.Program<Solbay>;
+  let initEscrowSigner: Keypair;
+  let randomSigner: Keypair;
   let mockUsdc: {
     mint: PublicKey;
     authority: Keypair;
@@ -26,7 +33,14 @@ describe('Test Init Escrow Token Account', () => {
     connection = provider.connection;
     program = programUtil.getProgram();
 
-    escrowSigner = ProgramAccountHelper.getAccountKeypair('feePayer');
+    initEscrowSigner = ProgramAccountHelper.getAccountKeypair('feePayer');
+    randomSigner = Keypair.generate();
+
+    await AirdropHelper.requestAirdrop({
+      connection,
+      publicKey: randomSigner.publicKey,
+      amount: 1,
+    });
 
     const { authority, mint } = await MockUsdcUtil.getMockUsdc(
       connection,
@@ -46,15 +60,15 @@ describe('Test Init Escrow Token Account', () => {
       .initEscrow()
       .accounts({
         mint: mockUsdc.mint,
-        signer: escrowSigner.publicKey,
+        signer: initEscrowSigner.publicKey,
       })
       .instruction();
 
     const transaction = TransactionHelper.generateTransaction({
       instructions: [instruction],
-      payer: escrowSigner.publicKey,
+      payer: initEscrowSigner.publicKey,
       recentBlockhash: blockhashObj.blockhash,
-      signers: [escrowSigner],
+      signers: [initEscrowSigner],
     });
     const transactionId = await TransactionHelper.sendAndConfirmTransaction({
       connection,
@@ -110,57 +124,138 @@ describe('Test Init Escrow Token Account', () => {
     expect(Number(escrowTokenAccount.amount)).toBe(0);
   });
 
-  it('should be able to withdraw when needed', async () => {
-    const escrowPublicKey = ProgramAccountHelper.getEscrowAccountPublicKey(
-      mockUsdc.mint,
-      'escrow',
-    );
+  describe('Random signer withdraw with solbay program', () => {
+    let escrowPublicKey: PublicKey;
+    beforeAll(async () => {
+      escrowPublicKey = ProgramAccountHelper.getEscrowAccountPublicKey(
+        mockUsdc.mint,
+        'escrow',
+      );
 
-    await MockUsdcUtil.mintMockUsdc({
-      connection,
-      amount: 10,
-      recipient: escrowPublicKey,
-      mint: mockUsdc.mint,
-      mintAuthority: mockUsdc.authority,
-      accountType: 'token-account',
-    });
-
-    const withdrawAmount = 10_000_000;
-
-    const instruction = await program.methods
-      .sampleWithdraw(new BN(withdrawAmount))
-      .accounts({
+      await MockUsdcUtil.mintMockUsdc({
+        connection,
+        amount: 10,
+        recipient: escrowPublicKey,
         mint: mockUsdc.mint,
-        signer: escrowSigner.publicKey,
-      })
-      .instruction();
+        mintAuthority: mockUsdc.authority,
+        accountType: 'token-account',
+      });
+    }, 30_000);
 
-    const { blockhash, lastValidBlockHeight } =
-      await connection.getLatestBlockhash();
+    it('should be able to withdraw', async () => {
+      const withdrawAmount = 10_000_000;
 
-    const transaction = TransactionHelper.generateTransaction({
-      instructions: [instruction],
-      payer: escrowSigner.publicKey,
-      recentBlockhash: blockhash,
-      signers: [escrowSigner],
+      const instruction = await program.methods
+        .sampleWithdraw(new anchor.BN(withdrawAmount))
+        .accounts({
+          mint: mockUsdc.mint,
+          signer: randomSigner.publicKey,
+        })
+        .instruction();
+
+      const { blockhash, lastValidBlockHeight } =
+        await connection.getLatestBlockhash();
+
+      const transaction = TransactionHelper.generateTransaction({
+        instructions: [instruction],
+        payer: randomSigner.publicKey,
+        recentBlockhash: blockhash,
+        signers: [randomSigner],
+      });
+      const transactionId = await TransactionHelper.sendAndConfirmTransaction({
+        connection,
+        transaction,
+        blockhashObj: {
+          blockhash,
+          lastValidBlockHeight,
+        },
+      });
+
+      console.log(
+        `Withdraw transaction done: ${ExplorerLinkHelper.getTransactionUrl(transactionId)}\n`,
+      );
+      console.log(
+        `Escrow Token Account: ${ExplorerLinkHelper.getAccountUrl(escrowPublicKey)}\n`,
+      );
+      console.log(
+        `Recipient: ${ExplorerLinkHelper.getAccountUrl(randomSigner.publicKey)}\n`,
+      );
+
+      const randomSignerTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        randomSigner,
+        mockUsdc.mint,
+        randomSigner.publicKey,
+        false,
+        'confirmed',
+        { commitment: 'confirmed' },
+      );
+      const escrowTokenAccount = await getAccount(
+        connection,
+        escrowPublicKey,
+        'confirmed',
+      );
+
+      expect(Number(randomSignerTokenAccount.amount)).toEqual(withdrawAmount);
+      expect(Number(escrowTokenAccount.amount)).toEqual(0);
     });
-    const transactionId = await TransactionHelper.sendAndConfirmTransaction({
-      connection,
-      transaction,
-      blockhashObj: {
-        blockhash,
-        lastValidBlockHeight,
-      },
-    });
+  });
 
-    console.log(
-      `Withdraw transaction done: ${ExplorerLinkHelper.getTransactionUrl(transactionId)}\n`,
-    );
-    console.log(
-      `Escrow Token Account: ${ExplorerLinkHelper.getAccountUrl(escrowPublicKey)}\n`,
-    );
-    console.log(
-      `Recipient: ${ExplorerLinkHelper.getAccountUrl(escrowSigner.publicKey)}\n`,
-    );
+  describe('InitEscrow signer withdraw without solbay program', () => {
+    let escrowPublicKey: PublicKey;
+    beforeAll(async () => {
+      escrowPublicKey = ProgramAccountHelper.getEscrowAccountPublicKey(
+        mockUsdc.mint,
+        'escrow',
+      );
+
+      await MockUsdcUtil.mintMockUsdc({
+        connection,
+        amount: 10,
+        recipient: escrowPublicKey,
+        mint: mockUsdc.mint,
+        mintAuthority: mockUsdc.authority,
+        accountType: 'token-account',
+      });
+
+      await getOrCreateAssociatedTokenAccount(
+        connection,
+        initEscrowSigner, // payer
+        mockUsdc.mint,
+        initEscrowSigner.publicKey, // account owner
+        true,
+        'confirmed',
+        { commitment: 'confirmed' },
+      );
+    }, 30_000);
+
+    it('should be blocked for transfer fund our from the escrow token account', async () => {
+      const withdrawAmount = 10_000_000;
+
+      try {
+        const transactionId = await transferChecked(
+          connection,
+          initEscrowSigner, // payer
+          escrowPublicKey, // from
+          mockUsdc.mint,
+          initEscrowSigner.publicKey, // to
+          initEscrowSigner, // owner of the `from` account
+          withdrawAmount,
+          6, // decimals
+        );
+
+        expect(transactionId).toBeUndefined();
+
+        console.error(
+          `Withdraw without program successfully: ${ExplorerLinkHelper.getTransactionUrl(transactionId)}`,
+        );
+      } catch (_error) {
+        const escrowTokenAccount = await getAccount(
+          connection,
+          escrowPublicKey,
+        );
+        expect(Number(escrowTokenAccount.amount)).toEqual(10_000_000);
+      }
+    });
   });
 });
