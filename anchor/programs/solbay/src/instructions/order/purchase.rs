@@ -102,7 +102,8 @@ pub fn process_purchase(
     program: token_program.to_account_info(),
     authority: buyer.to_account_info(),
     to: escrow_token_account.to_account_info(),
-    mint: mint.clone(),
+    mint: mint.to_account_info(),
+    decimals: mint.decimals,
     amount,
   })
 }
