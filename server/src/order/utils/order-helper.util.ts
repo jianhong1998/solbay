@@ -1,5 +1,8 @@
+import { BN } from '@coral-xyz/anchor';
 import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
+import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
+import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
 import { ProductModel } from 'src/product/models/product.model';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
@@ -36,15 +39,25 @@ export class OrderHelperUtil {
     return OrderStatus.PENDING_SELLER_SHIP_OUT;
   }
 
-  public async generatePaymentTransaction(order: OrderModel, buyer: UserModel) {
+  public async generatePaymentTransaction(
+    order: OrderModel,
+    buyer: UserModel,
+    seller: UserModel,
+  ) {
     const program = ConnectionUtil.getProgram();
     const buyerPublicKey = new PublicKey(buyer.publicKey);
+    const sellerPublicKey = new PublicKey(seller.publicKey);
+    const amount = new BN(0);
+    const orderId = order.uuid;
+    const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(orderId));
 
     const instruction = await program.methods
-      .checkout()
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      .purchase(orderIdBytes, 'SOLB', order.totalAmountInMicroUsdc, amount, '')
       .accounts({
         buyer: buyerPublicKey,
-        order: OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(order.uuid),
+        mint: USDC_MINT_PUBLICK_KEY_DEVNET,
+        seller: sellerPublicKey,
       })
       .instruction();
 

@@ -3,6 +3,7 @@
 mod constants;
 mod instructions;
 mod states;
+mod util;
 
 use anchor_lang::prelude::*;
 pub use instructions::*;
@@ -18,7 +19,22 @@ pub mod solbay {
     process_login(context)
   }
 
-  pub fn checkout(context: Context<Checkout>) -> Result<()> {
-    process_checkout(context)
+  pub fn init_escrow(context: Context<InitEscrow>) -> Result<()> {
+    process_init_escrow(context)
+  }
+
+  pub fn purchase(
+    context: Context<Purchase>,
+    order_id: [u8; 16],
+    platform_code: String,
+    amount: u64,
+    seller_timeout: u64,
+    remarks: String,
+  ) -> Result<()> {
+    process_purchase(context, order_id, platform_code, amount, seller_timeout, remarks)
+  }
+
+  pub fn sample_withdraw(context: Context<SampleWithdraw>, amount: u64) -> Result<()> {
+    proceed_sample_withdraw(context, amount)
   }
 }

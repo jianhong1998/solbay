@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from 'src/common/common.module';
 import { ProductModule } from 'src/product/product.module';
+import { UserModule } from 'src/user/user.module';
 
 import { OrderController } from './controllers/order.controller';
 import { LogisticInfoModel } from './models/logistic-info.model';
@@ -21,6 +22,7 @@ import { OrderHelperUtil } from './utils/order-helper.util';
       LogisticTrackingInfoModel,
     ]),
     ProductModule,
+    UserModule,
     CommonModule,
   ],
   providers: [

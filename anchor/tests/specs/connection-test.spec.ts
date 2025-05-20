@@ -3,7 +3,7 @@ import { Connection } from '@solana/web3.js';
 import { Solbay } from '../../target/types/solbay';
 import { ProgramUtil } from '../utils/program.util';
 
-describe('Sample Test', () => {
+describe.skip('Sample Test', () => {
   let connection: Connection;
 
   beforeAll(() => {

@@ -43,8 +43,9 @@ export class OrderOnChainDataHelperUtil {
     const publicKey = this.generateOrderPdaPublicKey(orderId);
 
     const { orderId: id } = await program.account.order.fetch(publicKey);
+    const uuid = UuidHelper.convertBytesToUuid(id);
 
-    return { orderId: id };
+    return { orderId: uuid };
   }
 
   private static getSelf(): OrderOnChainDataHelperUtil {

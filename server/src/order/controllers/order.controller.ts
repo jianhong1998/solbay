@@ -11,6 +11,7 @@ import { LoggerUtil } from 'src/common/utils/logger.util';
 import { ProductService } from 'src/product/services/product.service';
 import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
 import { UserModel } from 'src/user/models/user.model';
+import { SellerService } from 'src/user/services/seller.service';
 import { EntityManager } from 'typeorm';
 
 import { CheckoutReqDTO, CheckoutResDTO } from '../dtos/place-order.dto';
@@ -24,6 +25,7 @@ export class OrderController {
     private readonly productService: ProductService,
     private readonly loggerUtil: LoggerUtil,
     private readonly orderHelperUtil: OrderHelperUtil,
+    private readonly sellerService: SellerService,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -75,9 +77,23 @@ export class OrderController {
 
       const orderStatus = await this.orderHelperUtil.getOrderStatus(order);
 
+      if (!product.seller) throw new Error('Seller is not fetched in product');
+
+      const seller = await this.sellerService.getSellerById({
+        entityManager: manager,
+        sellerId: product.seller.uuid,
+        withUser: true,
+      });
+
+      if (!seller || !seller.user) throw new Error('Seller not found');
+
       // TODO: Create transaction with payment instruction
       const versionedTransaction =
-        await this.orderHelperUtil.generatePaymentTransaction(order, buyer);
+        await this.orderHelperUtil.generatePaymentTransaction(
+          order,
+          buyer,
+          seller.user,
+        );
 
       return { order, orderStatus, transaction: versionedTransaction };
     });

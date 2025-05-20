@@ -61,6 +61,7 @@ deploy:
 deploy/with-airdrop:
 	@$(MAKE) airdrop/program-owner && \
 		$(MAKE) airdrop/fee-payer && \
+		$(MAKE) airdrop/usdc-mint-authority && \
 		$(MAKE) deploy
 
 airdrop/program-owner:
@@ -68,6 +69,10 @@ airdrop/program-owner:
 
 airdrop/fee-payer:
 	@solana airdrop 10 -k ./keypairs/fee-payer.json
+
+airdrop/usdc-mint-authority:
+	@solana airdrop 10 -k ./keypairs/test-usdc-authority.json
+	
 
 install:
 	@rm -rf ./node_modules
