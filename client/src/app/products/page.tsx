@@ -15,7 +15,6 @@ const ProductList: NextPage = () => {
   const { data: productList, isFetched: isGetProductListExecuted } =
     useGetBuyerProductList();
 
-  // TODO: Implement buy feature
   const generateBuyButtonOnClickFn = (productId: string) => () => {
     router.push(encodeURI(`/checkout?productId=${productId}`));
   };
@@ -50,6 +49,7 @@ const ProductList: NextPage = () => {
           >
             <Card
               title={product.name}
+              description={`Available: ${product.availableQuantity}`}
               price={NumberDisplayHelper.convertMicroUsdcToUsdc(
                 product.priceInMicroUsdc,
               )}

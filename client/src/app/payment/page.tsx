@@ -10,8 +10,11 @@ import LoginRequired from './login-required';
 type PaymentPageProps = {};
 
 type PaymentPageSearchParams = {
-  transaction: string;
-  orderId: string;
+  orderId?: string;
+};
+
+const extractOrderIdsFromQuery = (query: string): string[] => {
+  return query.split(',');
 };
 
 const PaymentPage: NextPage<
@@ -19,10 +22,13 @@ const PaymentPage: NextPage<
 > = async ({ searchParams }) => {
   const cookieStorage = cookies();
   const authToken = cookieStorage.get(TOKEN_COOKIE_NAME);
-  const { orderId, transaction } = await searchParams;
+  const { orderId: orderIdQuery } = await searchParams;
 
-  if (!orderId || !transaction) redirect('/');
+  if (!orderIdQuery) redirect('/');
   if (!authToken) return <LoginRequired />;
+
+  const orderIds = extractOrderIdsFromQuery(orderIdQuery);
+  if (!orderIds.length) redirect('/');
 
   return <></>;
 };

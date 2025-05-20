@@ -124,12 +124,11 @@ const CheckoutFeature: FC<CheckoutFeatureProps> = ({ productId }) => {
   useEffect(() => {
     if (!placeOrderResData) return;
 
-    const transactionData = encodeURI(placeOrderResData.transaction);
     const orderId = encodeURI(
       placeOrderResData.orders.map((order) => order.uuid).join(','),
     );
 
-    router.push(`/payment?transaction=${transactionData}&orderId=${orderId}`);
+    router.push(`/payment?orderId=${orderId}`);
   }, [placeOrderResData, router]);
 
   /* Handling stale data refetching */

@@ -108,23 +108,15 @@ class OrderDTO {
 }
 
 export class CheckoutResDTO {
-  @IsString()
-  transaction: string;
-
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested()
   @Type(() => OrderDTO)
   orders: OrderDTO[];
 
-  constructor(params: {
-    serializedTransaction: string;
-    orders: OrderModel[];
-    orderStatus: OrderStatus;
-  }) {
-    const { orders, serializedTransaction, orderStatus } = params;
+  constructor(params: { orders: OrderModel[]; orderStatus: OrderStatus }) {
+    const { orders, orderStatus } = params;
 
-    this.transaction = serializedTransaction;
     this.orders = orders.map((order) => new OrderDTO(order, orderStatus));
   }
 }

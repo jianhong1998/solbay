@@ -9,6 +9,7 @@ import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-displa
 type CheckoutProductListItemProps = {
   productId: string;
   productName: string;
+  productAvailableQuantity: number;
   unitPrice: number;
   quantity: number;
   setQuantity: (params: { productId: string; quantity: number }) => void;
@@ -19,6 +20,7 @@ type CheckoutProductListItemProps = {
 const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
   productId,
   productName,
+  productAvailableQuantity,
   unitPrice,
   quantity,
   setQuantity,
@@ -59,10 +61,16 @@ const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
           </div>
         </div>
       </td>
-      {/* Name */}
-      <td>{productName}</td>
+      {/* Name & Available Quantity */}
+      <td>
+        <div className="font-bold">{productName}</div>
+        <div className="text-gray-400 dark:text-gray-600">
+          Available:{' '}
+          <span className="font-bold">{productAvailableQuantity}</span>
+        </div>
+      </td>
       {/* Unit Price */}
-      <td>{unitPriceDisplayString}</td>
+      <td className="font-bold">{unitPriceDisplayString}</td>
       {/* Quanitty */}
       <td>
         <NumberInput
@@ -72,7 +80,7 @@ const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
         />
       </td>
       {/* Sub-Total */}
-      <td>{subTotalPriceDisplayString}</td>
+      <td className="font-bold">{subTotalPriceDisplayString}</td>
     </tr>
   );
 };

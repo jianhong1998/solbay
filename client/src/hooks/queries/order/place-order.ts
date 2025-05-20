@@ -14,7 +14,6 @@ type IPlaceOrderParams = {
 };
 
 type IPlaceOrderRes = {
-  transaction: string;
   orders: Array<{
     uuid: string;
     quantity: number;

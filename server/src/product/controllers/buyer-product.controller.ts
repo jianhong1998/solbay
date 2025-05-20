@@ -1,6 +1,7 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { Public } from 'src/common/decorators';
+import { MoreThanOrEqual } from 'typeorm';
 import { validate } from 'uuid';
 
 import { GetProductDetailsResDTO } from '../dtos/get-product-details.dto';
@@ -17,6 +18,7 @@ export class BuyerProductController {
     const products = await this.productService.getProducts({
       criterial: {
         isPublish: true,
+        availableQuantity: MoreThanOrEqual(1),
       },
     });
 
