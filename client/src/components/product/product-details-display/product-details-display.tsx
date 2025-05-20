@@ -89,6 +89,9 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
             USDC
           </div>
 
+          {/* Product Available Quantity */}
+          <div>Available Quantity: {productDetails.availableQuantity}</div>
+
           <div className="divider">
             <p className="text-gray-400">Product Description</p>
           </div>
