@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 
+import { PLACEHOLDER_IMAGE_URL } from '@/constants/url.constant';
 import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-display-helper';
 
 import PrimaryButton from './buttons/primary-button';
@@ -18,13 +19,13 @@ const Card: React.FC<ICard> = (props) => {
     title = 'Placeholder Title',
     price,
     description = '-',
-    imageUrl = 'https://placehold.co/600x400',
+    imageUrl = PLACEHOLDER_IMAGE_URL,
     cardOnClickFn: onClickFn,
     buyButtonOnClickFn,
   } = props;
   return (
     <div
-      className={`card bg-base-100 shadow-sm h-full ${onClickFn ? 'cursor-pointer' : ''}`}
+      className={`card bg-base-100 shadow-sm h-full dark:bg-gray-900 ${onClickFn ? 'cursor-pointer' : ''}`}
       onClick={onClickFn}
     >
       {' '}

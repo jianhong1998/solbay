@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 import LinkButton from '@/components/ui/buttons/link-button';
 import { IProductWithoutSensitiveData } from '@/types/product/product-without-sensitive-data.type';
@@ -41,7 +41,7 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
       </div>
 
       {/* Card */}
-      <div className="shadow-xl rounded-3xl">
+      <div className="shadow-xl rounded-3xl dark:bg-gray-900">
         <figure className="w-full h-72">
           <img
             src={productImageUrl}
@@ -54,7 +54,7 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           {/* Product Name */}
           <div className="flex flex-row justify-between">
             <div>
-              <p className="text-2xl text-wrap font-bold">
+              <p className="text-2xl text-wrap font-bold dark:text-gray-300">
                 {productDetails.name}
               </p>
               <p className="tex-wrap text-gray-400">
@@ -89,6 +89,9 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
             USDC
           </div>
 
+          {/* Product Available Quantity */}
+          <div>Available Quantity: {productDetails.availableQuantity}</div>
+
           <div className="divider">
             <p className="text-gray-400">Product Description</p>
           </div>
@@ -96,10 +99,10 @@ const ProductDetailsDisplay: FC<ProductDetailsDisplayProps> = ({
           {/* Product Description */}
           <div className="text-wrap">
             {productDetails.description.split('\n').map((value) => (
-              <>
-                <p key={value.slice(0, 20)}>{value}</p>
+              <Fragment key={value.slice(0, 20)}>
+                <p>{value}</p>
                 <br />
-              </>
+              </Fragment>
             ))}
           </div>
         </div>

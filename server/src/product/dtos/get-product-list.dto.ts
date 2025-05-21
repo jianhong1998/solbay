@@ -6,7 +6,7 @@ import {
 
 type IProductListWithoutDetails = Pick<
   IProductWithoutSensitiveData,
-  'uuid' | 'name' | 'priceInMicroUsdc' | 'seller'
+  'uuid' | 'name' | 'priceInMicroUsdc' | 'seller' | 'availableQuantity'
 >;
 
 export class GetProductListResDTO {
@@ -14,7 +14,7 @@ export class GetProductListResDTO {
 
   constructor(products: ProductModel[]) {
     this.products = products.map((product) => {
-      const { name, priceInMicroUsdc, seller, uuid } =
+      const { name, priceInMicroUsdc, seller, uuid, availableQuantity } =
         new ProductWithoutSensitiveData(product);
 
       return {
@@ -22,6 +22,7 @@ export class GetProductListResDTO {
         name,
         priceInMicroUsdc,
         seller,
+        availableQuantity,
       };
     });
   }

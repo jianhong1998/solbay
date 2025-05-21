@@ -1,5 +1,7 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -62,17 +64,25 @@ class LogisticInfoCreationDTO implements ILogisticInfoCreationData {
 }
 
 export class CheckoutReqDTO {
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => ProductQuantityDTO)
+  productQuantities: ProductQuantityDTO[];
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LogisticInfoCreationDTO)
+  logisticInfo: LogisticInfoCreationDTO;
+}
+
+class ProductQuantityDTO {
   @IsUUID()
   productId: UUID;
 
   @IsNumber()
   @IsPositive()
   quantity: number;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => LogisticInfoCreationDTO)
-  logisticInfo: LogisticInfoCreationDTO;
 }
 
 class OrderDTO {
@@ -98,22 +108,15 @@ class OrderDTO {
 }
 
 export class CheckoutResDTO {
-  @IsString()
-  transaction: string;
-
-  @IsObject()
+  @IsArray()
+  @ArrayNotEmpty()
   @ValidateNested()
   @Type(() => OrderDTO)
-  order: OrderDTO;
+  orders: OrderDTO[];
 
-  constructor(params: {
-    serializedTransaction: string;
-    order: OrderModel;
-    orderStatus: OrderStatus;
-  }) {
-    const { order, serializedTransaction, orderStatus } = params;
+  constructor(params: { orders: OrderModel[]; orderStatus: OrderStatus }) {
+    const { orders, orderStatus } = params;
 
-    this.transaction = serializedTransaction;
-    this.order = new OrderDTO(order, orderStatus);
+    this.orders = orders.map((order) => new OrderDTO(order, orderStatus));
   }
 }

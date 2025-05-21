@@ -49,7 +49,7 @@ export const useGetBuyerProductDetails = (productId: string) => {
       return res.data;
     },
     enabled: serverAxios.isInitialized,
-    staleTime: 5_000,
+    staleTime: 60_000,
     retry: false,
     refetchOnMount: true,
     refetchOnReconnect: true,
