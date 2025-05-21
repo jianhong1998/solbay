@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
@@ -59,10 +60,27 @@ export class OrderController {
         }
 
         if (!product.isPublish) {
-          logger.warn(
+          logger.error(
             `Buyer (${buyer.uuid}) is trying to checkout a non-published product (${productId})`,
           );
           throw new NotFoundException('Product not found.');
+        }
+
+        if (!product.seller)
+          throw new Error('Seller is not fetched in product');
+
+        const seller = await this.sellerService.getSellerById({
+          entityManager: manager,
+          sellerId: product.seller.uuid,
+          withUser: true,
+        });
+
+        if (!seller || !seller.user) throw new Error('Seller not found');
+
+        if (seller.user.uuid === buyer.uuid) {
+          throw new BadRequestException(
+            'Failed to checkout because this is your product.',
+          );
         }
 
         const order = await this.orderService.createOrder({
@@ -75,17 +93,6 @@ export class OrderController {
         });
 
         const orderStatus = await this.orderHelperUtil.getOrderStatus(order);
-
-        if (!product.seller)
-          throw new Error('Seller is not fetched in product');
-
-        const seller = await this.sellerService.getSellerById({
-          entityManager: manager,
-          sellerId: product.seller.uuid,
-          withUser: true,
-        });
-
-        if (!seller || !seller.user) throw new Error('Seller not found');
 
         return { order, orderStatus };
       },
