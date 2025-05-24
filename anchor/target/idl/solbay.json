@@ -8,6 +8,53 @@
   },
   "instructions": [
     {
+      "name": "delivery_in_progress",
+      "discriminator": [111, 148, 3, 90, 214, 177, 162, 138],
+      "accounts": [
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "order",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [111, 114, 100, 101, 114]
+              },
+              {
+                "kind": "arg",
+                "path": "order_id"
+              },
+              {
+                "kind": "arg",
+                "path": "platform_code"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_order_id",
+          "type": {
+            "array": ["u8", 16]
+          }
+        },
+        {
+          "name": "_platform_code",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "init_escrow",
       "discriminator": [70, 46, 40, 23, 6, 11, 81, 139],
       "accounts": [
@@ -339,6 +386,18 @@
     {
       "name": "Order",
       "discriminator": [134, 173, 223, 185, 77, 86, 28, 51]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnauthorisedSeller",
+      "msg": "Unauthorised Seller"
+    },
+    {
+      "code": 6001,
+      "name": "UnauthorisedAction",
+      "msg": "Unauthorised Action"
     }
   ],
   "types": [

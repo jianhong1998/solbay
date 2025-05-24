@@ -14,6 +14,53 @@ export type Solbay = {
   };
   instructions: [
     {
+      name: 'deliveryInProgress';
+      discriminator: [111, 148, 3, 90, 214, 177, 162, 138];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'seller';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'order';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [111, 114, 100, 101, 114];
+              },
+              {
+                kind: 'arg';
+                path: 'orderId';
+              },
+              {
+                kind: 'arg';
+                path: 'platformCode';
+              },
+            ];
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'orderId';
+          type: {
+            array: ['u8', 16];
+          };
+        },
+        {
+          name: 'platformCode';
+          type: 'string';
+        },
+      ];
+    },
+    {
       name: 'initEscrow';
       discriminator: [70, 46, 40, 23, 6, 11, 81, 139];
       accounts: [
@@ -513,6 +560,18 @@ export type Solbay = {
     {
       name: 'order';
       discriminator: [134, 173, 223, 185, 77, 86, 28, 51];
+    },
+  ];
+  errors: [
+    {
+      code: 6000;
+      name: 'unauthorisedSeller';
+      msg: 'Unauthorised Seller';
+    },
+    {
+      code: 6001;
+      name: 'unauthorisedAction';
+      msg: 'Unauthorised Action';
     },
   ];
   types: [
