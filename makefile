@@ -62,6 +62,7 @@ deploy/with-airdrop:
 	@$(MAKE) airdrop/program-owner && \
 		$(MAKE) airdrop/fee-payer && \
 		$(MAKE) airdrop/usdc-mint-authority && \
+		$(MAKE) airdrop/usdc-mint-authority/test && \
 		$(MAKE) deploy
 
 airdrop/program-owner:
@@ -70,8 +71,11 @@ airdrop/program-owner:
 airdrop/fee-payer:
 	@solana airdrop 10 -k ./keypairs/fee-payer.json
 
-airdrop/usdc-mint-authority:
+airdrop/usdc-mint-authority/test:
 	@solana airdrop 10 -k ./keypairs/test-usdc-authority.json
+
+airdrop/usdc-mint-authority:
+	@solana airdrop 10 FZJmJuj8vz2HbBFrcdbMoZYNnGprBRzZ35KczJwHacAR
 	
 
 install:
