@@ -25,10 +25,10 @@ export class OrderDBUtil extends BaseDBUtil<
     const { entityManager, creationData: orderData } = params;
     const repo = entityManager?.getRepository(OrderModel) ?? this.repo;
 
-    if (!orderData.product.uuid)
+    if (!orderData.product?.uuid)
       throw new Error(`Product must be saved before can create order`);
 
-    if (!orderData.logisticInfo.uuid)
+    if (!orderData.logisticInfo?.uuid)
       throw new Error(`LogisticInfo must be saved before can create order`);
 
     if (orderData.totalAmountInMicroUsdc <= 0)

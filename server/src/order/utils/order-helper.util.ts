@@ -1,6 +1,6 @@
-import { BN } from '@coral-xyz/anchor';
 import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
@@ -52,8 +52,13 @@ export class OrderHelperUtil {
     const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(orderId));
 
     const instruction = await program.methods
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      .purchase(orderIdBytes, 'SOLB', order.totalAmountInMicroUsdc, amount, '')
+      .purchase(
+        orderIdBytes,
+        'SOLB',
+        new BN(order.totalAmountInMicroUsdc),
+        amount,
+        '',
+      )
       .accounts({
         buyer: buyerPublicKey,
         mint: USDC_MINT_PUBLICK_KEY_DEVNET,

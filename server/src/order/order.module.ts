@@ -5,10 +5,12 @@ import { ProductModule } from 'src/product/product.module';
 import { UserModule } from 'src/user/user.module';
 
 import { OrderController } from './controllers/order.controller';
+import { PaymentController } from './controllers/payment.controller';
 import { LogisticInfoModel } from './models/logistic-info.model';
 import { LogisticTrackingInfoModel } from './models/logistic-tracking-info.model';
 import { OrderModel } from './models/order.model';
 import { OrderService } from './services/order.service';
+import { PaymentService } from './services/payment.service';
 import { LogisticInfoDBUtil } from './utils/logistic-info-db.util';
 import { LogisticTrackingInfoDBUtil } from './utils/logistic-tracking-info-db.util';
 import { OrderDBUtil } from './utils/order-db.util';
@@ -27,12 +29,13 @@ import { OrderHelperUtil } from './utils/order-helper.util';
   ],
   providers: [
     OrderService,
+    PaymentService,
     OrderDBUtil,
     LogisticInfoDBUtil,
     LogisticTrackingInfoDBUtil,
     OrderHelperUtil,
   ],
-  controllers: [OrderController],
+  controllers: [OrderController, PaymentController],
   exports: [OrderService],
 })
 export class OrderModule {}
