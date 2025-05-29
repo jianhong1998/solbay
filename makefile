@@ -49,6 +49,7 @@ test/anchor/onchain/skip-deploy:
 		IS_TESTING_ON_CHAIN=true anchor test --skip-local-validator --skip-deploy
 
 db/data/up:
+	@$(MAKE) setup/dummy-usdc
 	@cd server && \
 		npm run build && \
 		npm run seed:run
@@ -118,3 +119,7 @@ lint/fix:
 		npx eslint ./server --fix
 	@echo "Checking lint issue in anchor tests..." && \
 		npx eslint ./anchor --fix
+
+setup/dummy-usdc:
+	@chmod +x ./scripts/init-dummy-usdc.sh && \
+		./scripts/init-dummy-usdc.sh
