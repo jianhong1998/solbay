@@ -3,6 +3,7 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
+  getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
   TokenInvalidAccountOwnerError,
 } from '@solana/spl-token';
@@ -47,13 +48,31 @@ export class AccountHelper {
     }
   }
 
+  public static generateAssociatedTokenAccountPublicKey(
+    owner: PublicKey,
+    mint: PublicKey,
+  ): PublicKey {
+    return getAssociatedTokenAddressSync(
+      mint,
+      owner,
+      false,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    );
+  }
+
   public static generateAssociatedTokenAccountCreationInstruction(
     owner: PublicKey,
     mint: PublicKey,
   ): TransactionInstruction {
+    const tokenAccountAddress = this.generateAssociatedTokenAccountPublicKey(
+      owner,
+      mint,
+    );
+
     const instruction = createAssociatedTokenAccountInstruction(
       owner, // Payer
-      owner, // AssociatedTokenAccount PublicKey
+      tokenAccountAddress, // AssociatedTokenAccount PublicKey
       owner, // Owner
       mint, // Mint
       TOKEN_PROGRAM_ID, // TokenProgram PublicKey

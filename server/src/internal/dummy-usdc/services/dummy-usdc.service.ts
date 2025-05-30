@@ -1,16 +1,10 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
-import {
-  BlockhashWithExpiryBlockHeight,
-  PublicKey,
-  VersionedTransaction,
-} from '@solana/web3.js';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { getMint, Mint, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { ClusterType } from 'src/solana-connection/cluster.type';
 import { AccountHelper } from 'src/solana-connection/helpers/account.helper';
 import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
-import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
+import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 
 import {
   IAirdropUsdcParams,
@@ -19,17 +13,28 @@ import {
 
 @Injectable()
 export class DummyUsdcService {
-  constructor() {}
+  private readonly clusterType: ClusterType;
+  private readonly connection: Connection;
+
+  constructor() {
+    this.clusterType = ConnectionUtil.getClusterType();
+    this.connection = ConnectionUtil.getConnection();
+  }
 
   public async initUsdc(): Promise<PublicKey> {
-    await UsdcHelper.setupDummyUsdc();
+    if (this.clusterType === 'mainnet-beta')
+      throw new Error('Cannot init dummy USDC on mainnet');
 
+    await UsdcHelper.setupDummyUsdc();
     return UsdcHelper.getUsdcMint();
   }
 
   public async airdropUsdc(
     params: IAirdropUsdcParams,
   ): Promise<IAirdropUsdcResult> {
+    if (this.clusterType === 'mainnet-beta')
+      throw new Error('Cannot airdrop dummy USDC on mainnet');
+
     const { amount, publicKey } = params;
 
     const associatedTokenAccount =
@@ -49,24 +54,14 @@ export class DummyUsdcService {
     };
   }
 
-  public async initAssociatedTokenAccount(ownerPublicKey: PublicKey): Promise<{
-    transaction: VersionedTransaction;
-    latestBlockhash: BlockhashWithExpiryBlockHeight;
-  }> {
-    const existingTokenAccount =
-      await AccountHelper.getTokenAccount(ownerPublicKey);
+  public async getUsdcMint(): Promise<Mint> {
+    const mintPublicKey = UsdcHelper.getUsdcMint();
 
-    if (existingTokenAccount)
-      throw new ConflictException('Associated token account already exist');
-
-    const instruction =
-      UsdcHelper.generateAssociatedTokenAccountCreationInstruction(
-        ownerPublicKey,
-      );
-
-    return await TransactionUtil.createTransaction({
-      instructions: [instruction],
-      payerPublicKey: ownerPublicKey,
-    });
+    return await getMint(
+      this.connection,
+      mintPublicKey,
+      'confirmed',
+      TOKEN_PROGRAM_ID,
+    );
   }
 }

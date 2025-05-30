@@ -7,10 +7,6 @@ import { ExplorerLinkHelper } from 'src/solana-connection/helpers/explorer-link.
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 
 import { AirdropUsdcReqDTO, AirdropUsdcResDTO } from '../dtos/airdrop-usdc.dto';
-import {
-  CreateAssociatedTokenAccountReqDTO,
-  CreateAssociatedTokenAccountResDTO,
-} from '../dtos/create-associated-token-account.dto';
 import { DummyUsdcService } from '../services/dummy-usdc.service';
 
 @Controller('/internal/dummy-usdc')
@@ -36,21 +32,6 @@ export class DummyUsdcController {
     const usdcLink = ExplorerLinkHelper.getAccountUrl(usdcMintPubkey);
 
     return { usdc: usdcLink };
-  }
-
-  @Post('/associated-token-account')
-  @Public()
-  public async createAssociatedTokenAccount(
-    @Body() reqBody: CreateAssociatedTokenAccountReqDTO,
-  ): Promise<CreateAssociatedTokenAccountResDTO> {
-    const { owner } = reqBody;
-
-    const ownerPublicKey = new PublicKey(owner);
-
-    const { transaction, latestBlockhash } =
-      await this.dummyUsdcService.initAssociatedTokenAccount(ownerPublicKey);
-
-    return new CreateAssociatedTokenAccountResDTO(transaction, latestBlockhash);
   }
 
   @Post('/airdrop')

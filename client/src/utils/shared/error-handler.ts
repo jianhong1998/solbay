@@ -1,3 +1,4 @@
+import { TokenAccountNotFoundError, TokenError } from '@solana/spl-token';
 import axios, { AxiosError } from 'axios';
 
 import { GeneralErrorMessage } from '@/constants/error.constant';
@@ -21,6 +22,10 @@ export class ErrorHandler {
         this.extractErrorMessageFromAxiosError(error) ??
         GeneralErrorMessage.SOMETHING_WENT_WRONG
       );
+    }
+
+    if (error instanceof TokenError) {
+      return this.getTokenErrorMessage(error);
     }
 
     if (error instanceof Error) {
@@ -89,5 +94,13 @@ export class ErrorHandler {
       typeof data === 'number' ||
       typeof data === 'symbol'
     );
+  }
+
+  private static getTokenErrorMessage(error: TokenError): string {
+    if (error instanceof TokenAccountNotFoundError) {
+      return 'Token account does not exist!';
+    }
+
+    return GeneralErrorMessage.SOMETHING_WENT_WRONG;
   }
 }

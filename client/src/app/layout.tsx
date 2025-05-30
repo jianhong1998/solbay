@@ -17,6 +17,7 @@ const links: { label: string; path: string }[] = [
   { label: 'Browse', path: '/products' },
   // { label: 'Buyer', path: '/buyer' },
   { label: 'Seller', path: '/seller' },
+  { label: 'Dummy USDC', path: '/dummy-usdc' },
 ];
 
 export default function RootLayout({
