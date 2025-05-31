@@ -8,13 +8,19 @@ import { useGetDummyUsdcTokenAccount } from '@/hooks/queries/dummy-usdc/get-toke
 import { ErrorHandler } from '@/utils/shared/error-handler';
 
 import { CreateDummyUsdcTokenAccount } from './create-dummy-usdc-token-account';
+import { DummyUsdcAccountCard } from './dummy-usdc-account-card/dummy-usdc-account-card';
 
 export const DummyUsdcAccountFeature: FC = () => {
   const {
     data: tokenAccount,
     error: getTokenAccountError,
     isFetched: isTokenAccountFetched,
+    refetch: refetchTokenAccount,
   } = useGetDummyUsdcTokenAccount();
+
+  const refreshHandler = async () => {
+    await refetchTokenAccount();
+  };
 
   useEffect(() => {
     if (!getTokenAccountError) return;
@@ -30,10 +36,12 @@ export const DummyUsdcAccountFeature: FC = () => {
   }
 
   return (
-    <div>
-      <div>{tokenAccount.publicKey}</div>
-      <div>{tokenAccount.owner}</div>
-      <div>{tokenAccount.amount}</div>
+    <div className="mt-3">
+      <DummyUsdcAccountCard
+        walletPublicKey={tokenAccount.owner}
+        balance={tokenAccount.amount}
+        refreshFn={refreshHandler}
+      />
     </div>
   );
 };
