@@ -37,8 +37,17 @@ export class DummyUsdcService {
 
     const { amount, publicKey } = params;
 
-    const associatedTokenAccount =
-      await AccountHelper.getTokenAccount(publicKey);
+    const usdcMint = await this.getUsdcMint();
+
+    const associatedTokenAccountPublicKey =
+      AccountHelper.generateAssociatedTokenAccountPublicKey(
+        publicKey,
+        usdcMint.address,
+      );
+
+    const associatedTokenAccount = await AccountHelper.getTokenAccount(
+      associatedTokenAccountPublicKey,
+    );
 
     if (!associatedTokenAccount)
       throw new BadRequestException('Token account does not exist');
