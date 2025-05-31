@@ -1,40 +1,40 @@
-# #!/usr/bin/env sh
+#!/usr/bin/env sh
 
-# # Get the commit message file path and source (passed by Git)
-# COMMIT_MSG_FILE=$1
-# COMMIT_SOURCE=$2
+# Get the commit message file path and source (passed by Git)
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
 
-# # Skip if the commit is a merge, template, or squash
-# if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
-#   exit 0
-# fi
+# Skip if the commit is a merge, template, or squash
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
+  exit 0
+fi
 
-# # Read the original commit message
-# ORIGINAL_MSG=$(cat "$COMMIT_MSG_FILE")
+# Read the original commit message
+ORIGINAL_MSG=$(cat "$COMMIT_MSG_FILE")
 
-# # Get the current branch name
-# BRANCH_NAME=$(git symbolic-ref --short HEAD)
+# Get the current branch name
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
 
-# # Use regex to match branch name like 'chore/123-update-something'
-# if ! echo "$BRANCH_NAME" | grep -E '^(chore|feat|fix|docs|style|refactor|test|build|ci|perf|revert)/[0-9]+-.*$' >/dev/null; then
-#   echo "Error: Branch name must follow pattern '<type>/<ticket-id>-<description>' (e.g., chore/123-update-something)"
-#   exit 1
-# fi
+# Use regex to match branch name like 'chore/123-update-something'
+if ! echo "$BRANCH_NAME" | grep -E '^(chore|feat|fix|docs|style|refactor|test|build|ci|perf|revert)/[0-9]+-.*$' >/dev/null; then
+  echo "Error: Branch name must follow pattern '<type>/<ticket-id>-<description>' (e.g., chore/123-update-something)"
+  exit 1
+fi
 
-# # Extract type and ticket ID from branch name
-# TYPE=$(echo "$BRANCH_NAME" | cut -d'/' -f1)
-# TICKET_ID=$(echo "$BRANCH_NAME" | cut -d'/' -f2 | cut -d'-' -f1)
+# Extract type and ticket ID from branch name
+TYPE=$(echo "$BRANCH_NAME" | cut -d'/' -f1)
+TICKET_ID=$(echo "$BRANCH_NAME" | cut -d'/' -f2 | cut -d'-' -f1)
 
-# # Check if the commit message already contains the ticket ID
-# if echo "$ORIGINAL_MSG" | grep -q "\[${TICKET_ID}\]"; then
-#   echo "Commit message already contains ticket ID."
-#   exit 0
-# fi
+# Check if the commit message already contains the ticket ID
+if echo "$ORIGINAL_MSG" | grep -q "\[${TICKET_ID}\]"; then
+  echo "Commit message already contains ticket ID."
+  exit 0
+fi
 
-# # Format the new commit message
-# NEW_MSG="${TYPE}: ${TICKET_ID} - ${ORIGINAL_MSG}"
+# Format the new commit message
+NEW_MSG="${TYPE}: ${TICKET_ID} - ${ORIGINAL_MSG}"
 
-# # Write the new message back to the commit message file
-# echo "$NEW_MSG" > "$COMMIT_MSG_FILE"
-# echo "Updated commit message to: $NEW_MSG"
-# exit 0
+# Write the new message back to the commit message file
+echo "$NEW_MSG" > "$COMMIT_MSG_FILE"
+echo "Updated commit message to: $NEW_MSG"
+exit 0
