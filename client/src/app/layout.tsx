@@ -13,6 +13,7 @@ export const metadata = {
 
 const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
+  { label: 'USDC Account', path: '/dummy-usdc' },
   { label: 'Clusters', path: '/clusters' },
   { label: 'Browse', path: '/products' },
   // { label: 'Buyer', path: '/buyer' },

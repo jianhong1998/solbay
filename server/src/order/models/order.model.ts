@@ -51,7 +51,7 @@ export class OrderModel {
   @JoinColumn({
     name: 'product_uuid',
   })
-  product: Relation<ProductModel>;
+  product?: Relation<ProductModel>;
 
   @OneToOne(() => LogisticInfoModel, {
     eager: true,
@@ -60,5 +60,5 @@ export class OrderModel {
   @JoinColumn({
     name: 'logistic_info_uuid',
   })
-  logisticInfo: Relation<LogisticInfoModel>;
+  logisticInfo?: Relation<LogisticInfoModel>;
 }

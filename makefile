@@ -49,6 +49,7 @@ test/anchor/onchain/skip-deploy:
 		IS_TESTING_ON_CHAIN=true anchor test --skip-local-validator --skip-deploy
 
 db/data/up:
+	@$(MAKE) setup/dummy-usdc
 	@cd server && \
 		npm run build && \
 		npm run seed:run
@@ -62,6 +63,7 @@ deploy/with-airdrop:
 	@$(MAKE) airdrop/program-owner && \
 		$(MAKE) airdrop/fee-payer && \
 		$(MAKE) airdrop/usdc-mint-authority && \
+		$(MAKE) airdrop/usdc-mint-authority/test && \
 		$(MAKE) deploy
 
 airdrop/program-owner:
@@ -70,8 +72,11 @@ airdrop/program-owner:
 airdrop/fee-payer:
 	@solana airdrop 10 -k ./keypairs/fee-payer.json
 
-airdrop/usdc-mint-authority:
+airdrop/usdc-mint-authority/test:
 	@solana airdrop 10 -k ./keypairs/test-usdc-authority.json
+
+airdrop/usdc-mint-authority:
+	@solana airdrop 10 FZJmJuj8vz2HbBFrcdbMoZYNnGprBRzZ35KczJwHacAR
 	
 
 install:
@@ -114,3 +119,7 @@ lint/fix:
 		npx eslint ./server --fix
 	@echo "Checking lint issue in anchor tests..." && \
 		npx eslint ./anchor --fix
+
+setup/dummy-usdc:
+	@chmod +x ./scripts/init-dummy-usdc.sh && \
+		./scripts/init-dummy-usdc.sh

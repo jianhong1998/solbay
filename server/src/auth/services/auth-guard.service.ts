@@ -205,6 +205,8 @@ export class AuthGuardService implements CanActivate {
       logger.log(
         `Public key (${publicKeyString}) is unmatched with user (${user.uuid})`,
       );
+
+      if (!isPublic) throw new UnauthorizedException(this.unauthorizedMessage);
     }
 
     /* Step: remove token from cookie if it is invalid */

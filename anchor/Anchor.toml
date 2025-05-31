@@ -1,5 +1,10 @@
 [toolchain]
-anchor_version = "0.30.1"
+anchor_version = "0.31.1"
+solana_version="2.1.21"
+channel = "1.76.0"
+
+[env]
+RUSTUP_TOOLCHAIN = "nightly-2025-04-01"
 
 [features]
 resolution = true
