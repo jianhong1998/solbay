@@ -56,13 +56,12 @@ export const useInitDummyUsdcAssociatedTokenAccount = () => {
         commitment: 'confirmed',
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: ['dummy-usdc-acount', 'get', { publicKey: publicKeyString }],
-      });
-
       return result;
     },
-    onSuccess: (_data) => {
+    onSuccess: async (_data) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['dummy-usdc-account', 'get', { publicKey: publicKeyString }],
+      });
       toast.success('Associated token account for dummy USDC is initialized!');
     },
     onError: (error) => {

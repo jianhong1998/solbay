@@ -5,7 +5,10 @@ use anchor_spl::{
 };
 
 use crate::{
-  constants::{ANCHOR_DISCRIMINATOR, ESCROW_AUTHORITY_SEED, ESCROW_CONFIG_SEED, ESCROW_SEED},
+  constants::{
+    ANCHOR_DISCRIMINATOR, ESCROW_AUTHORITY_SEED, ESCROW_CONFIG_SEED, ESCROW_OPERATION_ACCOUNT_SEED,
+    ESCROW_SEED,
+  },
   states::EscrowConfig,
 };
 
@@ -46,6 +49,19 @@ pub struct InitEscrow<'info> {
   #[account(
     init,
     payer = signer,
+    token::mint = mint,
+    token::authority = authority,
+    seeds = [
+      ESCROW_OPERATION_ACCOUNT_SEED,
+      mint.key().as_ref()
+    ],
+    bump
+  )]
+  pub operation_token_account: InterfaceAccount<'info, TokenAccount>,
+
+  #[account(
+    init,
+    payer = signer,
     space = ANCHOR_DISCRIMINATOR + EscrowConfig::INIT_SPACE,
     seeds = [
       ESCROW_CONFIG_SEED,
@@ -62,6 +78,7 @@ pub fn process_init_escrow(context: Context<InitEscrow>) -> Result<()> {
   escrow_config.bump_escrow_config = context.bumps.escrow_config;
   escrow_config.bump_authority = context.bumps.authority;
   escrow_config.bump_escrow_token_account = context.bumps.escrow_token_account;
+  escrow_config.bump_escrow_operation_account = context.bumps.operation_token_account;
 
   Ok(())
 }

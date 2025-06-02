@@ -46,6 +46,79 @@ export type Solbay = {
             ];
           };
         },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'escrowOperationAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
       ];
       args: [
         {
@@ -121,6 +194,47 @@ export type Solbay = {
               {
                 kind: 'const';
                 value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'operationTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
               },
               {
                 kind: 'account';
@@ -573,6 +687,11 @@ export type Solbay = {
       name: 'unauthorisedAction';
       msg: 'Unauthorised Action';
     },
+    {
+      code: 6002;
+      name: 'invalidMint';
+      msg: 'Invalid Mint';
+    },
   ];
   types: [
     {
@@ -590,6 +709,10 @@ export type Solbay = {
           },
           {
             name: 'bumpAuthority';
+            type: 'u8';
+          },
+          {
+            name: 'bumpEscrowOperationAccount';
             type: 'u8';
           },
         ];
@@ -645,6 +768,10 @@ export type Solbay = {
           {
             name: 'remarks';
             type: 'string';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
           },
         ];
       };

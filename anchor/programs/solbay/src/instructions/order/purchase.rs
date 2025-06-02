@@ -97,6 +97,8 @@ pub fn process_purchase(
   order_entry.buyer_pubkey = buyer.key();
   order_entry.token_mint_address = mint.key();
 
+  order_entry.bump = context.bumps.order;
+
   process_token_transfer(ProcessTokenTransfer {
     from: buyer_token_account.to_account_info(),
     program: token_program.to_account_info(),
