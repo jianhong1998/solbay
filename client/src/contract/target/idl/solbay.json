@@ -8,6 +8,92 @@
   },
   "instructions": [
     {
+      "name": "delivery_in_progress",
+      "discriminator": [111, 148, 3, 90, 214, 177, 162, 138],
+      "accounts": [
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "order",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [111, 114, 100, 101, 114]
+              },
+              {
+                "kind": "arg",
+                "path": "order_id"
+              },
+              {
+                "kind": "arg",
+                "path": "platform_code"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "escrow_operation_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 111, 112, 101, 114, 97, 116,
+                  105, 111, 110, 95, 97, 99, 99, 111, 117, 110, 116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 99, 111, 110, 102, 105, 103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_order_id",
+          "type": {
+            "array": ["u8", 16]
+          }
+        },
+        {
+          "name": "_platform_code",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "init_escrow",
       "discriminator": [70, 46, 40, 23, 6, 11, 81, 139],
       "accounts": [
@@ -54,6 +140,25 @@
               {
                 "kind": "const",
                 "value": [101, 115, 99, 114, 111, 119]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "operation_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 111, 112, 101, 114, 97, 116,
+                  105, 111, 110, 95, 97, 99, 99, 111, 117, 110, 116
+                ]
               },
               {
                 "kind": "account",
@@ -341,6 +446,23 @@
       "discriminator": [134, 173, 223, 185, 77, 86, 28, 51]
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnauthorisedSeller",
+      "msg": "Unauthorised Seller"
+    },
+    {
+      "code": 6001,
+      "name": "UnauthorisedAction",
+      "msg": "Unauthorised Action"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMint",
+      "msg": "Invalid Mint"
+    }
+  ],
   "types": [
     {
       "name": "EscrowConfig",
@@ -357,6 +479,10 @@
           },
           {
             "name": "bump_authority",
+            "type": "u8"
+          },
+          {
+            "name": "bump_escrow_operation_account",
             "type": "u8"
           }
         ]
@@ -412,6 +538,10 @@
           {
             "name": "remarks",
             "type": "string"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }

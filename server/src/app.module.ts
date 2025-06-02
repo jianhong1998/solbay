@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuardService } from './auth/services/auth-guard.service';
 import { CommonModule } from './common/common.module';
+import { EscrowModule } from './escrow/escrow.module';
 import { ExampleModule } from './example/example.module';
 import { InternalModule } from './internal/internal.module';
 import { OrderModule } from './order/order.module';
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
     ExampleModule,
     OrderModule,
     InternalModule,
+    EscrowModule,
   ],
   controllers: [AppController],
   providers: [

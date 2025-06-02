@@ -29,13 +29,14 @@ export const useGetDummyUsdcTokenAccount = () => {
       const res = await serverAxios.get<IGetDummyUsdcTokenAccountRes>(url);
       return res.data;
     },
-    enabled: Boolean(publicKey),
+    enabled: serverAxios.isInitialized && Boolean(publicKey),
     refetchOnReconnect: true,
     staleTime: 10 * 60 * 1_000, // 10 mins
+    retry: false,
   });
 
   useEffect(() => {
-    if (query.isStale) query.refetch();
+    if (query.isStale && query.isSuccess) query.refetch();
   }, [query]);
 
   return query;

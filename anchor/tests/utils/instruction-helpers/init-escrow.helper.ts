@@ -19,8 +19,10 @@ export const useInitEscrowHelper = async (params: {
 
   const { connection, usdcMint, escrowSigner } = params;
 
-  const escrowPublicKey =
-    ProgramAccountHelper.getEscrowAccountPublicKey(usdcMint);
+  const escrowPublicKey = ProgramAccountHelper.getEscrowAccountPublicKey(
+    usdcMint,
+    'escrow',
+  );
 
   const instruction = await program.methods
     .initEscrow()

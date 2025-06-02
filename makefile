@@ -50,6 +50,7 @@ test/anchor/onchain/skip-deploy:
 
 db/data/up:
 	@$(MAKE) setup/dummy-usdc
+	@$(MAKE) setup/escrow
 	@cd server && \
 		npm run build && \
 		npm run seed:run
@@ -123,3 +124,7 @@ lint/fix:
 setup/dummy-usdc:
 	@chmod +x ./scripts/init-dummy-usdc.sh && \
 		./scripts/init-dummy-usdc.sh
+
+setup/escrow:
+	@chmod +x ./scripts/init-escrow.sh && \
+		./scripts/init-escrow.sh

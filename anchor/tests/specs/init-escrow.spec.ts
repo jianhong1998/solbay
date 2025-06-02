@@ -94,19 +94,6 @@ describe('Test Init Escrow Token Account', () => {
       `Escrow Token Account: ${ExplorerLinkHelper.getAccountUrl(escrowPublicKey)}\n\nEscrow Authority: ${ExplorerLinkHelper.getAccountUrl(escrowAuthorityPublicKey)}`,
     );
 
-    // const { value: tokenAccounts } = await connection.getTokenAccountsByOwner(
-    //   escrowAuthorityPublicKey,
-    //   { mint: mockUsdc.mint, programId: program.programId },
-    // );
-    // const escrowAccount = tokenAccounts.find((acc) =>
-    //   acc.pubkey.equals(escrowPublicKey),
-    // );
-
-    // expect(tokenAccounts.length).greaterThan(0);
-
-    // expect(escrowAccount).toBeDefined();
-    // expect(escrowAccount?.pubkey.toBase58()).toBe(escrowPublicKey.toBase58());
-
     const escrowTokenAccount = await getAccount(
       connection,
       escrowPublicKey,

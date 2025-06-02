@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import { PublicKey } from '@solana/web3.js';
 import { getExplorerLink } from '@solana-developers/helpers';
 

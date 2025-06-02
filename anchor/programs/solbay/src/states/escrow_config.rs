@@ -6,4 +6,5 @@ pub struct EscrowConfig {
   pub bump_escrow_config: u8,
   pub bump_escrow_token_account: u8,
   pub bump_authority: u8,
+  pub bump_escrow_operation_account: u8,
 }

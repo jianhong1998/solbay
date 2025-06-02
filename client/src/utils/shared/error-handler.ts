@@ -1,4 +1,5 @@
 import { TokenAccountNotFoundError, TokenError } from '@solana/spl-token';
+import { SendTransactionError } from '@solana/web3.js';
 import axios, { AxiosError } from 'axios';
 
 import { GeneralErrorMessage } from '@/constants/error.constant';
@@ -22,6 +23,10 @@ export class ErrorHandler {
         this.extractErrorMessageFromAxiosError(error) ??
         GeneralErrorMessage.SOMETHING_WENT_WRONG
       );
+    }
+
+    if (error instanceof SendTransactionError) {
+      return this.getSendTransactionErrorMessage(error);
     }
 
     if (error instanceof TokenError) {
@@ -102,5 +107,23 @@ export class ErrorHandler {
     }
 
     return GeneralErrorMessage.SOMETHING_WENT_WRONG;
+  }
+
+  private static getSendTransactionErrorMessage(
+    error: SendTransactionError,
+  ): string {
+    const message = error.transactionError.message;
+
+    if (
+      message
+        .toLocaleLowerCase()
+        .includes(
+          'attempt to debit an account but found no record of a prior credit',
+        )
+    ) {
+      return 'Account does not have enough SOL';
+    }
+
+    return message;
   }
 }

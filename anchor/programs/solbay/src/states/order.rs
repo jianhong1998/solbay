@@ -18,4 +18,6 @@ pub struct Order {
   pub status: String,
   #[max_len(512)]
   pub remarks: String,
+
+  pub bump: u8,
 }

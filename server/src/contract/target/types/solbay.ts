@@ -14,6 +14,126 @@ export type Solbay = {
   };
   instructions: [
     {
+      name: 'deliveryInProgress';
+      discriminator: [111, 148, 3, 90, 214, 177, 162, 138];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'seller';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'order';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [111, 114, 100, 101, 114];
+              },
+              {
+                kind: 'arg';
+                path: 'orderId';
+              },
+              {
+                kind: 'arg';
+                path: 'platformCode';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'escrowOperationAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'orderId';
+          type: {
+            array: ['u8', 16];
+          };
+        },
+        {
+          name: 'platformCode';
+          type: 'string';
+        },
+      ];
+    },
+    {
       name: 'initEscrow';
       discriminator: [70, 46, 40, 23, 6, 11, 81, 139];
       accounts: [
@@ -74,6 +194,47 @@ export type Solbay = {
               {
                 kind: 'const';
                 value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'operationTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
               },
               {
                 kind: 'account';
@@ -515,6 +676,23 @@ export type Solbay = {
       discriminator: [134, 173, 223, 185, 77, 86, 28, 51];
     },
   ];
+  errors: [
+    {
+      code: 6000;
+      name: 'unauthorisedSeller';
+      msg: 'Unauthorised Seller';
+    },
+    {
+      code: 6001;
+      name: 'unauthorisedAction';
+      msg: 'Unauthorised Action';
+    },
+    {
+      code: 6002;
+      name: 'invalidMint';
+      msg: 'Invalid Mint';
+    },
+  ];
   types: [
     {
       name: 'escrowConfig';
@@ -531,6 +709,10 @@ export type Solbay = {
           },
           {
             name: 'bumpAuthority';
+            type: 'u8';
+          },
+          {
+            name: 'bumpEscrowOperationAccount';
             type: 'u8';
           },
         ];
@@ -586,6 +768,10 @@ export type Solbay = {
           {
             name: 'remarks';
             type: 'string';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
           },
         ];
       };
