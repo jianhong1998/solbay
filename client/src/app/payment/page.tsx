@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { PaymentFeature } from '@/components/features/payment/payment-feature';
 import { TOKEN_COOKIE_NAME } from '@/constants/cookie.constant';
 import { PageContext } from '@/types/page-context.type';
 
@@ -30,7 +31,7 @@ const PaymentPage: NextPage<
   const orderIds = extractOrderIdsFromQuery(orderIdQuery);
   if (!orderIds.length) redirect('/');
 
-  return <></>;
+  return <PaymentFeature orderIds={orderIds} />;
 };
 
 export default PaymentPage;

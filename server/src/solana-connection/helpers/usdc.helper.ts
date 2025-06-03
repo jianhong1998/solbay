@@ -38,7 +38,7 @@ export class UsdcHelper {
   /**
    * Get USDC Mint public key
    */
-  public static getUsdcMint(): PublicKey {
+  public static getUsdcMintPublicKey(): PublicKey {
     const self = this.getSelf();
 
     switch (self.clusterType) {

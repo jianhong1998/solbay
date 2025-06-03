@@ -26,7 +26,7 @@ export class DummyUsdcService {
       throw new Error('Cannot init dummy USDC on mainnet');
 
     await UsdcHelper.setupDummyUsdc();
-    return UsdcHelper.getUsdcMint();
+    return UsdcHelper.getUsdcMintPublicKey();
   }
 
   public async airdropUsdc(
@@ -64,7 +64,7 @@ export class DummyUsdcService {
   }
 
   public async getUsdcMint(): Promise<Mint> {
-    const mintPublicKey = UsdcHelper.getUsdcMint();
+    const mintPublicKey = UsdcHelper.getUsdcMintPublicKey();
 
     return await getMint(
       this.connection,

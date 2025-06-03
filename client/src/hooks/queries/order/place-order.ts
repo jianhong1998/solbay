@@ -46,9 +46,7 @@ export const usePlaceOrder = () => {
 
       return res.data;
     },
-    onSuccess: () => {
-      toast.loading('Checkout successfully. Please pay to complete order.');
-    },
+    onSuccess: () => {},
     onError: (error) => {
       const errorStatus = ErrorHandler.extractStatusCodeFromError(error);
       const errorMessage = ErrorHandler.extractErrorMessage(error);
