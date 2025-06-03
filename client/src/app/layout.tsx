@@ -18,6 +18,7 @@ const links: { label: string; path: string }[] = [
   { label: 'Browse', path: '/products' },
   // { label: 'Buyer', path: '/buyer' },
   { label: 'Seller', path: '/seller' },
+  { label: 'Order History', path: '/order' },
 ];
 
 export default function RootLayout({

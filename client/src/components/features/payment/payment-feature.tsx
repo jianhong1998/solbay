@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,8 @@ type PaymentFeatureProps = {
 };
 
 export const PaymentFeature: FC<PaymentFeatureProps> = ({ orderIds }) => {
+  const router = useRouter();
+
   const { isSuccess: isMakePaymentSuccess, error: makePaymentError } =
     useMakePayment(orderIds);
   const {
@@ -21,6 +24,7 @@ export const PaymentFeature: FC<PaymentFeatureProps> = ({ orderIds }) => {
     isSuccess: isUpdatePaymentInfoSuccess,
   } = useUpdatePaymentInfo();
 
+  /* Handle update payment info after payment done */
   useEffect(() => {
     if (
       !isMakePaymentSuccess ||
@@ -39,6 +43,7 @@ export const PaymentFeature: FC<PaymentFeatureProps> = ({ orderIds }) => {
     orderIds,
   ]);
 
+  /* Handle make payment error message */
   useEffect(() => {
     if (!makePaymentError) return;
 
@@ -53,6 +58,13 @@ export const PaymentFeature: FC<PaymentFeatureProps> = ({ orderIds }) => {
 
     toast.error(errorMessage);
   }, [makePaymentError]);
+
+  /* Handle redirection after payment updated */
+  useEffect(() => {
+    if (!isUpdatePaymentInfoSuccess) return;
+
+    router.push('/order');
+  }, [isUpdatePaymentInfoSuccess, router]);
 
   return (
     <div>
