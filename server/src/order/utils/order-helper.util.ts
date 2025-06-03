@@ -31,12 +31,9 @@ export class OrderHelperUtil {
 
     if (!onChainDataPubkey) return OrderStatus.PENDING_PAYMENT;
 
-    // TODO: Return correct order status based on on-chain data
-    const _orderData = await OrderOnChainDataHelperUtil.getOrderData(
-      order.uuid,
-    );
+    const orderData = await OrderOnChainDataHelperUtil.getOrderData(order.uuid);
 
-    return OrderStatus.PENDING_SELLER_SHIP_OUT;
+    return orderData.status;
   }
 
   public async generatePaymentTransaction(

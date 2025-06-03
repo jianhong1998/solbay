@@ -28,7 +28,10 @@ export function UiLayout({
           >
             {children}
           </Suspense>
-          <Toaster position="bottom-right" />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{ removeDelay: 3000 }}
+          />
         </div>
       </NavBarProvider>
     </div>

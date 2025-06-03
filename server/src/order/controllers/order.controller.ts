@@ -90,6 +90,7 @@ export class OrderController {
             quantity,
           },
           entityManager: manager,
+          buyer,
         });
 
         const orderStatus = await this.orderHelperUtil.getOrderStatus(order);

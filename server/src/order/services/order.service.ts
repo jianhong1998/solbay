@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { PublicKey } from '@solana/web3.js';
 import { ProductModel } from 'src/product/models/product.model';
 import { ProductService } from 'src/product/services/product.service';
+import { AccountHelper } from 'src/solana-connection/helpers/account.helper';
+import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
+import { UserModel } from 'src/user/models/user.model';
 import { EntityManager } from 'typeorm';
 
 import { OrderModel } from '../models/order.model';
@@ -31,9 +35,11 @@ export class OrderService {
   public async createOrder(params: {
     entityManager?: EntityManager;
     data: ICreateOrderData;
+    buyer: UserModel;
   }): Promise<OrderModel> {
     const {
       data: { logisticInfo, quantity, product },
+      buyer,
     } = params;
     const entityManager = params.entityManager ?? this.entityManager;
 
@@ -43,6 +49,14 @@ export class OrderService {
       product,
       quantity,
     });
+
+    const isBuyerHavingSufficientFund = await this.checkBuyerUsdcBalance(
+      new PublicKey(buyer.publicKey),
+      totalAmountInMicroUsdc,
+    );
+
+    if (!isBuyerHavingSufficientFund)
+      throw new BadRequestException('Insufficient fund');
 
     /* STEP: create order and deduct available quantity from the database*/
     return await entityManager.transaction(async (manager) => {
@@ -72,5 +86,28 @@ export class OrderService {
 
       return createdOrder;
     });
+  }
+
+  private async checkBuyerUsdcBalance(
+    buyerPublicKey: PublicKey,
+    minAmountInMicroUsdc: number,
+  ): Promise<boolean> {
+    const usdcMint = UsdcHelper.getUsdcMintPublicKey();
+
+    const tokenAccountPublicKey =
+      AccountHelper.generateAssociatedTokenAccountPublicKey(
+        buyerPublicKey,
+        usdcMint,
+      );
+
+    const tokenAccount = await AccountHelper.getTokenAccount(
+      tokenAccountPublicKey,
+    );
+
+    if (!tokenAccount) return false;
+
+    const balance = Number(tokenAccount.amount);
+
+    return balance >= minAmountInMicroUsdc;
   }
 }

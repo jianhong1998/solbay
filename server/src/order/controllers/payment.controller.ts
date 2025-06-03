@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { User } from 'src/common/decorators';
 import { UserModel } from 'src/user/models/user.model';
 
+import { CompletePaymentReqDTO } from '../dtos/complete-payment.dto';
 import {
   CreatePaymentReqDTO,
   CreatePaymentResDTO,
@@ -29,5 +30,18 @@ export class PaymentController {
       transaction: paymentTransactionResult?.transaction ?? null,
       latestBlockhash: paymentTransactionResult?.latestBlockhash ?? null,
     });
+  }
+
+  @Put('/')
+  public async completePaymentProcess(
+    @Body() reqBody: CompletePaymentReqDTO,
+  ): Promise<{ isSuccess: true }> {
+    const { orderIds } = reqBody;
+
+    await this.paymentService.updateOrdersPaymentStatus({ orderIds });
+
+    return {
+      isSuccess: true,
+    };
   }
 }

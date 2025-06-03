@@ -25,7 +25,7 @@ export class EscrowService {
   }
 
   public async initializeEscrowConfig(): Promise<{ transactionId: string }> {
-    const mint = UsdcHelper.getUsdcMint();
+    const mint = UsdcHelper.getUsdcMintPublicKey();
     const signer = this.backendSigner;
 
     const instruction = await this.program.methods
@@ -72,7 +72,7 @@ export class EscrowService {
 
   public async getEscrowConfig() {
     const staticSeedBytes = Buffer.from(ESCROW_CONFIG_SEED);
-    const mintPublicKeyBytes = UsdcHelper.getUsdcMint().toBuffer();
+    const mintPublicKeyBytes = UsdcHelper.getUsdcMintPublicKey().toBuffer();
 
     const [escrowConfigPublicKey] = PublicKey.findProgramAddressSync(
       [staticSeedBytes, mintPublicKeyBytes],
