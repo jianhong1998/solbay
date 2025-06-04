@@ -54,7 +54,6 @@ export class OrderModel {
   product?: Relation<ProductModel>;
 
   @OneToOne(() => LogisticInfoModel, {
-    eager: true,
     nullable: false,
   })
   @JoinColumn({

@@ -128,7 +128,7 @@ export class OrderOnChainDataHelperUtil {
       });
   }
 
-  private static convertOrderStatus(stringStatus: string): OrderStatus {
+  public static convertOrderStatus(stringStatus: string): OrderStatus {
     /**
      * @key Value of enum OrderStatus
      * @value Key of enum OrderStatus

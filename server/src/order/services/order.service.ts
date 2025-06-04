@@ -1,16 +1,24 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { PublicKey } from '@solana/web3.js';
+import { UUID } from 'crypto';
+import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
 import { ProductModel } from 'src/product/models/product.model';
 import { ProductService } from 'src/product/services/product.service';
 import { AccountHelper } from 'src/solana-connection/helpers/account.helper';
 import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
 import { UserModel } from 'src/user/models/user.model';
-import { EntityManager } from 'typeorm';
+import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
+import { EntityManager, In } from 'typeorm';
 
 import { OrderModel } from '../models/order.model';
 import { ILogisticInfoCreationData } from '../types/logistic/logistic-info-creation-data.type';
 import { IOrderModelCreationData } from '../types/order-model-creation-data.type';
+import { OrderWithStatus } from '../types/order-with-status.type';
 import { LogisticInfoDBUtil } from '../utils/logistic-info-db.util';
 import { OrderDBUtil } from '../utils/order-db.util';
 import { OrderHelperUtil } from '../utils/order-helper.util';
@@ -27,6 +35,7 @@ export class OrderService {
     private readonly orderDBUtil: OrderDBUtil,
     private readonly logisticInfoDBUtil: LogisticInfoDBUtil,
     private readonly orderHelper: OrderHelperUtil,
+    private readonly sellerDBUtil: SellerDBUtil,
     private readonly productService: ProductService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -86,6 +95,85 @@ export class OrderService {
 
       return createdOrder;
     });
+  }
+
+  public async getOrdersBySeller(params: {
+    userId: UUID;
+    entityManager?: EntityManager;
+  }): Promise<OrderModel[]> {
+    const { userId } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const seller = await this.sellerDBUtil.getOne({
+      criterial: {
+        user: {
+          uuid: userId,
+        },
+      },
+      relation: {
+        user: true,
+      },
+      entityManager,
+      withDeleted: true,
+    });
+
+    if (!seller) {
+      throw new ForbiddenException('Cannot access seller resources');
+    }
+
+    const orders = await this.orderDBUtil.getAll({
+      criterial: {
+        product: {
+          seller: {
+            uuid: seller.uuid,
+          },
+        },
+      },
+      relation: {
+        product: {
+          seller: true,
+        },
+      },
+      entityManager,
+    });
+
+    return orders;
+  }
+
+  public async getOrdersByBuyer(params: {
+    buyer: UserModel;
+    entityManager?: EntityManager;
+  }): Promise<OrderWithStatus[]> {
+    const { buyer } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const buyerPublicKey = new PublicKey(buyer.publicKey);
+
+    const onchainOrders =
+      await OrderOnChainDataFetchingUtil.getOrderByBuyerPublicKey(
+        buyerPublicKey,
+      );
+
+    const onchainOrderMap = new Map(
+      onchainOrders.map((order) => [order.orderId, order]),
+    );
+
+    const dbOrders = await this.orderDBUtil.getAll({
+      criterial: {
+        uuid: In([...onchainOrderMap.keys()]),
+      },
+      relation: {
+        logisticInfo: false,
+      },
+      entityManager,
+    });
+
+    const orders = dbOrders.map((order) => {
+      const onchainOrder = onchainOrderMap.get(order.uuid)!;
+      return new OrderWithStatus(order, onchainOrder);
+    });
+
+    return orders;
   }
 
   private async checkBuyerUsdcBalance(

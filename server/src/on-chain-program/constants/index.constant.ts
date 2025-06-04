@@ -1,0 +1,1 @@
+export const ANCHOR_DISCRIMINATOR_SIZE = 8;
