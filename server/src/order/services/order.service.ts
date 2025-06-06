@@ -22,6 +22,7 @@ import { OrderWithStatus } from '../types/order-with-status.type';
 import { LogisticInfoDBUtil } from '../utils/logistic-info-db.util';
 import { OrderDBUtil } from '../utils/order-db.util';
 import { OrderHelperUtil } from '../utils/order-helper.util';
+import { TempOrderDBUtil } from '../utils/temp-order-db.util';
 
 type ICreateOrderData = {
   product: ProductModel;
@@ -34,8 +35,9 @@ export class OrderService {
   constructor(
     private readonly orderDBUtil: OrderDBUtil,
     private readonly logisticInfoDBUtil: LogisticInfoDBUtil,
-    private readonly orderHelper: OrderHelperUtil,
     private readonly sellerDBUtil: SellerDBUtil,
+    private readonly tempOrderDBUtil: TempOrderDBUtil,
+    private readonly orderHelper: OrderHelperUtil,
     private readonly productService: ProductService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -90,6 +92,14 @@ export class OrderService {
 
       const createdOrder = await this.orderDBUtil.create({
         creationData: orderCreationData,
+        entityManager: manager,
+      });
+
+      await this.tempOrderDBUtil.create({
+        creationData: {
+          buyer,
+          order: createdOrder,
+        },
         entityManager: manager,
       });
 
@@ -168,8 +178,25 @@ export class OrderService {
       entityManager,
     });
 
-    const orders = dbOrders.map((order) => {
-      const onchainOrder = onchainOrderMap.get(order.uuid)!;
+    const tempOrders = await this.tempOrderDBUtil.getAll({
+      criterial: {
+        buyer: {
+          uuid: buyer.uuid,
+        },
+      },
+      relation: {
+        order: {
+          logisticInfo: false,
+        },
+      },
+      entityManager,
+    });
+
+    const orders = [
+      ...tempOrders.map((tempOrder) => tempOrder.order),
+      ...dbOrders,
+    ].map((order) => {
+      const onchainOrder = onchainOrderMap.get(order.uuid);
       return new OrderWithStatus(order, onchainOrder);
     });
 

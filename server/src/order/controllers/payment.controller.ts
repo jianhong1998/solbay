@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Put } from '@nestjs/common';
+import { UUID } from 'crypto';
 import { User } from 'src/common/decorators';
 import { UserModel } from 'src/user/models/user.model';
 
@@ -35,13 +36,15 @@ export class PaymentController {
   @Put('/')
   public async completePaymentProcess(
     @Body() reqBody: CompletePaymentReqDTO,
-  ): Promise<{ isSuccess: true }> {
+  ): Promise<{ orderIds: UUID[] }> {
     const { orderIds } = reqBody;
 
-    await this.paymentService.updateOrdersPaymentStatus({ orderIds });
+    const paidOrderIds = await this.paymentService.updateOrdersPaymentStatus({
+      orderIds,
+    });
 
     return {
-      isSuccess: true,
+      orderIds: paidOrderIds,
     };
   }
 }

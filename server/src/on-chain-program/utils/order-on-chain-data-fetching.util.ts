@@ -4,13 +4,11 @@ import {
   GetProgramAccountsFilter,
   PublicKey,
 } from '@solana/web3.js';
-import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { Solbay } from 'src/contract/src';
-import { IOnChainOrderData } from 'src/order/types/on-chain-data/order-on-chain-data.type';
+import { OrderOnchainData } from 'src/order/types/on-chain-data/order-on-chain-data.type';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 
 import { ANCHOR_DISCRIMINATOR_SIZE } from '../constants/index.constant';
-import { OrderOnChainDataHelperUtil } from './order-on-chain-data-helper.util';
 
 const OrderDataSize = {
   isFundReleased: 1,
@@ -41,7 +39,7 @@ export class OrderOnChainDataFetchingUtil {
 
   public static async getOrderByBuyerPublicKey(
     buyerPublicKey: PublicKey,
-  ): Promise<IOnChainOrderData[]> {
+  ): Promise<OrderOnchainData[]> {
     const self = this.getSelf();
     const { program, dataOffsetMap } = self;
 
@@ -56,36 +54,28 @@ export class OrderOnChainDataFetchingUtil {
     const accounts = await program.account.order.all([filter]);
 
     return accounts.map((acc) => {
-      const {
-        amount,
-        bump,
-        buyerPubkey,
-        fundReleaseTimeout,
-        isFundReleased,
-        orderId,
-        platformCode,
-        remarks,
-        sellerPubkey,
-        sellerShipOutTimeout,
-        status,
-        tokenMintAddress,
-      } = acc.account;
-
-      return {
-        isFundReleased,
-        sellerPubkey,
-        buyerPubkey,
-        amount: Number(amount),
-        fundReleaseTimeout: Number(fundReleaseTimeout),
-        sellerShipOutTimeout: Number(sellerShipOutTimeout),
-        orderId: UuidHelper.convertBytesToUuid(orderId),
-        tokenMintAddress,
-        platformCode,
-        status: OrderOnChainDataHelperUtil.convertOrderStatus(status),
-        remarks,
-        bump,
-      };
+      return new OrderOnchainData(acc.account);
     });
+  }
+
+  public static async getOrderByOrderPublicKey(
+    orderPublicKey: PublicKey,
+  ): Promise<OrderOnchainData | null> {
+    const self = this.getSelf();
+    const { program } = self;
+
+    try {
+      const account = await program.account.order.fetch(orderPublicKey);
+      return new OrderOnchainData(account);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.toLowerCase().includes('account does not exist')
+      )
+        return null;
+
+      throw error;
+    }
   }
 
   private static getSelf(): OrderOnChainDataFetchingUtil {

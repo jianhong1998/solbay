@@ -4,7 +4,7 @@ import { ProductModel } from 'src/product/models/product.model';
 import { OrderStatus } from '../enums/order-status.enum';
 import { LogisticInfoModel } from '../models/logistic-info.model';
 import { OrderModel } from '../models/order.model';
-import { IOnChainOrderData } from './on-chain-data/order-on-chain-data.type';
+import { IOrderOnchainData } from './on-chain-data/order-on-chain-data.type';
 
 type IOrderModel = typeof OrderModel.prototype;
 
@@ -17,8 +17,11 @@ export class OrderWithStatus implements IOrderModel {
   readonly product?: ProductModel;
   readonly logisticInfo?: LogisticInfoModel;
 
-  constructor(dbOrder: OrderModel, onChainOrder: IOnChainOrderData) {
-    this.status = onChainOrder.status;
+  constructor(
+    dbOrder: OrderModel,
+    onChainOrder: IOrderOnchainData | undefined,
+  ) {
+    this.status = onChainOrder?.status ?? OrderStatus.PENDING_PAYMENT;
 
     this.uuid = dbOrder.uuid;
     this.totalAmountInMicroUsdc = dbOrder.totalAmountInMicroUsdc;
