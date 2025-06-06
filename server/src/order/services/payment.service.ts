@@ -5,6 +5,8 @@ import { BN } from 'bn.js';
 import { UUID } from 'crypto';
 import { addDays } from 'date-fns';
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
+import { LoggerUtil } from 'src/common/utils/logger.util';
+import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
 import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
 import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
@@ -13,16 +15,18 @@ import { UserModel } from 'src/user/models/user.model';
 import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
 import { EntityManager, In, IsNull } from 'typeorm';
 
-import { OrderStatus } from '../enums/order-status.enum';
 import { OrderDBUtil } from '../utils/order-db.util';
 import { OrderHelperUtil } from '../utils/order-helper.util';
+import { TempOrderDBUtil } from '../utils/temp-order-db.util';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly orderDBUtil: OrderDBUtil,
-    private readonly orderHelper: OrderHelperUtil,
     private readonly sellerDBUtil: SellerDBUtil,
+    private readonly tempOrderDBUtil: TempOrderDBUtil,
+    private readonly orderHelper: OrderHelperUtil,
+    private readonly loggerUtil: LoggerUtil,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
@@ -120,44 +124,96 @@ export class PaymentService {
   }) {
     const { orderIds } = params;
     const entityManager = params.entityManager ?? this.entityManager;
+    const logger = this.loggerUtil.createLogger('UpdateOrderPaymentStatus');
 
-    const orders = await this.orderDBUtil.getAll({
-      entityManager,
-      criterial: {
-        uuid: In(orderIds),
-        onChainDataPubkey: IsNull(),
-      },
+    const paidOrderIds = await entityManager.transaction(async (manager) => {
+      const orders = await this.orderDBUtil.getAll({
+        entityManager: manager,
+        criterial: {
+          uuid: In(orderIds),
+          onChainDataPubkey: IsNull(),
+        },
+      });
+      const tempOrders = await this.tempOrderDBUtil.getAll({
+        entityManager: manager,
+        criterial: {
+          order: {
+            uuid: In(orderIds),
+          },
+        },
+      });
+
+      if (!orders.length)
+        throw new NotFoundException('No order is pending payment');
+
+      /* Get Onchain order data */
+
+      const promises = orders.map<Promise<[UUID, PublicKey] | null>>(
+        async (order) => {
+          const orderPublicKey =
+            OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(order.uuid);
+          const orderOnchainData =
+            await OrderOnChainDataFetchingUtil.getOrderByOrderPublicKey(
+              orderPublicKey,
+            );
+
+          if (!orderOnchainData) return null;
+
+          return [order.uuid, orderPublicKey];
+        },
+      );
+
+      const paidOrderPublicKeyMap = new Map<UUID, PublicKey>(
+        (await Promise.all(promises)).filter((pair) => !!pair),
+      );
+
+      /*
+        Find out what orders and tempOrders to update.
+        Should only update order with onchain data
+      */
+
+      if (!paidOrderPublicKeyMap.size) {
+        logger.log('No order to update.');
+        return [];
+      }
+
+      const paidTempOrderIds = tempOrders
+        .filter((tempOrder) => paidOrderPublicKeyMap.has(tempOrder.order.uuid))
+        .map((tempOrder) => tempOrder.uuid);
+
+      const paidOrders = orders.filter((order) =>
+        paidOrderPublicKeyMap.has(order.uuid),
+      );
+
+      /* Update order status */
+
+      paidOrders.forEach((order) => {
+        const publicKey = paidOrderPublicKeyMap.get(order.uuid);
+        if (!publicKey)
+          throw new Error('Order public key cannot found in the map');
+        order.onChainDataPubkey = publicKey.toBase58();
+      });
+
+      await this.orderDBUtil.saveUpdate({
+        dataArray: paidOrders,
+        entityManager: manager,
+      });
+
+      await this.tempOrderDBUtil.delete({
+        criterial: {
+          uuid: In(paidTempOrderIds),
+        },
+        entityManager: manager,
+      });
+
+      const paidOrderIds = paidOrders.map((order) => order.uuid);
+
+      logger.log(`Orders status updated: ${paidOrderIds.join(', ')}`);
+
+      return paidOrderIds;
     });
 
-    if (!orders.length)
-      throw new NotFoundException('No order is pending payment');
-
-    /* Get status of orders */
-
-    const promises = orders.map(async (order) => {
-      const orderStatus = await this.orderHelper.getOrderStatus(order);
-
-      return [order.uuid, orderStatus];
-    }) as Promise<[UUID, OrderStatus]>[];
-
-    const orderStatusMap = new Map(await Promise.all(promises));
-
-    /* Update orders */
-    orders.forEach((order) => {
-      const status = orderStatusMap.get(order.uuid);
-
-      if (!status || status === OrderStatus.PENDING_PAYMENT) return;
-
-      const onChainDataPublicKey =
-        OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(order.uuid);
-
-      order.onChainDataPubkey = onChainDataPublicKey.toBase58();
-    });
-
-    await this.orderDBUtil.saveUpdate({
-      orders,
-      entityManager,
-    });
+    return paidOrderIds;
   }
 }
 

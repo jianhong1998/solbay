@@ -12,7 +12,7 @@ type IUpdatePaymentInfoParams = {
 };
 
 type IUpdatePaymentInfoResult = {
-  isSuccess: boolean;
+  orderIds: string[];
 };
 
 export const useUpdatePaymentInfo = () => {
@@ -28,7 +28,7 @@ export const useUpdatePaymentInfo = () => {
       const url = '/payment';
       const body = { orderIds };
 
-      const res = await serverAxios.put<{ isSuccess: true }>(url, body);
+      const res = await serverAxios.put<{ orderIds: string[] }>(url, body);
 
       return res.data;
     },

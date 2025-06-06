@@ -9,12 +9,14 @@ import { PaymentController } from './controllers/payment.controller';
 import { LogisticInfoModel } from './models/logistic-info.model';
 import { LogisticTrackingInfoModel } from './models/logistic-tracking-info.model';
 import { OrderModel } from './models/order.model';
+import { TempOrderModel } from './models/temp-order.model';
 import { OrderService } from './services/order.service';
 import { PaymentService } from './services/payment.service';
 import { LogisticInfoDBUtil } from './utils/logistic-info-db.util';
 import { LogisticTrackingInfoDBUtil } from './utils/logistic-tracking-info-db.util';
 import { OrderDBUtil } from './utils/order-db.util';
 import { OrderHelperUtil } from './utils/order-helper.util';
+import { TempOrderDBUtil } from './utils/temp-order-db.util';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { OrderHelperUtil } from './utils/order-helper.util';
       OrderModel,
       LogisticInfoModel,
       LogisticTrackingInfoModel,
+      TempOrderModel,
     ]),
     ProductModule,
     UserModule,
@@ -33,6 +36,7 @@ import { OrderHelperUtil } from './utils/order-helper.util';
     OrderDBUtil,
     LogisticInfoDBUtil,
     LogisticTrackingInfoDBUtil,
+    TempOrderDBUtil,
     OrderHelperUtil,
   ],
   controllers: [OrderController, PaymentController],
