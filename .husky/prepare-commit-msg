@@ -4,16 +4,19 @@
 COMMIT_MSG_FILE=$1
 COMMIT_SOURCE=$2
 
-# Skip if the commit is a merge, template, or squash
-if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
+# Skip if the commit is a merge, template, squash, or during rebase
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "template" ] || [ "$COMMIT_SOURCE" = "squash" ] || [ -f "$(git rev-parse --git-dir)/rebase-merge" ] || [ -f "$(git rev-parse --git-dir)/rebase-apply" ]; then
   exit 0
 fi
 
 # Read the original commit message
 ORIGINAL_MSG=$(cat "$COMMIT_MSG_FILE")
 
-# Get the current branch name
-BRANCH_NAME=$(git symbolic-ref --short HEAD)
+# Get the current branch name, but only if HEAD is a symbolic ref
+if ! BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null); then
+  # If HEAD is not a symbolic ref (e.g., during rebase), skip branch-based logic
+  exit 0
+fi
 
 # Use regex to match branch name like 'chore/123-update-something'
 if ! echo "$BRANCH_NAME" | grep -E '^(chore|feat|fix|docs|style|refactor|test|build|ci|perf|revert)/[0-9]+-.*$' >/dev/null; then

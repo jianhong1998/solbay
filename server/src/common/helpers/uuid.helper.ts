@@ -4,7 +4,7 @@ import { parse, stringify } from 'uuid';
 export class UuidHelper {
   private constructor() {}
 
-  public static convertUuidToBytes(uuid: UUID) {
+  public static convertUuidToBytes(uuid: UUID): Uint8Array {
     return parse(uuid);
   }
 

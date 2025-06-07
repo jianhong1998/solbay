@@ -75,22 +75,34 @@ export abstract class BaseDBUtil<
     entityManager?: EntityManager;
   }): Promise<ModelType>;
 
+  public async saveUpdate(params: {
+    dataArray: ModelType[];
+    entityManager?: EntityManager;
+  }): Promise<ModelType[]> {
+    const { dataArray, entityManager } = params;
+    const repo =
+      (entityManager?.getRepository(this.model) as Repository<ModelType>) ??
+      this.repo;
+
+    return await repo.save(dataArray);
+  }
+
   public async delete(params: {
     criterial: FindOptionsWhere<ModelType>;
     entityManager?: EntityManager;
     relation?: FindOptionsRelations<ModelType>;
-  }): Promise<ModelType | null> {
+  }): Promise<ModelType[] | null> {
     const { criterial, entityManager, relation } = params;
     const repo =
       (entityManager?.getRepository(this.model) as Repository<ModelType>) ??
       this.repo;
 
-    const existingData = await repo.findOne({
+    const existingData = await repo.find({
       where: criterial,
       relations: relation,
     });
 
-    if (!existingData) return null;
+    if (!existingData.length) return null;
 
     return await repo.softRemove(existingData);
   }

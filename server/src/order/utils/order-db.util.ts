@@ -48,15 +48,4 @@ export class OrderDBUtil extends BaseDBUtil<
 
     return savedOrder;
   }
-
-  public async saveUpdate(params: {
-    orders: OrderModel[];
-    entityManager?: EntityManager;
-  }): Promise<OrderModel[]> {
-    const { orders, entityManager } = params;
-
-    const repo = entityManager?.getRepository(OrderModel) ?? this.repo;
-
-    return await repo.save(orders);
-  }
 }

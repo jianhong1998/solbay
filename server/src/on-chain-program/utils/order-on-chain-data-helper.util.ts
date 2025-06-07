@@ -8,7 +8,7 @@ import {
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { Solbay } from 'src/contract/src';
 import { OrderStatus } from 'src/order/enums/order-status.enum';
-import { IOnChainOrderData } from 'src/order/types/on-chain-data/order-on-chain-data.type';
+import { IOrderOnchainData } from 'src/order/types/on-chain-data/order-on-chain-data.type';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 
 export class OrderOnChainDataHelperUtil {
@@ -36,7 +36,7 @@ export class OrderOnChainDataHelperUtil {
     return publicKey;
   }
 
-  public static async getOrderData(orderId: UUID): Promise<IOnChainOrderData> {
+  public static async getOrderData(orderId: UUID): Promise<IOrderOnchainData> {
     const self = this.getSelf();
     const program = self.program;
 
@@ -79,7 +79,7 @@ export class OrderOnChainDataHelperUtil {
 
   public static async getMultipleOrderData(
     orderIds: UUID[],
-  ): Promise<IOnChainOrderData[]> {
+  ): Promise<IOrderOnchainData[]> {
     const self = this.getSelf();
     const program = self.program;
     const publicKeys = orderIds.map((id) => this.generateOrderPdaPublicKey(id));
@@ -91,7 +91,7 @@ export class OrderOnChainDataHelperUtil {
 
     return dataArray
       .filter((data) => data !== null)
-      .map<IOnChainOrderData>((data) => {
+      .map<IOrderOnchainData>((data) => {
         const {
           amount,
           bump,
@@ -128,7 +128,7 @@ export class OrderOnChainDataHelperUtil {
       });
   }
 
-  private static convertOrderStatus(stringStatus: string): OrderStatus {
+  public static convertOrderStatus(stringStatus: string): OrderStatus {
     /**
      * @key Value of enum OrderStatus
      * @value Key of enum OrderStatus

@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { ILogisticInfoFormData } from '@/components/form/checkout-delivery-form/logistic-info-form-data.type';
@@ -7,6 +7,8 @@ import { GeneralErrorMessage } from '@/constants/error.constant';
 import { OrderStatus } from '@/enums/order/order-status.constant';
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
 import { ErrorHandler } from '@/utils/shared/error-handler';
+
+import { getQueryKeyForGetAllBuyerOrder } from './get-order';
 
 type IPlaceOrderParams = {
   productQuantities: Array<{ productId: string; quantity: number }>;
@@ -26,6 +28,7 @@ export const usePlaceOrder = () => {
   const serverAxios = useServerAxios();
   const { publicKey } = useWallet();
   const publicKeyString = publicKey?.toBase58() ?? null;
+  const queryClient = useQueryClient();
 
   const query = useMutation<IPlaceOrderRes, Error, IPlaceOrderParams>({
     mutationKey: ['order', 'place-order', { publicKey: publicKeyString }],
@@ -46,7 +49,11 @@ export const usePlaceOrder = () => {
 
       return res.data;
     },
-    onSuccess: () => {},
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getQueryKeyForGetAllBuyerOrder(publicKeyString),
+      });
+    },
     onError: (error) => {
       const errorStatus = ErrorHandler.extractStatusCodeFromError(error);
       const errorMessage = ErrorHandler.extractErrorMessage(error);
