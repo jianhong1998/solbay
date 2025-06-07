@@ -18,19 +18,25 @@ export class ErrorHandler {
       return this.getPrimitiveMessage(error);
     }
 
-    if (axios.isAxiosError(error)) {
-      return (
-        this.extractErrorMessageFromAxiosError(error) ??
-        GeneralErrorMessage.SOMETHING_WENT_WRONG
-      );
-    }
-
     if (error instanceof SendTransactionError) {
       return this.getSendTransactionErrorMessage(error);
     }
 
     if (error instanceof TokenError) {
       return this.getTokenErrorMessage(error);
+    }
+
+    if (axios.isAxiosError(error)) {
+      const errorStatus = this.extractStatusCodeFromError(error);
+
+      if (errorStatus === 'ERR_NETWORK') {
+        return GeneralErrorMessage.NETWORK_ERROR;
+      }
+
+      return (
+        this.extractErrorMessageFromAxiosError(error) ??
+        GeneralErrorMessage.SOMETHING_WENT_WRONG
+      );
     }
 
     if (error instanceof Error) {

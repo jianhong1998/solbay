@@ -5,6 +5,7 @@ import {
   getAccount,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
   TokenInvalidAccountOwnerError,
 } from '@solana/spl-token';
 import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js';
@@ -41,6 +42,10 @@ export class AccountHelper {
       return account;
     } catch (error) {
       if (error instanceof TokenInvalidAccountOwnerError) {
+        return null;
+      }
+
+      if (error instanceof TokenAccountNotFoundError) {
         return null;
       }
 

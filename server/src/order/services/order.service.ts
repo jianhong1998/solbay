@@ -110,7 +110,7 @@ export class OrderService {
   public async getOrdersBySeller(params: {
     userId: UUID;
     entityManager?: EntityManager;
-  }): Promise<OrderModel[]> {
+  }): Promise<OrderWithStatus[]> {
     const { userId } = params;
     const entityManager = params.entityManager ?? this.entityManager;
 
@@ -147,7 +147,9 @@ export class OrderService {
       entityManager,
     });
 
-    return orders;
+    return Promise.all(
+      orders.map(async (order) => await OrderWithStatus.new(order)),
+    );
   }
 
   public async getOrdersByBuyer(params: {
@@ -192,15 +194,12 @@ export class OrderService {
       entityManager,
     });
 
-    const orders = [
+    const orderPromises = [
       ...tempOrders.map((tempOrder) => tempOrder.order),
       ...dbOrders,
-    ].map((order) => {
-      const onchainOrder = onchainOrderMap.get(order.uuid);
-      return new OrderWithStatus(order, onchainOrder);
-    });
+    ].map(async (order) => await OrderWithStatus.new(order));
 
-    return orders;
+    return await Promise.all(orderPromises);
   }
 
   private async checkBuyerUsdcBalance(

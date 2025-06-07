@@ -17,8 +17,8 @@ import { UserModel } from 'src/user/models/user.model';
 import { SellerService } from 'src/user/services/seller.service';
 import { EntityManager } from 'typeorm';
 
+import { GetAllOrderResDTO } from '../dtos/get-order.dto';
 import { CheckoutReqDTO, CheckoutResDTO } from '../dtos/place-order.dto';
-import { OrderModel } from '../models/order.model';
 import { OrderService } from '../services/order.service';
 import { OrderHelperUtil } from '../utils/order-helper.util';
 
@@ -114,7 +114,7 @@ export class OrderController {
   public async getOrders(
     @User() user: UserModel,
     @Query('asSeller') asSeller: string,
-  ): Promise<{ orders: OrderModel[] }> {
+  ): Promise<GetAllOrderResDTO> {
     const logger = this.loggerUtil.createLogger('Get Orders Endpoint');
     logger.log(`Retrieving orders for user: ${user.uuid}`);
 
@@ -139,12 +139,12 @@ export class OrderController {
         userId: user.uuid,
         entityManager: this.entityManager,
       });
-      return { orders };
+      return new GetAllOrderResDTO(orders);
     }
 
     logger.log(`Fetching orders as buyer for user: ${user.uuid}`);
     const orders = await this.orderService.getOrdersByBuyer({ buyer: user });
 
-    return { orders };
+    return new GetAllOrderResDTO(orders);
   }
 }
