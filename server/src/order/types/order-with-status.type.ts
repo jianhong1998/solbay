@@ -1,4 +1,6 @@
+import { PublicKey } from '@solana/web3.js';
 import { UUID } from 'crypto';
+import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
 import { ProductModel } from 'src/product/models/product.model';
 
 import { OrderStatus } from '../enums/order-status.enum';
@@ -17,9 +19,9 @@ export class OrderWithStatus implements IOrderModel {
   readonly product?: ProductModel;
   readonly logisticInfo?: LogisticInfoModel;
 
-  constructor(
+  private constructor(
     dbOrder: OrderModel,
-    onChainOrder: IOrderOnchainData | undefined,
+    onChainOrder: IOrderOnchainData | null,
   ) {
     this.status = onChainOrder?.status ?? OrderStatus.PENDING_PAYMENT;
 
@@ -30,5 +32,18 @@ export class OrderWithStatus implements IOrderModel {
     this.quantity = dbOrder.quantity;
     this.product = dbOrder.product;
     this.logisticInfo = dbOrder.logisticInfo;
+  }
+
+  public static async new(order: OrderModel): Promise<OrderWithStatus> {
+    if (!order.onChainDataPubkey) return new OrderWithStatus(order, null);
+
+    const onchainOrderPublicKey = new PublicKey(order.onChainDataPubkey);
+
+    const onchainOrderData =
+      await OrderOnChainDataFetchingUtil.getOrderByOrderPublicKey(
+        onchainOrderPublicKey,
+      );
+
+    return new OrderWithStatus(order, onchainOrderData);
   }
 }
