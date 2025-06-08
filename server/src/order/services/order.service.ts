@@ -1,25 +1,46 @@
+import { Program } from '@coral-xyz/anchor';
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { PublicKey } from '@solana/web3.js';
+import {
+  BlockhashWithExpiryBlockHeight,
+  PublicKey,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import { UUID } from 'crypto';
+import { isAfter } from 'date-fns';
+import { SOLBAY_PLATFORM_CODE } from 'src/common/constants';
+import { DateTimeFormat } from 'src/common/constants/format-string';
+import { DateTimeHelper } from 'src/common/helpers/datetime.helper';
+import { UuidHelper } from 'src/common/helpers/uuid.helper';
+import { LoggerUtil } from 'src/common/utils/logger.util';
+import { Solbay } from 'src/contract/src';
 import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
+import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
 import { ProductModel } from 'src/product/models/product.model';
 import { ProductService } from 'src/product/services/product.service';
 import { AccountHelper } from 'src/solana-connection/helpers/account.helper';
 import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
+import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
+import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
+import { SellerModel } from 'src/user/models/seller.model';
 import { UserModel } from 'src/user/models/user.model';
 import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
 import { EntityManager, In } from 'typeorm';
 
+import { OrderStatus } from '../enums/order-status.enum';
 import { OrderModel } from '../models/order.model';
 import { ILogisticInfoCreationData } from '../types/logistic/logistic-info-creation-data.type';
+import { ILogisticTrackingInfoCreationData } from '../types/logistic/logistic-tracking-info-creation-data.type';
 import { IOrderModelCreationData } from '../types/order-model-creation-data.type';
 import { OrderWithStatus } from '../types/order-with-status.type';
 import { LogisticInfoDBUtil } from '../utils/logistic-info-db.util';
+import { LogisticTrackingInfoDBUtil } from '../utils/logistic-tracking-info-db.util';
 import { OrderDBUtil } from '../utils/order-db.util';
 import { OrderHelperUtil } from '../utils/order-helper.util';
 import { TempOrderDBUtil } from '../utils/temp-order-db.util';
@@ -32,16 +53,22 @@ type ICreateOrderData = {
 
 @Injectable()
 export class OrderService {
+  private readonly program: Program<Solbay>;
+
   constructor(
     private readonly orderDBUtil: OrderDBUtil,
     private readonly logisticInfoDBUtil: LogisticInfoDBUtil,
+    private readonly logisticTrackingInfoDBUtil: LogisticTrackingInfoDBUtil,
     private readonly sellerDBUtil: SellerDBUtil,
     private readonly tempOrderDBUtil: TempOrderDBUtil,
     private readonly orderHelper: OrderHelperUtil,
+    private readonly loggerUtil: LoggerUtil,
     private readonly productService: ProductService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
-  ) {}
+  ) {
+    this.program = ConnectionUtil.getProgram();
+  }
 
   public async createOrder(params: {
     entityManager?: EntityManager;
@@ -200,6 +227,216 @@ export class OrderService {
     ].map(async (order) => await OrderWithStatus.new(order));
 
     return await Promise.all(orderPromises);
+  }
+
+  public async getOrderByOrderId(params: {
+    orderId: UUID;
+    withDeleted?: boolean;
+    withProduct?: boolean;
+    withLogisticTrackingInfo?: boolean;
+    entityManager?: EntityManager;
+  }): Promise<OrderModel | null> {
+    const {
+      orderId,
+      withDeleted = false,
+      withProduct = false,
+      withLogisticTrackingInfo = false,
+    } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const order = await this.orderDBUtil.getOne({
+      criterial: {
+        uuid: orderId,
+      },
+      relation: {
+        logisticInfo: {
+          logisticTrackingInfo: withLogisticTrackingInfo,
+        },
+        product: withProduct,
+      },
+      withDeleted,
+      entityManager,
+    });
+
+    return order;
+  }
+
+  public async markOrderDeliveryInProgress(params: {
+    orderId: UUID;
+    logisticTrackingInfoCreationData: ILogisticTrackingInfoCreationData;
+    seller: SellerModel;
+    entityManager?: EntityManager;
+  }): Promise<OrderModel> {
+    const logger = this.loggerUtil.createLogger(
+      'MarkOrderDeliveryInProgressService',
+    );
+
+    const { logisticTrackingInfoCreationData, orderId, seller } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const now = new Date();
+
+    if (!isAfter(logisticTrackingInfoCreationData.estimatedDeliverDate, now))
+      throw new BadRequestException(
+        `Estimate deliver date must be after today ${DateTimeHelper.format(now, DateTimeFormat.DATE_ONLY)}`,
+      );
+
+    const { updatedOrder } = await entityManager.transaction(
+      async (manager) => {
+        const order = await this.orderDBUtil.getOne({
+          criterial: {
+            uuid: orderId,
+          },
+          relation: {
+            logisticInfo: {
+              logisticTrackingInfo: true,
+            },
+            product: {
+              seller: true,
+            },
+          },
+          entityManager: manager,
+        });
+
+        if (!order)
+          throw new NotFoundException(`Order (${orderId}) not found.`);
+
+        if (!order.product || !order.product.seller) {
+          logger.error(`Order (${orderId}) seller is not fetched.`);
+          throw new Error('Order seller not found.');
+        }
+
+        if (order.product.seller.uuid !== seller.uuid)
+          throw new ForbiddenException(
+            'You are not allowed to update this order.',
+          );
+
+        if (!order.logisticInfo) {
+          logger.error(`Order (${orderId}) logistic info is not fetched`);
+          throw new Error('Order logistic info not found.');
+        }
+
+        if (order.logisticInfo?.logisticTrackingInfo)
+          throw new ConflictException(
+            `Order is already marked as delivery in progress before.`,
+          );
+
+        const createdLogisticTrackingInfo =
+          await this.logisticTrackingInfoDBUtil.create({
+            creationData: logisticTrackingInfoCreationData,
+            entityManager: manager,
+          });
+
+        order.logisticInfo.logisticTrackingInfo = createdLogisticTrackingInfo;
+
+        await this.logisticInfoDBUtil.saveUpdate({
+          dataArray: [order.logisticInfo],
+          entityManager: manager,
+        });
+
+        const updatedOrder = await this.orderDBUtil.getOne({
+          criterial: {
+            uuid: orderId,
+          },
+          relation: {
+            logisticInfo: {
+              logisticTrackingInfo: true,
+            },
+          },
+          entityManager: manager,
+        });
+
+        if (!updatedOrder) {
+          logger.error(
+            `Order (${orderId}) not found after logistic tracking info updated.`,
+          );
+          throw new NotFoundException(`Order (${orderId}) not found.`);
+        }
+
+        return { updatedOrder };
+      },
+    );
+
+    return updatedOrder;
+  }
+
+  public async createMarkOrderDelieryInProgressTransaction(params: {
+    orderId: UUID;
+    sellerUser: UserModel;
+    entityManager?: EntityManager;
+  }): Promise<{
+    transaction: VersionedTransaction;
+    latestBlockhash: BlockhashWithExpiryBlockHeight;
+  } | null> {
+    const { orderId, sellerUser } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+    const logger = this.loggerUtil.createLogger(
+      'CreateMarkOrderDeliveryInProgressTransaction',
+    );
+
+    const order = await this.orderDBUtil.getOne({
+      criterial: {
+        uuid: orderId,
+      },
+      relation: {
+        product: {
+          seller: true,
+        },
+      },
+      entityManager,
+    });
+
+    const seller = await this.sellerDBUtil.getOne({
+      criterial: {
+        user: {
+          uuid: sellerUser.uuid,
+        },
+      },
+      entityManager,
+    });
+
+    if (!order) throw new NotFoundException('Order not found');
+
+    if (!seller || !order.product?.seller)
+      throw new NotFoundException('Seller not found');
+
+    if (seller?.uuid !== order.product?.seller?.uuid)
+      new ForbiddenException('You are not allowed to update this order.');
+
+    const orderOnchainDataPublicKey =
+      OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(orderId);
+    const orderOnchainData =
+      await OrderOnChainDataFetchingUtil.getOrderByOrderPublicKey(
+        orderOnchainDataPublicKey,
+      );
+
+    if (!orderOnchainData) {
+      logger.error(
+        `Seller trying to create transaction to mark order ${orderId} as delivery in progress but onchain data (${orderOnchainDataPublicKey.toBase58()}) is not found.`,
+      );
+      throw new BadRequestException('Order is not paid yet');
+    }
+
+    if (orderOnchainData.status !== OrderStatus.PENDING_SELLER_SHIP_OUT) {
+      return null;
+    }
+
+    const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(order.uuid));
+    const sellerPublicKey = new PublicKey(sellerUser.publicKey);
+    const usdcMintPublicKey = UsdcHelper.getUsdcMintPublicKey();
+
+    const instruction = await this.program.methods
+      .deliveryInProgress(orderIdBytes, SOLBAY_PLATFORM_CODE)
+      .accounts({
+        mint: usdcMintPublicKey,
+        seller: sellerPublicKey,
+      })
+      .instruction();
+
+    return await TransactionUtil.createTransaction({
+      instructions: [instruction],
+      payerPublicKey: sellerPublicKey,
+    });
   }
 
   private async checkBuyerUsdcBalance(

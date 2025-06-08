@@ -44,6 +44,7 @@ export class OrderWithStatus implements IOrderModel {
         onchainOrderPublicKey,
       );
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return new OrderWithStatus(order, onchainOrderData);
   }
 }
