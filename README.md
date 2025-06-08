@@ -16,7 +16,7 @@
 
 1. Run command below:
 
-```
+```shell
 make init
 ```
 
@@ -24,7 +24,7 @@ make init
 
 ### Start project
 
-```
+```shell
 # Start project
 make up/build
 
@@ -44,7 +44,7 @@ Prerequisites:
 
 Use command `make up/build` to setup database and executing migration script.
 
-```
+```shell
 make db/data/up
 ```
 
@@ -52,7 +52,7 @@ make db/data/up
 
 #### Recommended Test Steps
 
-```
+```shell
 # Run the application and test-local-validator
 make down/clean up/build
 
@@ -62,7 +62,7 @@ make deploy/with-airdrop test/anchor/onchain/skip-deploy
 
 #### All Test Related Commands
 
-```
+```shell
 # With bankrun
 make test/anchor
 
@@ -77,7 +77,7 @@ make test/anchor/onchain/skip-deploy
 
 ### ESLint check
 
-```
+```shell
 # Lint check
 make lint
 
@@ -87,7 +87,7 @@ make lint/fix
 
 ### Prettier code format
 
-```
+```shell
 make format
 ```
 
@@ -103,7 +103,7 @@ Ensure `./server/.env` file is ready and contain necessary environment variables
 
 2. Run command below to generate a new database migration script
 
-```
+```shell
 cd server
 npm run migration:generate --name="<MIGRATION_SCRIPT_FILE_NAME>"
 ```
@@ -112,7 +112,19 @@ npm run migration:generate --name="<MIGRATION_SCRIPT_FILE_NAME>"
 
 Although when spinning up the application, there is a migration service to auto-execute database migration script. In case of required executing the scripts manually, can run command below:
 
-```
+```shell
 cd server
 npm run migration:run
+```
+
+## Docker For Deployment
+
+Use command below to build docker image for deployment
+
+### For server
+
+Replace `<TAG>` with the actual tag using for the image
+
+```shell
+docker build -f ./docker/deployment/dockerfile.server -t <TAG> ./server
 ```
