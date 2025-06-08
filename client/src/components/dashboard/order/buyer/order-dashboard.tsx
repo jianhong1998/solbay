@@ -4,7 +4,7 @@ import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 import FullPageLoading from '@/components/ui/loading/full-page-loading';
-import { useGetAllBuyerOrder } from '@/hooks/queries/order/get-order';
+import { useGetAllBuyerOrders } from '@/hooks/queries/order/get-order';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 
 import { NoOrderDisplay } from './no-order-display/no-order-display';
@@ -15,7 +15,7 @@ export const BuyerOrderDashboard: FC = () => {
     data: orders,
     error: getOrdersError,
     isFetched: isOrderFetched,
-  } = useGetAllBuyerOrder();
+  } = useGetAllBuyerOrders();
 
   useEffect(() => {
     if (getOrdersError) {

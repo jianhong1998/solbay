@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { SellerOrderDashboard } from '@/components/dashboard/order/seller/order-dashboard';
 import { TOKEN_COOKIE_NAME } from '@/constants/cookie.constant';
 
 const SellerOrderListPage: NextPage = () => {
@@ -10,7 +11,7 @@ const SellerOrderListPage: NextPage = () => {
 
   if (!token) redirect('/seller');
 
-  return <></>;
+  return <SellerOrderDashboard />;
 };
 
 export default SellerOrderListPage;
