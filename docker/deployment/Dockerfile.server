@@ -24,7 +24,5 @@ RUN npm run build:swc
 # ==================================================
 FROM base
 WORKDIR /apps/server
-COPY package*.json .
-RUN npm ci
 COPY --from=server-build /apps/server/dist ./dist
 CMD [ "sh", "-c", "node -r dotenv/config dist/main" ]
