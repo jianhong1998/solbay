@@ -31,6 +31,7 @@ import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
 import { SellerModel } from 'src/user/models/seller.model';
 import { UserModel } from 'src/user/models/user.model';
 import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
+import { UserDBUtil } from 'src/user/utils/userDB.util';
 import { EntityManager, In } from 'typeorm';
 
 import { OrderStatus } from '../enums/order-status.enum';
@@ -60,6 +61,7 @@ export class OrderService {
     private readonly logisticInfoDBUtil: LogisticInfoDBUtil,
     private readonly logisticTrackingInfoDBUtil: LogisticTrackingInfoDBUtil,
     private readonly sellerDBUtil: SellerDBUtil,
+    private readonly userDBUtil: UserDBUtil,
     private readonly tempOrderDBUtil: TempOrderDBUtil,
     private readonly orderHelper: OrderHelperUtil,
     private readonly loggerUtil: LoggerUtil,
@@ -231,6 +233,7 @@ export class OrderService {
 
   public async getOrderByOrderId(params: {
     orderId: UUID;
+    user: UserModel;
     withDeleted?: boolean;
     withProduct?: boolean;
     withLogisticTrackingInfo?: boolean;
@@ -238,6 +241,7 @@ export class OrderService {
   }): Promise<OrderModel | null> {
     const {
       orderId,
+      user,
       withDeleted = false,
       withProduct = false,
       withLogisticTrackingInfo = false,
@@ -257,6 +261,17 @@ export class OrderService {
       withDeleted,
       entityManager,
     });
+
+    const canUserAccess = await this.verifyIfUserCanGetOrder({
+      orderId,
+      userId: user.uuid,
+      entityManager,
+    });
+
+    if (!canUserAccess)
+      throw new ForbiddenException(
+        'You do not have permission to access this data',
+      );
 
     return order;
   }
@@ -460,5 +475,81 @@ export class OrderService {
     const balance = Number(tokenAccount.amount);
 
     return balance >= minAmountInMicroUsdc;
+  }
+
+  private async verifyIfUserCanGetOrder(params: {
+    userId: UUID;
+    orderId: UUID;
+    entityManager?: EntityManager;
+  }): Promise<boolean> {
+    const { orderId, userId } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+
+    const order = await this.orderDBUtil.getOne({
+      criterial: { uuid: orderId },
+      relation: {
+        product: {
+          seller: true,
+        },
+      },
+      entityManager,
+    });
+
+    const tempOrder = await this.tempOrderDBUtil.getOne({
+      criterial: {
+        order: {
+          uuid: orderId,
+        },
+      },
+      relation: { buyer: true },
+      entityManager,
+    });
+
+    if (!order) throw new NotFoundException('Order not found.');
+    if (!order.product) throw new Error('Order product is not fetched.');
+    if (!order.product.seller)
+      throw new Error('Seller for the product is not fetched.');
+
+    const seller = await this.sellerDBUtil.getOne({
+      criterial: {
+        uuid: order.product.seller.uuid,
+      },
+      relation: {
+        user: true,
+      },
+      entityManager,
+    });
+
+    if (!seller || !seller.user)
+      throw new Error('Seller user account is not found!');
+
+    const orderOnchainDataPublicKey =
+      OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(orderId);
+    const orderOnchainData =
+      await OrderOnChainDataFetchingUtil.getOrderByOrderPublicKey(
+        orderOnchainDataPublicKey,
+      );
+
+    const isProductSeller = userId === seller.user.uuid;
+
+    if (isProductSeller) return true;
+
+    /* Verify if is Buyer */
+
+    const user = await this.userDBUtil.getOne({
+      criterial: {
+        uuid: userId,
+      },
+      entityManager,
+    });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    if (orderOnchainData)
+      return user.publicKey === orderOnchainData.buyerPubkey.toBase58();
+
+    if (tempOrder) return user.publicKey === tempOrder.buyer.publicKey;
+
+    return false;
   }
 }

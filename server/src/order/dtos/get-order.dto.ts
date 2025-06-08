@@ -20,7 +20,7 @@ import { OrderWithStatus } from '../types/order-with-status.type';
 /**
  * Response DTO for Order without details
  */
-class OrderResDTO {
+export class OrderWihtoutDetailsResDTO {
   @IsUUID()
   uuid: UUID;
 
@@ -46,13 +46,13 @@ class OrderResDTO {
   constructor(order: OrderWithStatus) {
     const { status, uuid, totalAmountInMicroUsdc, product, quantity } = order;
 
-    if (!product) throw new Error('No product for response');
-    this.product = new ProductWithoutSensitiveDataResDTO(product);
-
     this.uuid = uuid;
     this.totalAmountInMicroUsdc = totalAmountInMicroUsdc;
     this.status = status;
     this.quantity = quantity;
+
+    if (!product) throw new Error('No product for response');
+    this.product = new ProductWithoutSensitiveDataResDTO(product);
   }
 }
 
@@ -60,10 +60,10 @@ export class GetAllOrderResDTO {
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested()
-  @Type(() => OrderResDTO)
-  orders: OrderResDTO[];
+  @Type(() => OrderWihtoutDetailsResDTO)
+  orders: OrderWihtoutDetailsResDTO[];
 
   constructor(orders: OrderWithStatus[]) {
-    this.orders = orders.map((order) => new OrderResDTO(order));
+    this.orders = orders.map((order) => new OrderWihtoutDetailsResDTO(order));
   }
 }

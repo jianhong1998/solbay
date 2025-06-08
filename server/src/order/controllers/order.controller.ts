@@ -26,13 +26,17 @@ import { UserModel } from 'src/user/models/user.model';
 import { SellerService } from 'src/user/services/seller.service';
 import { EntityManager } from 'typeorm';
 
-import { GetAllOrderResDTO } from '../dtos/get-order.dto';
+import {
+  GetAllOrderResDTO,
+  OrderWihtoutDetailsResDTO,
+} from '../dtos/get-order.dto';
 import { CheckoutReqDTO, CheckoutResDTO } from '../dtos/place-order.dto';
 import {
   UpdateOrderLogisticTrackingInfoReqDTO,
   UpdateOrderLogisticTrackingInfoResDTO,
 } from '../dtos/update-order-logistic-tracking-info.dto';
 import { OrderService } from '../services/order.service';
+import { OrderWithStatus } from '../types/order-with-status.type';
 import { OrderHelperUtil } from '../utils/order-helper.util';
 
 @Controller('/order')
@@ -161,6 +165,31 @@ export class OrderController {
     return new GetAllOrderResDTO(orders);
   }
 
+  @Get('/:orderId')
+  @HttpCode(200)
+  public async getOrder(
+    @User() user: UserModel,
+    @Seller() seller: SellerModel | undefined,
+    @Param('orderId') orderId: UUID,
+  ): Promise<OrderWihtoutDetailsResDTO> {
+    const entityManager = this.entityManager;
+
+    const order = await this.orderService.getOrderByOrderId({
+      orderId,
+      user,
+      entityManager,
+      withProduct: true,
+      withLogisticTrackingInfo: true,
+    });
+
+    if (!order)
+      throw new NotFoundException(`Order (${orderId}) does not exist`);
+
+    const orderWithStatus = await OrderWithStatus.new(order);
+
+    return new OrderWihtoutDetailsResDTO(orderWithStatus);
+  }
+
   /**
    * Update order logistic tracking info and create transaction to mark onchain order status as delivery in progress.
    *
@@ -202,6 +231,7 @@ export class OrderController {
     const { order } = await this.entityManager.transaction(async (manager) => {
       const order = await this.orderService.getOrderByOrderId({
         orderId,
+        user: sellerUser,
         entityManager: manager,
         withLogisticTrackingInfo: true,
         withProduct: true,
