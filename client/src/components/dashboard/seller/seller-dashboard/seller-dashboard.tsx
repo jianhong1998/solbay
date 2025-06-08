@@ -17,8 +17,12 @@ const SellerDashboard: FC = () => {
 
   const redirectToViewProductListPage = () => {
     if (!sellerData) return;
-
     router.push(`/seller/${sellerData.uuid}/product`);
+  };
+
+  const redirectToViewOrderListPage = () => {
+    if (!sellerData) return;
+    router.push(`/seller/${sellerData.uuid}/order`);
   };
 
   if (!sellerData) {
@@ -37,9 +41,14 @@ const SellerDashboard: FC = () => {
           subtitle={`${sellerData.name}`}
           padding={64}
         >
-          <PrimaryButton onClick={redirectToViewProductListPage}>
-            My Products
-          </PrimaryButton>
+          <div className="flex flex-col justify-center gap-4 lg:flex-row ">
+            <PrimaryButton onClick={redirectToViewProductListPage}>
+              My Products
+            </PrimaryButton>
+            <PrimaryButton onClick={redirectToViewOrderListPage}>
+              My Orders
+            </PrimaryButton>
+          </div>
         </AppHero>
       </div>
     </>
