@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 
 import { UpdateLogisticTrackingInfoForm } from '@/components/form/seller-update-logistic-tracking-info-form/update-logistic-tracking-info-form';
@@ -24,6 +24,10 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
   sellerId,
 }) => {
   const router = useRouter();
+  const sellerOrderPageUrl = useMemo(
+    () => `/seller/${sellerId}/order`,
+    [sellerId],
+  );
 
   const {
     data: orderDetails,
@@ -31,7 +35,8 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
     error: getOrderDetailsError,
   } = useGetOrderDetails(orderId);
 
-  const { mutateAsync: submitShipOutFn } = useSellerShipOut();
+  const { mutateAsync: submitShipOutFn, isPending: isShipOutPending } =
+    useSellerShipOut();
 
   const submitAction = useCallback(
     async (
@@ -59,7 +64,6 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
   */
   useEffect(() => {
     if (!orderDetails) return;
-    const sellerOrderPageUrl = `/seller/${sellerId}/order`;
 
     if (orderDetails.product.seller.id !== sellerId) {
       toast.error('You do not have permission to update this order status.');
@@ -72,9 +76,15 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
       router.push(sellerOrderPageUrl);
       return;
     }
-  }, [orderDetails, sellerId, router]);
+  }, [orderDetails, sellerId, router, sellerOrderPageUrl]);
 
   if (!isOrderDetailsFetched) return <FullPageLoading />;
 
-  return <UpdateLogisticTrackingInfoForm onSubmit={submitAction} />;
+  return (
+    <UpdateLogisticTrackingInfoForm
+      onSubmit={submitAction}
+      isPending={isShipOutPending}
+      orderListPageUrl={sellerOrderPageUrl}
+    />
+  );
 };

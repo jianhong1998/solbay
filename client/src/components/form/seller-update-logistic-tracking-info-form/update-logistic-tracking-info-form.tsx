@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { FC, useState } from 'react';
 
 import { IUseSellerShipOutParams } from '@/hooks/queries/order/seller-order/seller-ship-out';
@@ -8,6 +9,8 @@ import { UpdateLogisticTrackingInfoFormPresentation } from './update-logistic-tr
 
 type UpdateLogisticTrackingInfoFormProps = {
   onSubmit: (formData: IFormData) => Promise<void>;
+  orderListPageUrl: string;
+  isPending: boolean;
 };
 
 type IFormData = IUseSellerShipOutParams['logisticTrackingInfo'];
@@ -21,12 +24,29 @@ const defaultFormData: IFormData = {
 
 export const UpdateLogisticTrackingInfoForm: FC<
   UpdateLogisticTrackingInfoFormProps
-> = ({ onSubmit }) => {
-  const [formData, _setFormData] = useState(defaultFormData);
+> = ({ onSubmit, orderListPageUrl, isPending }) => {
+  const [formData, setFormData] = useState(defaultFormData);
+  const router = useRouter();
 
-  const _handleSubmit = async () => {
+  const handleInputChange = (field: keyof IFormData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
     await onSubmit(formData);
   };
 
-  return <UpdateLogisticTrackingInfoFormPresentation />;
+  const handleCancel = () => {
+    router.push(orderListPageUrl);
+  };
+
+  return (
+    <UpdateLogisticTrackingInfoFormPresentation
+      formData={formData}
+      onInputChange={handleInputChange}
+      onSubmit={handleSubmit}
+      onCancel={handleCancel}
+      isPending={isPending}
+    />
+  );
 };

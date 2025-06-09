@@ -34,7 +34,10 @@ export const OrderListItem: FC<OrderListItemProps> = ({ order, sellerId }) => {
           )}
         </div>
         <div className="flex-1">
-          <OrderStatusBadge status={order.status} />
+          <OrderStatusBadge
+            status={order.status}
+            sellerMode
+          />
         </div>
       </div>
 

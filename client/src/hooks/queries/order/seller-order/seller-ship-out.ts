@@ -5,10 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
-import {
-  DateTimeFormat,
-  DateTimeHelper,
-} from '@/utils/shared/date-time-helper';
+import { DateTimeHelper } from '@/utils/shared/date-time-helper';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 import { TransactionUtil } from '@/utils/transaction.util';
 
@@ -66,13 +63,12 @@ export const useSellerShipOut = () => {
         trackingUrl,
       } = logisticTrackingInfo;
 
+      const date = DateTimeHelper.format(estimatedDeliverDate, 'yyyy-MM-dd');
+
       const url = `/order/${orderId}/delivery-in-progress`;
       const body: IUpdateOrderLogisticTrackingInfoRequestBody = {
         logisticTrackingInfo: {
-          estimatedDeliverDate: DateTimeHelper.format(
-            estimatedDeliverDate,
-            DateTimeFormat.DATE_ONLY,
-          ),
+          estimatedDeliverDate: date,
           logisticProvider,
           trackingCode,
           trackingUrl,
