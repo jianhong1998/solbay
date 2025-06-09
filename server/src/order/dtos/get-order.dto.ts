@@ -18,9 +18,11 @@ import { OrderStatus } from '../enums/order-status.enum';
 import { OrderWithStatus } from '../types/order-with-status.type';
 
 /**
- * Response DTO for Order without details
+ * Response DTO for Order with details
+ *
+ * @note Without sensitive data (logistic info, public key)
  */
-export class OrderWihtoutDetailsResDTO {
+export class OrderResDTO {
   @IsUUID()
   uuid: UUID;
 
@@ -60,10 +62,10 @@ export class GetAllOrderResDTO {
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested()
-  @Type(() => OrderWihtoutDetailsResDTO)
-  orders: OrderWihtoutDetailsResDTO[];
+  @Type(() => OrderResDTO)
+  orders: OrderResDTO[];
 
   constructor(orders: OrderWithStatus[]) {
-    this.orders = orders.map((order) => new OrderWihtoutDetailsResDTO(order));
+    this.orders = orders.map((order) => new OrderResDTO(order));
   }
 }

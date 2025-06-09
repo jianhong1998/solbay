@@ -26,10 +26,7 @@ import { UserModel } from 'src/user/models/user.model';
 import { SellerService } from 'src/user/services/seller.service';
 import { EntityManager } from 'typeorm';
 
-import {
-  GetAllOrderResDTO,
-  OrderWihtoutDetailsResDTO,
-} from '../dtos/get-order.dto';
+import { GetAllOrderResDTO, OrderResDTO } from '../dtos/get-order.dto';
 import { CheckoutReqDTO, CheckoutResDTO } from '../dtos/place-order.dto';
 import {
   UpdateOrderLogisticTrackingInfoReqDTO,
@@ -171,7 +168,7 @@ export class OrderController {
     @User() user: UserModel,
     @Seller() seller: SellerModel | undefined,
     @Param('orderId') orderId: UUID,
-  ): Promise<OrderWihtoutDetailsResDTO> {
+  ): Promise<OrderResDTO> {
     const entityManager = this.entityManager;
 
     const order = await this.orderService.getOrderByOrderId({
@@ -187,7 +184,7 @@ export class OrderController {
 
     const orderWithStatus = await OrderWithStatus.new(order);
 
-    return new OrderWihtoutDetailsResDTO(orderWithStatus);
+    return new OrderResDTO(orderWithStatus);
   }
 
   /**

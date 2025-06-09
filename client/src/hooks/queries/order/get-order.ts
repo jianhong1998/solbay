@@ -11,13 +11,25 @@ type IGetAllOrderResponse = {
   orders: IOrderSummaryData[];
 };
 
-export const getQueryKeyForGetAllBuyerOrder = (publicKey: string | null) => {
-  return ['order', 'get-all', 'buyer', { publicKey }];
-};
+export const getQueryKeyForGetAllBuyerOrder = (publicKey: string | null) => [
+  'order',
+  'get-all',
+  'buyer',
+  { publicKey },
+];
 
-export const getQueryKeyForGetAllSellerOrder = (publicKey: string | null) => {
-  return ['order', 'get-all', 'seller', { publicKey }];
-};
+export const getQueryKeyForGetAllSellerOrder = (publicKey: string | null) => [
+  'order',
+  'get-all',
+  'seller',
+  { publicKey },
+];
+
+export const getQueryKeyForGetOrderDetails = (publicKey: string | null) => [
+  'order',
+  'get',
+  { publicKey },
+];
 
 export const useGetAllBuyerOrders = () => {
   const serverAxios = useServerAxios();
@@ -73,6 +85,36 @@ export const useGetAllSellerOrders = () => {
     if (query.isSuccess && query.isStale) {
       query.refetch();
     }
+  }, [query]);
+
+  return query;
+};
+
+export const useGetOrderDetails = (orderId: string) => {
+  const serverAxios = useServerAxios();
+  const { publicKey } = useWallet();
+  const publicKeyString = publicKey?.toBase58() ?? null;
+
+  const query = useQuery({
+    queryKey: getQueryKeyForGetOrderDetails(publicKeyString),
+    queryFn: async () => {
+      const url = `/order/${orderId}`;
+      const res = await serverAxios.get<IOrderSummaryData>(url);
+
+      return res.data;
+    },
+    enabled: serverAxios.isInitialized,
+    gcTime: 5 * 60 * 1000, // 5 mins
+    staleTime: 5 * 60 * 1000, // 5 mins
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (!query.isSuccess || !query.isStale) return;
+
+    query.refetch();
   }, [query]);
 
   return query;
