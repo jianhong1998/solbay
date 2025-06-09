@@ -30,9 +30,11 @@ type IUpdateOrderLogisticTrackingInfoResponse = {
   } | null;
 };
 
-type IUseSellerShipOutResult = {};
+type IUseSellerShipOutResult = {
+  transactionId: string | null;
+};
 
-type IUseSellerShipOutParams = {
+export type IUseSellerShipOutParams = {
   orderId: string;
   logisticTrackingInfo: {
     estimatedDeliverDate: Date;

@@ -1,13 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 import { UpdateLogisticTrackingInfoForm } from '@/components/form/seller-update-logistic-tracking-info-form/update-logistic-tracking-info-form';
 import FullPageLoading from '@/components/ui/loading/full-page-loading';
 import { OrderStatus } from '@/enums/order/order-status.constant';
 import { useGetOrderDetails } from '@/hooks/queries/order/get-order';
+import {
+  IUseSellerShipOutParams,
+  useSellerShipOut,
+} from '@/hooks/queries/order/seller-order/seller-ship-out';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 
 type HandleShipmentFeatureProps = {
@@ -26,6 +30,20 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
     isFetched: isOrderDetailsFetched,
     error: getOrderDetailsError,
   } = useGetOrderDetails(orderId);
+
+  const { mutateAsync: submitShipOutFn } = useSellerShipOut();
+
+  const submitAction = useCallback(
+    async (
+      logisticTrackingInfo: IUseSellerShipOutParams['logisticTrackingInfo'],
+    ) => {
+      await submitShipOutFn({
+        orderId,
+        logisticTrackingInfo,
+      });
+    },
+    [submitShipOutFn, orderId],
+  );
 
   /* Error handler */
   useEffect(() => {
@@ -58,5 +76,5 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
 
   if (!isOrderDetailsFetched) return <FullPageLoading />;
 
-  return <UpdateLogisticTrackingInfoForm />;
+  return <UpdateLogisticTrackingInfoForm onSubmit={submitAction} />;
 };
