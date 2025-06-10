@@ -25,11 +25,10 @@ export const getQueryKeyForGetAllSellerOrder = (publicKey: string | null) => [
   { publicKey },
 ];
 
-export const getQueryKeyForGetOrderDetails = (publicKey: string | null) => [
-  'order',
-  'get',
-  { publicKey },
-];
+export const getQueryKeyForGetOrderDetails = (
+  publicKey: string | null,
+  orderId: string,
+) => ['order', 'get', { publicKey, orderId }];
 
 export const useGetAllBuyerOrders = () => {
   const serverAxios = useServerAxios();
@@ -96,14 +95,14 @@ export const useGetOrderDetails = (orderId: string) => {
   const publicKeyString = publicKey?.toBase58() ?? null;
 
   const query = useQuery({
-    queryKey: getQueryKeyForGetOrderDetails(publicKeyString),
+    queryKey: getQueryKeyForGetOrderDetails(publicKeyString, orderId),
     queryFn: async () => {
       const url = `/order/${orderId}`;
       const res = await serverAxios.get<IOrderSummaryData>(url);
 
       return res.data;
     },
-    enabled: serverAxios.isInitialized,
+    enabled: serverAxios.isInitialized && Boolean(publicKey),
     gcTime: 5 * 60 * 1000, // 5 mins
     staleTime: 5 * 60 * 1000, // 5 mins
     refetchOnMount: false,

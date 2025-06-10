@@ -24,7 +24,7 @@ const DangerButton = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
         ref={ref}
         className={[
-          'btn btn-error',
+          'btn btn-error rounded-lg',
           buttonStyleClassName,
           disableClassName,
           className,

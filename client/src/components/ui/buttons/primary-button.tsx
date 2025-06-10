@@ -24,7 +24,7 @@ const PrimaryButton = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
         ref={ref}
         className={[
-          'btn btn-primary',
+          'btn btn-primary rounded-lg',
           buttonStyleClassName,
           disableClassName,
           className,

@@ -1,13 +1,19 @@
 'use client';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { useServerAxios } from '@/hooks/axios/server-axios-client';
 import { DateTimeHelper } from '@/utils/shared/date-time-helper';
 import { ErrorHandler } from '@/utils/shared/error-handler';
 import { TransactionUtil } from '@/utils/transaction.util';
+
+import {
+  getQueryKeyForGetAllBuyerOrder,
+  getQueryKeyForGetAllSellerOrder,
+  getQueryKeyForGetOrderDetails,
+} from '../get-order';
 
 type IUpdateOrderLogisticTrackingInfoRequestBody = {
   logisticTrackingInfo: {
@@ -50,6 +56,8 @@ export const useSellerShipOut = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const publicKeyString = publicKey?.toBase58() ?? null;
+
+  const queryClient = useQueryClient();
 
   return useMutation<IUseSellerShipOutResult, Error, IUseSellerShipOutParams>({
     mutationKey: getQueryKeyForSellerShipOut(publicKeyString),
@@ -114,13 +122,24 @@ export const useSellerShipOut = () => {
 
       return { transactionId };
     },
-    onSuccess: () => {
+    onSuccess: async (_result, { orderId }) => {
       toast.success('Successfully mark order as delivery in progress');
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: getQueryKeyForGetOrderDetails(publicKeyString, orderId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getQueryKeyForGetAllSellerOrder(publicKeyString),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getQueryKeyForGetAllBuyerOrder(publicKeyString),
+        }),
+      ]);
     },
     onError: (error) => {
       const message = ErrorHandler.extractErrorMessage(error);
-
       toast.error(message);
     },
+    retry: false,
   });
 };

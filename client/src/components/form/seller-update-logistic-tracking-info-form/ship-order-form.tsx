@@ -5,9 +5,9 @@ import { FC, useState } from 'react';
 
 import { IUseSellerShipOutParams } from '@/hooks/queries/order/seller-order/seller-ship-out';
 
-import { UpdateLogisticTrackingInfoFormPresentation } from './update-logistic-tracking-info-form-presentation';
+import { ShipOrderFormPresentation } from './ship-order-form-presentation';
 
-type UpdateLogisticTrackingInfoFormProps = {
+type ShipOrderFormProps = {
   onSubmit: (formData: IFormData) => Promise<void>;
   orderListPageUrl: string;
   isPending: boolean;
@@ -22,9 +22,11 @@ const defaultFormData: IFormData = {
   trackingUrl: null,
 };
 
-export const UpdateLogisticTrackingInfoForm: FC<
-  UpdateLogisticTrackingInfoFormProps
-> = ({ onSubmit, orderListPageUrl, isPending }) => {
+export const ShipOrderForm: FC<ShipOrderFormProps> = ({
+  onSubmit,
+  orderListPageUrl,
+  isPending,
+}) => {
   const [formData, setFormData] = useState(defaultFormData);
   const router = useRouter();
 
@@ -41,7 +43,7 @@ export const UpdateLogisticTrackingInfoForm: FC<
   };
 
   return (
-    <UpdateLogisticTrackingInfoFormPresentation
+    <ShipOrderFormPresentation
       formData={formData}
       onInputChange={handleInputChange}
       onSubmit={handleSubmit}

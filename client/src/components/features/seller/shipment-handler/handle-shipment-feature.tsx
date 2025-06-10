@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 
-import { UpdateLogisticTrackingInfoForm } from '@/components/form/seller-update-logistic-tracking-info-form/update-logistic-tracking-info-form';
+import { ShipOrderForm } from '@/components/form/seller-update-logistic-tracking-info-form/ship-order-form';
 import FullPageLoading from '@/components/ui/loading/full-page-loading';
 import { OrderStatus } from '@/enums/order/order-status.constant';
 import { useGetOrderDetails } from '@/hooks/queries/order/get-order';
@@ -35,20 +35,20 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
     error: getOrderDetailsError,
   } = useGetOrderDetails(orderId);
 
-  const { mutateAsync: submitShipOutFn, isPending: isShipOutPending } =
-    useSellerShipOut();
+  const {
+    mutateAsync: submitShipOutFn,
+    isPending: isShipOutPending,
+    isSuccess: isShipOutSuccess,
+  } = useSellerShipOut();
 
-  const submitAction = useCallback(
-    async (
-      logisticTrackingInfo: IUseSellerShipOutParams['logisticTrackingInfo'],
-    ) => {
-      await submitShipOutFn({
-        orderId,
-        logisticTrackingInfo,
-      });
-    },
-    [submitShipOutFn, orderId],
-  );
+  const submitAction = async (
+    logisticTrackingInfo: IUseSellerShipOutParams['logisticTrackingInfo'],
+  ) => {
+    await submitShipOutFn({
+      orderId,
+      logisticTrackingInfo,
+    });
+  };
 
   /* Error handler */
   useEffect(() => {
@@ -78,10 +78,19 @@ export const HandleShipmentFeature: FC<HandleShipmentFeatureProps> = ({
     }
   }, [orderDetails, sellerId, router, sellerOrderPageUrl]);
 
+  /* Handle redirect to seller order page if:
+    - seller successfully ship out order
+  */
+  useEffect(() => {
+    if (!isShipOutSuccess) return;
+
+    router.push(sellerOrderPageUrl);
+  }, [isShipOutSuccess, router, sellerOrderPageUrl]);
+
   if (!isOrderDetailsFetched) return <FullPageLoading />;
 
   return (
-    <UpdateLogisticTrackingInfoForm
+    <ShipOrderForm
       onSubmit={submitAction}
       isPending={isShipOutPending}
       orderListPageUrl={sellerOrderPageUrl}

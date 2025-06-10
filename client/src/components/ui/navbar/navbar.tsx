@@ -28,7 +28,7 @@ const NavBarProvider: FC<NavBarProviderProps> = ({ links, children }) => {
       />
       <div className="drawer-content flex flex-col">
         <div className="flex navbar bg-base-300 dark:text-neutral-content w-full lg:px-3 sticky top-0 z-10">
-          <div className="flex-1">
+          <div className="flex-1 flex flex-row items-center">
             <NavbarTriggerButton labelHtmlFor={toggleCheckBoxId} />
             <Link
               className="btn btn-ghost normal-case text-xl"
