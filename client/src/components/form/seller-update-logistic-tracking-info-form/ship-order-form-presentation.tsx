@@ -60,6 +60,7 @@ export const ShipOrderFormPresentation: FC<ShipOrderFormPresentationProps> = ({
             label="Estimated Delivery Date"
             className="w-full"
             min={new Date().toISOString().split('T')[0]}
+            disabled={isPending}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -72,6 +73,7 @@ export const ShipOrderFormPresentation: FC<ShipOrderFormPresentationProps> = ({
             label="Logistic Provider"
             placeholder="e.g., DHL, FedEx"
             className="w-full"
+            disabled={isPending}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -82,6 +84,7 @@ export const ShipOrderFormPresentation: FC<ShipOrderFormPresentationProps> = ({
             label="Tracking Code"
             placeholder="Tracking number"
             className="w-full"
+            disabled={isPending}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -94,6 +97,7 @@ export const ShipOrderFormPresentation: FC<ShipOrderFormPresentationProps> = ({
             label="Tracking URL (Optional)"
             placeholder="https://tracking.example.com"
             className="w-full"
+            disabled={isPending}
           />
         </div>
         <div className="flex flex-row gap-2 justify-end mt-4">
