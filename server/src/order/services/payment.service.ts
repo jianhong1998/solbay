@@ -4,6 +4,7 @@ import { PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { BN } from 'bn.js';
 import { UUID } from 'crypto';
 import { addDays } from 'date-fns';
+import { SOLBAY_PLATFORM_CODE } from 'src/common/constants';
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { LoggerUtil } from 'src/common/utils/logger.util';
 import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
@@ -16,7 +17,6 @@ import { SellerDBUtil } from 'src/user/utils/sellerDB.util';
 import { EntityManager, In, IsNull } from 'typeorm';
 
 import { OrderDBUtil } from '../utils/order-db.util';
-import { OrderHelperUtil } from '../utils/order-helper.util';
 import { TempOrderDBUtil } from '../utils/temp-order-db.util';
 
 @Injectable()
@@ -25,7 +25,6 @@ export class PaymentService {
     private readonly orderDBUtil: OrderDBUtil,
     private readonly sellerDBUtil: SellerDBUtil,
     private readonly tempOrderDBUtil: TempOrderDBUtil,
-    private readonly orderHelper: OrderHelperUtil,
     private readonly loggerUtil: LoggerUtil,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -98,7 +97,13 @@ export class PaymentService {
       const sellerPublicKey = new PublicKey(seller.user.publicKey);
 
       return await program.methods
-        .purchase(Array.from(uuidBytes), 'SOLB', amount, sellerTimeout, '')
+        .purchase(
+          Array.from(uuidBytes),
+          SOLBAY_PLATFORM_CODE,
+          amount,
+          sellerTimeout,
+          '',
+        )
         .accounts({
           mint,
           seller: sellerPublicKey,

@@ -18,9 +18,11 @@ import { OrderStatus } from '../enums/order-status.enum';
 import { OrderWithStatus } from '../types/order-with-status.type';
 
 /**
- * Response DTO for Order without details
+ * Response DTO for Order with details
+ *
+ * @note Without sensitive data (logistic info, public key)
  */
-class OrderResDTO {
+export class OrderResDTO {
   @IsUUID()
   uuid: UUID;
 
@@ -46,13 +48,13 @@ class OrderResDTO {
   constructor(order: OrderWithStatus) {
     const { status, uuid, totalAmountInMicroUsdc, product, quantity } = order;
 
-    if (!product) throw new Error('No product for response');
-    this.product = new ProductWithoutSensitiveDataResDTO(product);
-
     this.uuid = uuid;
     this.totalAmountInMicroUsdc = totalAmountInMicroUsdc;
     this.status = status;
     this.quantity = quantity;
+
+    if (!product) throw new Error('No product for response');
+    this.product = new ProductWithoutSensitiveDataResDTO(product);
   }
 }
 

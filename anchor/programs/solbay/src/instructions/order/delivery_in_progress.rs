@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token_interface::Mint;
+use anchor_spl::token_interface::{Mint, TokenAccount};
 
 use crate::{
   constants::{
@@ -43,7 +43,7 @@ pub struct DeliveryInProgress<'info> {
     ],
     bump = escrow_config.bump_escrow_operation_account
   )]
-  pub escrow_operation_account: SystemAccount<'info>,
+  pub escrow_operation_account: InterfaceAccount<'info, TokenAccount>,
 
   #[account(
     seeds = [

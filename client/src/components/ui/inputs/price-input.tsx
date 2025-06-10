@@ -70,7 +70,7 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
     return (
       <>
         {Boolean(label) && (
-          <label className={`label label-text font-bold ${labelClassName}`}>
+          <label className={`label label-text-alt font-bold ${labelClassName}`}>
             {label}
           </label>
         )}

@@ -5,6 +5,8 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { useRouter } from 'next/navigation';
 import { ButtonHTMLAttributes, forwardRef, useEffect, useState } from 'react';
 
+import DangerButton from '@/components/ui/buttons/danger-button';
+import PrimaryButton from '@/components/ui/buttons/primary-button';
 import { useLogin } from '@/hooks/queries/auth/login';
 import { useLogout } from '@/hooks/queries/auth/logout';
 import { useVerifyToken } from '@/hooks/queries/auth/verify-token';
@@ -23,40 +25,32 @@ type LogoutButtonProps = AuthButtonProps & {
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
   ({ className, loginHandler, isLoading, ...props }, ref) => {
-    const disabledClassName = isLoading ? 'btn-disabled' : '';
-
     return (
-      <button
+      <PrimaryButton
         {...props}
         ref={ref}
-        className={['btn btn-primary', className, disabledClassName].join(' ')}
+        className={className}
         onClick={loginHandler}
+        loading={isLoading}
       >
-        {isLoading && <span className="loading loading-spinner"></span>}
         Login
-      </button>
+      </PrimaryButton>
     );
   },
 );
 
 const LogoutButton = forwardRef<HTMLButtonElement, LogoutButtonProps>(
   ({ logoutHandler, className, isLoading, ...props }, ref) => {
-    const disabledClassName = isLoading ? 'btn-disabled' : '';
-
     return (
-      <button
+      <DangerButton
         {...props}
         ref={ref}
-        className={[
-          'btn btn-error btn-outline',
-          className,
-          disabledClassName,
-        ].join(' ')}
+        className={className}
         onClick={logoutHandler}
+        loading={isLoading}
       >
-        {isLoading && <span className="loading loading-spinner"></span>}
         Logout
-      </button>
+      </DangerButton>
     );
   },
 );

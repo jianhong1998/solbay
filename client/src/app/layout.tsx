@@ -14,7 +14,6 @@ export const metadata = {
 const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'USDC Account', path: '/dummy-usdc' },
-  { label: 'Clusters', path: '/clusters' },
   { label: 'Browse', path: '/products' },
   // { label: 'Buyer', path: '/buyer' },
   { label: 'Seller', path: '/seller' },
@@ -26,11 +25,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { SOLANA_CLUSTER_NAME: solanaClusterName } = process.env;
+
   return (
     <html lang="en">
       <body>
         <ReactQueryProvider>
-          <ClusterProvider>
+          <ClusterProvider defaultClusterName={solanaClusterName}>
             <SolanaProvider>
               <UiLayout links={links}>{children}</UiLayout>
             </SolanaProvider>

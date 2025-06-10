@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from 'bn.js';
+import { SOLBAY_PLATFORM_CODE } from 'src/common/constants';
 import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
@@ -51,7 +52,7 @@ export class OrderHelperUtil {
     const instruction = await program.methods
       .purchase(
         orderIdBytes,
-        'SOLB',
+        SOLBAY_PLATFORM_CODE,
         new BN(order.totalAmountInMicroUsdc),
         amount,
         '',
