@@ -959,21 +959,26 @@ export type Solbay = {
     },
     {
       code: 6002;
+      name: 'unauthorisedBuyer';
+      msg: 'Unauthorised Buyer';
+    },
+    {
+      code: 6003;
+      name: 'unauthorisedRecipient';
+      msg: 'Unauthorised Recipient';
+    },
+    {
+      code: 6004;
       name: 'invalidMint';
       msg: 'Invalid Mint';
     },
     {
-      code: 6003;
-      name: 'unauthorisedBuyer';
-      msg: 'Unauthorized Buyer';
-    },
-    {
-      code: 6004;
+      code: 6005;
       name: 'escrowProfitExceedLimit';
       msg: 'Escrow profit cannot be more than 100';
     },
     {
-      code: 6005;
+      code: 6006;
       name: 'orderFundIsAlreadyReleased';
       msg: 'Order fund is already released';
     },
@@ -987,6 +992,10 @@ export type Solbay = {
           {
             name: 'escrowProfitPercentage';
             type: 'u8';
+          },
+          {
+            name: 'withdrawRecipient';
+            type: 'pubkey';
           },
           {
             name: 'bumpEscrowConfig';

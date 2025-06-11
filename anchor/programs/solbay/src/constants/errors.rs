@@ -8,11 +8,14 @@ pub enum ErrorCode {
   #[msg("Unauthorised Action")]
   UnauthorisedAction,
 
+  #[msg("Unauthorised Buyer")]
+  UnauthorisedBuyer,
+
+  #[msg("Unauthorised Recipient")]
+  UnauthorisedRecipient,
+
   #[msg("Invalid Mint")]
   InvalidMint,
-
-  #[msg("Unauthorized Buyer")]
-  UnauthorisedBuyer,
 
   #[msg("Escrow profit cannot be more than 100")]
   EscrowProfitExceedLimit,
