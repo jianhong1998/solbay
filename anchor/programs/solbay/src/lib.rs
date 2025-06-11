@@ -19,8 +19,8 @@ pub mod solbay {
     process_login(context)
   }
 
-  pub fn init_escrow(context: Context<InitEscrow>) -> Result<()> {
-    process_init_escrow(context)
+  pub fn init_escrow(context: Context<InitEscrow>, escrow_profit_percentage: u8) -> Result<()> {
+    process_init_escrow(context, escrow_profit_percentage)
   }
 
   pub fn purchase(

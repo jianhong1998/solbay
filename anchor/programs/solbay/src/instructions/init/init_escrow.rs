@@ -6,8 +6,8 @@ use anchor_spl::{
 
 use crate::{
   constants::{
-    ANCHOR_DISCRIMINATOR, ESCROW_AUTHORITY_SEED, ESCROW_CONFIG_SEED, ESCROW_OPERATION_ACCOUNT_SEED,
-    ESCROW_SEED,
+    ErrorCode, ANCHOR_DISCRIMINATOR, ESCROW_AUTHORITY_SEED, ESCROW_CONFIG_SEED,
+    ESCROW_OPERATION_ACCOUNT_SEED, ESCROW_SEED,
   },
   states::EscrowConfig,
 };
@@ -72,9 +72,17 @@ pub struct InitEscrow<'info> {
   pub escrow_config: Box<Account<'info, EscrowConfig>>,
 }
 
-pub fn process_init_escrow(context: Context<InitEscrow>) -> Result<()> {
+pub fn process_init_escrow(
+  context: Context<InitEscrow>,
+  escrow_profit_percentage: u8,
+) -> Result<()> {
   let escrow_config = &mut context.accounts.escrow_config;
 
+  if escrow_profit_percentage > 100 {
+    return Err(ErrorCode::EscrowProfitExceedLimit.into());
+  }
+
+  escrow_config.escrow_profit_percentage = escrow_profit_percentage;
   escrow_config.bump_escrow_config = context.bumps.escrow_config;
   escrow_config.bump_authority = context.bumps.authority;
   escrow_config.bump_escrow_token_account = context.bumps.escrow_token_account;

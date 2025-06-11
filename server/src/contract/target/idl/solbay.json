@@ -186,7 +186,12 @@
           }
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "escrow_profit_percentage",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "login",
@@ -625,6 +630,11 @@
       "code": 6003,
       "name": "UnauthorisedBuyer",
       "msg": "Unauthorized Buyer"
+    },
+    {
+      "code": 6004,
+      "name": "EscrowProfitExceedLimit",
+      "msg": "Escrow profit cannot be more than 100"
     }
   ],
   "types": [
@@ -633,6 +643,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "escrow_profit_percentage",
+            "type": "u8"
+          },
           {
             "name": "bump_escrow_config",
             "type": "u8"

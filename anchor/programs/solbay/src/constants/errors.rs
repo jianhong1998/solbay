@@ -13,4 +13,7 @@ pub enum ErrorCode {
 
   #[msg("Unauthorized Buyer")]
   UnauthorisedBuyer,
+
+  #[msg("Escrow profit cannot be more than 100")]
+  EscrowProfitExceedLimit,
 }

@@ -274,7 +274,12 @@ export type Solbay = {
           };
         },
       ];
-      args: [];
+      args: [
+        {
+          name: 'escrowProfitPercentage';
+          type: 'u8';
+        },
+      ];
     },
     {
       name: 'login';
@@ -962,6 +967,11 @@ export type Solbay = {
       name: 'unauthorisedBuyer';
       msg: 'Unauthorized Buyer';
     },
+    {
+      code: 6004;
+      name: 'escrowProfitExceedLimit';
+      msg: 'Escrow profit cannot be more than 100';
+    },
   ];
   types: [
     {
@@ -969,6 +979,10 @@ export type Solbay = {
       type: {
         kind: 'struct';
         fields: [
+          {
+            name: 'escrowProfitPercentage';
+            type: 'u8';
+          },
           {
             name: 'bumpEscrowConfig';
             type: 'u8';
