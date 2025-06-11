@@ -16,4 +16,7 @@ pub enum ErrorCode {
 
   #[msg("Escrow profit cannot be more than 100")]
   EscrowProfitExceedLimit,
+
+  #[msg("Order fund is already released")]
+  OrderFundIsAlreadyReleased,
 }

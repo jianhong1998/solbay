@@ -38,6 +38,7 @@ pub struct ReceiveOrder<'info> {
     mut,
     constraint = order.buyer_pubkey == buyer.key() @ ErrorCode::UnauthorisedBuyer,
     constraint = order.status == OrderStatus::DeliveryInProgress.to_str() @ ErrorCode::UnauthorisedAction,
+    constraint = order.is_fund_released == false @ ErrorCode::OrderFundIsAlreadyReleased,
     realloc = ANCHOR_DISCRIMINATOR + Order::INIT_SPACE,
     realloc::payer = escrow_operation_account,
     realloc::zero = false,
@@ -102,7 +103,9 @@ pub fn process_receive_order(context: Context<ReceiveOrder>) -> Result<()> {
   let escrow_opetaion_token_account = &context.accounts.escrow_operation_account;
   let mint = &context.accounts.mint;
 
+  // Update order state
   order.status = OrderStatus::ItemReceived.to_str();
+  order.is_fund_released = true;
 
   let signer_seeds: Vec<Vec<u8>> = vec![
     ESCROW_AUTHORITY_SEED.to_vec(),
