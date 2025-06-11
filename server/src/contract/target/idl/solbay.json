@@ -321,6 +321,165 @@
       ]
     },
     {
+      "name": "receive_order",
+      "discriminator": [0, 181, 160, 179, 4, 88, 225, 249],
+      "accounts": [
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "seller"
+        },
+        {
+          "name": "seller_associated_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "seller"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "order",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [111, 114, 100, 101, 114]
+              },
+              {
+                "kind": "arg",
+                "path": "order_id"
+              },
+              {
+                "kind": "arg",
+                "path": "platform_code"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 99, 111, 110, 102, 105, 103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 97, 117, 116, 104, 111, 114,
+                  105, 116, 121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [101, 115, 99, 114, 111, 119]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_operation_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101, 115, 99, 114, 111, 119, 95, 111, 112, 101, 114, 97, 116,
+                  105, 111, 110, 95, 97, 99, 99, 111, 117, 110, 116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_order_id",
+          "type": {
+            "array": ["u8", 16]
+          }
+        },
+        {
+          "name": "_platform_code",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "sample_withdraw",
       "discriminator": [192, 244, 163, 160, 43, 3, 73, 234],
       "accounts": [
@@ -461,6 +620,11 @@
       "code": 6002,
       "name": "InvalidMint",
       "msg": "Invalid Mint"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorisedBuyer",
+      "msg": "Unauthorized Buyer"
     }
   ],
   "types": [

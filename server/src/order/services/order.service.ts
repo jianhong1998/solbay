@@ -454,6 +454,93 @@ export class OrderService {
     });
   }
 
+  public async createReceiveOrderTransaction(params: {
+    orderId: UUID;
+    user: UserModel;
+    entityManager?: EntityManager;
+  }): Promise<{
+    transaction: VersionedTransaction;
+    latestBlockhash: BlockhashWithExpiryBlockHeight;
+  }> {
+    const { orderId, user } = params;
+    const entityManager = params.entityManager ?? this.entityManager;
+    const errorMessageForOrderNotReady = `Order (${orderId}) status is not ready to be marked as received before.`;
+
+    /* Validate if order is ready to be marked as received */
+
+    const isTempOrder = await this.tempOrderDBUtil.has({
+      criterial: {
+        order: { uuid: orderId },
+      },
+      relation: {
+        order: true,
+      },
+      entityManager,
+    });
+
+    if (isTempOrder)
+      throw new BadRequestException(errorMessageForOrderNotReady);
+
+    const order = await this.orderDBUtil.getOne({
+      criterial: {
+        uuid: orderId,
+      },
+      relation: {
+        product: {
+          seller: true,
+        },
+      },
+      entityManager,
+    });
+
+    if (!order) throw new NotFoundException(`Order (${orderId}) not found.`);
+
+    const orderWithStatus = await OrderWithStatus.new(order);
+
+    if (orderWithStatus.status === OrderStatus.ITEM_RECEIVED)
+      throw new ConflictException('Order is already marked as received.');
+
+    if (orderWithStatus.status !== OrderStatus.DELIVERY_IN_PROGRESS)
+      throw new BadRequestException(errorMessageForOrderNotReady);
+
+    /* Prepare data for transaction creation */
+
+    if (!orderWithStatus.product?.seller)
+      throw new Error('Seller not fetched in order');
+
+    const seller = await this.sellerDBUtil.getOne({
+      criterial: {
+        uuid: orderWithStatus.product.seller.uuid,
+      },
+      relation: {
+        user: true,
+      },
+      entityManager,
+    });
+
+    if (!seller?.user) throw new Error('User is not fetched in seller data');
+
+    const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(orderId));
+    const buyerKey = new PublicKey(user.publicKey);
+    const sellerKey = new PublicKey(seller.user.publicKey);
+
+    /* Create transaction */
+
+    const instruction = await this.program.methods
+      .receiveOrder(orderIdBytes, SOLBAY_PLATFORM_CODE)
+      .accounts({
+        mint: UsdcHelper.getUsdcMintPublicKey(),
+        seller: sellerKey,
+        buyer: buyerKey,
+      })
+      .instruction();
+
+    return await TransactionUtil.createTransaction({
+      instructions: [instruction],
+      payerPublicKey: buyerKey,
+    });
+  }
+
   private async checkBuyerUsdcBalance(
     buyerPublicKey: PublicKey,
     minAmountInMicroUsdc: number,

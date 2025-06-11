@@ -6,7 +6,6 @@ import { Type } from 'class-transformer';
 import {
   IsDateString,
   IsNotEmpty,
-  IsNumber,
   IsObject,
   IsOptional,
   IsString,
@@ -14,9 +13,9 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
 
 import { ILogisticTrackingInfoCreationData } from '../types/logistic/logistic-tracking-info-creation-data.type';
+import { TransactionDataDTO } from './transaction-data.dto';
 
 class OrderLogisticTrackingInfoCreationDTO
   implements ILogisticTrackingInfoCreationData
@@ -44,31 +43,6 @@ export class UpdateOrderLogisticTrackingInfoReqDTO {
   @ValidateNested()
   @Type(() => OrderLogisticTrackingInfoCreationDTO)
   logisticTrackingInfo: OrderLogisticTrackingInfoCreationDTO;
-}
-
-class TransactionDataDTO {
-  @IsString()
-  @IsOptional()
-  transaction: string;
-
-  @IsString()
-  @IsOptional()
-  latestBlockhash: string;
-
-  @IsNumber()
-  @IsOptional()
-  lastValidBlockHeight: number;
-
-  constructor(transactionData: {
-    transaction: VersionedTransaction;
-    latestBlockhash: BlockhashWithExpiryBlockHeight;
-  }) {
-    const { latestBlockhash, transaction } = transactionData;
-
-    this.transaction = TransactionUtil.serializeTransaction(transaction);
-    this.latestBlockhash = latestBlockhash.blockhash;
-    this.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
-  }
 }
 
 export class UpdateOrderLogisticTrackingInfoResDTO {

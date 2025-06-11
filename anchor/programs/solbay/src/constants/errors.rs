@@ -10,4 +10,7 @@ pub enum ErrorCode {
 
   #[msg("Invalid Mint")]
   InvalidMint,
+
+  #[msg("Unauthorized Buyer")]
+  UnauthorisedBuyer,
 }
