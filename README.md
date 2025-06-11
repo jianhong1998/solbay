@@ -126,5 +126,5 @@ Use command below to build docker image for deployment
 Replace `<TAG>` with the actual tag using for the image
 
 ```shell
-docker build -f ./docker/deployment/dockerfile.server -t <TAG> ./server
+docker build -f ./docker/deployment/Dockerfile.server -t <TAG> ./server
 ```
