@@ -3,6 +3,7 @@ import { FC } from 'react';
 
 import PrimaryButton from '@/components/ui/buttons/primary-button';
 import { OrderStatus } from '@/enums/order/order-status.constant';
+import { useReceiveOrder } from '@/hooks/queries/order/receive-order';
 import { IOrderSummaryData } from '@/types/order/order-data.type';
 import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-display-helper';
 
@@ -14,6 +15,10 @@ type OrderListItemProps = {
 
 export const OrderListItem: FC<OrderListItemProps> = ({ order }) => {
   const router = useRouter();
+  const { mutateAsync: receiveOrderFn, isPending: isReceiveOrderPending } =
+    useReceiveOrder();
+
+  const shouldDisableAllButtons = isReceiveOrderPending;
 
   const payButtonOnClickHandler = () => {
     router.push(
@@ -21,6 +26,12 @@ export const OrderListItem: FC<OrderListItemProps> = ({ order }) => {
         orderId: order.uuid,
       })}`,
     );
+  };
+
+  const receiveOrderButtonOnClickHandler = async () => {
+    await receiveOrderFn({
+      orderId: order.uuid,
+    });
   };
 
   return (
@@ -47,12 +58,19 @@ export const OrderListItem: FC<OrderListItemProps> = ({ order }) => {
           <PrimaryButton
             buttonStyle="contained"
             onClick={payButtonOnClickHandler}
+            disabled={shouldDisableAllButtons}
           >
             Pay
           </PrimaryButton>
         )}
         {order.status === OrderStatus.DELIVERY_IN_PROGRESS && (
-          <PrimaryButton buttonStyle="outlined">Item Received</PrimaryButton>
+          <PrimaryButton
+            buttonStyle="outlined"
+            onClick={receiveOrderButtonOnClickHandler}
+            disabled={shouldDisableAllButtons}
+          >
+            Receive Order
+          </PrimaryButton>
         )}
       </div>
     </li>

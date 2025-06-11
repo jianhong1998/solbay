@@ -26,6 +26,7 @@ import { UserModel } from 'src/user/models/user.model';
 import { SellerService } from 'src/user/services/seller.service';
 import { EntityManager } from 'typeorm';
 
+import { GenerateReceiveOrderTransactionResDTO } from '../dtos/generate-receive-order-transaction.dto';
 import { GetAllOrderResDTO, OrderResDTO } from '../dtos/get-order.dto';
 import { CheckoutReqDTO, CheckoutResDTO } from '../dtos/place-order.dto';
 import {
@@ -269,6 +270,24 @@ export class OrderController {
     return new UpdateOrderLogisticTrackingInfoResDTO(
       createTransactionResult,
       additionalMessage,
+    );
+  }
+
+  @Patch('/:orderId/receive')
+  @HttpCode(200)
+  public async generateReceiveOrderTransaction(
+    @Param('orderId') orderId: UUID,
+    @User() user: UserModel,
+  ) {
+    const { transaction, latestBlockhash } =
+      await this.orderService.createReceiveOrderTransaction({
+        orderId,
+        user,
+      });
+
+    return new GenerateReceiveOrderTransactionResDTO(
+      transaction,
+      latestBlockhash,
     );
   }
 }

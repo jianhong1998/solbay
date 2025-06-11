@@ -56,8 +56,9 @@ describe('Test Init Escrow Token Account', () => {
   it('should create new escrow account', async () => {
     const blockhashObj = await connection.getLatestBlockhash();
 
+    const escrowProfitPercentage = 2; // 2%
     const instruction = await program.methods
-      .initEscrow()
+      .initEscrow(escrowProfitPercentage)
       .accounts({
         mint: mockUsdc.mint,
         signer: initEscrowSigner.publicKey,

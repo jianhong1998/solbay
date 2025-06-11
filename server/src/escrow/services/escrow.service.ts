@@ -27,9 +27,10 @@ export class EscrowService {
   public async initializeEscrowConfig(): Promise<{ transactionId: string }> {
     const mint = UsdcHelper.getUsdcMintPublicKey();
     const signer = this.backendSigner;
+    const escrowProfitPercentage = 2; // 2%
 
     const instruction = await this.program.methods
-      .initEscrow()
+      .initEscrow(escrowProfitPercentage)
       .accounts({
         mint,
         signer: signer.publicKey,

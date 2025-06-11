@@ -274,7 +274,12 @@ export type Solbay = {
           };
         },
       ];
-      args: [];
+      args: [
+        {
+          name: 'escrowProfitPercentage';
+          type: 'u8';
+        },
+      ];
     },
     {
       name: 'login';
@@ -462,6 +467,271 @@ export type Solbay = {
         },
         {
           name: 'remarks';
+          type: 'string';
+        },
+      ];
+    },
+    {
+      name: 'receiveOrder';
+      discriminator: [0, 181, 160, 179, 4, 88, 225, 249];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'buyer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'seller';
+        },
+        {
+          name: 'sellerAssociatedTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'seller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89,
+              ];
+            };
+          };
+        },
+        {
+          name: 'order';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [111, 114, 100, 101, 114];
+              },
+              {
+                kind: 'arg';
+                path: 'orderId';
+              },
+              {
+                kind: 'arg';
+                path: 'platformCode';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'escrowConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'authority';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [101, 115, 99, 114, 111, 119];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowOperationAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'orderId';
+          type: {
+            array: ['u8', 16];
+          };
+        },
+        {
+          name: 'platformCode';
           type: 'string';
         },
       ];
@@ -692,6 +962,21 @@ export type Solbay = {
       name: 'invalidMint';
       msg: 'Invalid Mint';
     },
+    {
+      code: 6003;
+      name: 'unauthorisedBuyer';
+      msg: 'Unauthorized Buyer';
+    },
+    {
+      code: 6004;
+      name: 'escrowProfitExceedLimit';
+      msg: 'Escrow profit cannot be more than 100';
+    },
+    {
+      code: 6005;
+      name: 'orderFundIsAlreadyReleased';
+      msg: 'Order fund is already released';
+    },
   ];
   types: [
     {
@@ -699,6 +984,10 @@ export type Solbay = {
       type: {
         kind: 'struct';
         fields: [
+          {
+            name: 'escrowProfitPercentage';
+            type: 'u8';
+          },
           {
             name: 'bumpEscrowConfig';
             type: 'u8';
