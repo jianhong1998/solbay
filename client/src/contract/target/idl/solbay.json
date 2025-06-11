@@ -635,6 +635,11 @@
       "code": 6004,
       "name": "EscrowProfitExceedLimit",
       "msg": "Escrow profit cannot be more than 100"
+    },
+    {
+      "code": 6005,
+      "name": "OrderFundIsAlreadyReleased",
+      "msg": "Order fund is already released"
     }
   ],
   "types": [

@@ -972,6 +972,11 @@ export type Solbay = {
       name: 'escrowProfitExceedLimit';
       msg: 'Escrow profit cannot be more than 100';
     },
+    {
+      code: 6005;
+      name: 'orderFundIsAlreadyReleased';
+      msg: 'Order fund is already released';
+    },
   ];
   types: [
     {
