@@ -96,8 +96,10 @@ pub struct ReceiveOrder<'info> {
 
 pub fn process_receive_order(context: Context<ReceiveOrder>) -> Result<()> {
   let order = &mut context.accounts.order;
-  let seller_token_account = &context.accounts.seller_associated_token_account;
+  let escrow_config = &context.accounts.escrow_config;
   let escrow_token_account = &context.accounts.escrow_token_account;
+  let seller_token_account = &context.accounts.seller_associated_token_account;
+  let escrow_opetaion_token_account = &context.accounts.escrow_operation_account;
   let mint = &context.accounts.mint;
 
   order.status = OrderStatus::ItemReceived.to_str();
@@ -108,10 +110,35 @@ pub fn process_receive_order(context: Context<ReceiveOrder>) -> Result<()> {
     vec![context.accounts.escrow_config.bump_authority],
   ];
 
+  let amount_to_escrow_operation_account: u64 =
+    match order.amount.checked_mul(escrow_config.escrow_profit_percentage as u64) {
+      Some(result) => result / 100,
+      None => 0,
+    };
+  let amount_to_seller: u64 = match order.amount.checked_sub(amount_to_escrow_operation_account) {
+    Some(result) => result,
+    None => 0,
+  };
+
+  // Transfer to Seller
+  msg!("Transfering {} to seller", amount_to_seller);
   process_token_transfer_with_signer(ProcessTokenTransferWithSigner {
     from: escrow_token_account.to_account_info(),
     to: seller_token_account.to_account_info(),
-    amount: order.amount,
+    amount: amount_to_seller,
+    mint: mint.to_account_info(),
+    decimals: mint.decimals,
+    program: context.accounts.token_program.to_account_info(),
+    authority: context.accounts.authority.to_account_info(),
+    signer_seeds: signer_seeds.clone(),
+  })?;
+
+  // Transfer to Escrow
+  msg!("Transfering {} to escrow operation account", amount_to_escrow_operation_account);
+  process_token_transfer_with_signer(ProcessTokenTransferWithSigner {
+    from: escrow_token_account.to_account_info(),
+    to: escrow_opetaion_token_account.to_account_info(),
+    amount: amount_to_escrow_operation_account,
     mint: mint.to_account_info(),
     decimals: mint.decimals,
     program: context.accounts.token_program.to_account_info(),
