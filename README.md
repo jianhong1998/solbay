@@ -117,11 +117,11 @@ cd server
 npm run migration:run
 ```
 
-## Docker For Deployment
+## Deployment
 
 Use command below to build docker image for deployment
 
-### For server
+### Docker for server
 
 Replace `<TAG>` with the actual tag using for the image
 
@@ -129,10 +129,27 @@ Replace `<TAG>` with the actual tag using for the image
 docker build -f ./docker/deployment/Dockerfile.server -t <TAG> ./server
 ```
 
-### For DB-migration task
+### Docker for DB-migration task
 
 Replace `<TAG>` with the actual tag using for the image
 
 ```shell
 docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> ./server
+```
+
+### Deployment for smart contract
+
+#### Prerequisites
+
+- Keypair in `./keypairs/program-owner.json` is having enough balance.
+  - If deploying to devnet / testnet and balance not enough, can run command to airdrop: `solana airdrop -k ./keypairs/program-owner.json 2` (Airdrop 2SOL to the program owner)
+
+#### Deployment
+
+1. Redirect to `./anchor` folder.
+
+2. Run command below to deploy.
+
+```shell
+anchor deploy --provider.cluster devnet --provider.wallet ../keypairs/program-owner.json
 ```
