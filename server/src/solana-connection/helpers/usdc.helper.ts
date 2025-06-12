@@ -102,11 +102,13 @@ export class UsdcHelper {
         TOKEN_PROGRAM_ID,
       );
     } catch (_error) {
-      await AirdropHelper.requestAirdrop({
-        connection: self.connection,
-        amount: 10,
-        publicKey: authorityKeypair.publicKey,
-      });
+      if (self.clusterType === 'localnet') {
+        await AirdropHelper.requestAirdrop({
+          connection: self.connection,
+          amount: 10,
+          publicKey: authorityKeypair.publicKey,
+        });
+      }
 
       const publicKey = await createMint(
         self.connection,

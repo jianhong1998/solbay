@@ -128,3 +128,11 @@ Replace `<TAG>` with the actual tag using for the image
 ```shell
 docker build -f ./docker/deployment/Dockerfile.server -t <TAG> ./server
 ```
+
+### For DB-migration task
+
+Replace `<TAG>` with the actual tag using for the image
+
+```shell
+docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> ./server
+```
