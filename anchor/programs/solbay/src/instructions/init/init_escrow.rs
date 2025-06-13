@@ -83,6 +83,7 @@ pub fn process_init_escrow(
   }
 
   escrow_config.escrow_profit_percentage = escrow_profit_percentage;
+  escrow_config.withdraw_recipient = context.accounts.signer.key();
   escrow_config.bump_escrow_config = context.bumps.escrow_config;
   escrow_config.bump_authority = context.bumps.authority;
   escrow_config.bump_escrow_token_account = context.bumps.escrow_token_account;

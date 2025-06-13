@@ -8,15 +8,24 @@ pub enum ErrorCode {
   #[msg("Unauthorised Action")]
   UnauthorisedAction,
 
+  #[msg("Unauthorised Buyer")]
+  UnauthorisedBuyer,
+
+  #[msg("Unauthorised Recipient")]
+  UnauthorisedRecipient,
+
   #[msg("Invalid Mint")]
   InvalidMint,
-
-  #[msg("Unauthorized Buyer")]
-  UnauthorisedBuyer,
 
   #[msg("Escrow profit cannot be more than 100")]
   EscrowProfitExceedLimit,
 
   #[msg("Order fund is already released")]
   OrderFundIsAlreadyReleased,
+
+  #[msg("Insufficient amount")]
+  InsufficientAmount,
+
+  #[msg("Already exceed seller ship out timeout")]
+  ExceedSellerShipOutTimeout,
 }

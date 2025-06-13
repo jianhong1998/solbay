@@ -935,6 +935,233 @@ export type Solbay = {
         },
       ];
     },
+    {
+      name: 'withdrawFromOperationAccount';
+      discriminator: [134, 169, 136, 76, 195, 96, 222, 254];
+      accounts: [
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'mint';
+        },
+        {
+          name: 'escrowConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowAuthority';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'escrowOperationTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  111,
+                  112,
+                  101,
+                  114,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+          };
+        },
+        {
+          name: 'recipient';
+        },
+        {
+          name: 'recipientTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'recipient';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              },
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89,
+              ];
+            };
+          };
+        },
+      ];
+      args: [
+        {
+          name: 'amount';
+          type: 'u64';
+        },
+      ];
+    },
   ];
   accounts: [
     {
@@ -959,23 +1186,38 @@ export type Solbay = {
     },
     {
       code: 6002;
+      name: 'unauthorisedBuyer';
+      msg: 'Unauthorised Buyer';
+    },
+    {
+      code: 6003;
+      name: 'unauthorisedRecipient';
+      msg: 'Unauthorised Recipient';
+    },
+    {
+      code: 6004;
       name: 'invalidMint';
       msg: 'Invalid Mint';
     },
     {
-      code: 6003;
-      name: 'unauthorisedBuyer';
-      msg: 'Unauthorized Buyer';
-    },
-    {
-      code: 6004;
+      code: 6005;
       name: 'escrowProfitExceedLimit';
       msg: 'Escrow profit cannot be more than 100';
     },
     {
-      code: 6005;
+      code: 6006;
       name: 'orderFundIsAlreadyReleased';
       msg: 'Order fund is already released';
+    },
+    {
+      code: 6007;
+      name: 'insufficientAmount';
+      msg: 'Insufficient amount';
+    },
+    {
+      code: 6008;
+      name: 'exceedSellerShipOutTimeout';
+      msg: 'Already exceed seller ship out timeout';
     },
   ];
   types: [
@@ -987,6 +1229,10 @@ export type Solbay = {
           {
             name: 'escrowProfitPercentage';
             type: 'u8';
+          },
+          {
+            name: 'withdrawRecipient';
+            type: 'pubkey';
           },
           {
             name: 'bumpEscrowConfig';

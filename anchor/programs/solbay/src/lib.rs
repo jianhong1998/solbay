@@ -53,4 +53,11 @@ pub mod solbay {
   ) -> Result<()> {
     process_receive_order(context)
   }
+
+  pub fn withdraw_from_operation_account(
+    context: Context<WithdrawFromOperationAccount>,
+    amount: u64,
+  ) -> Result<()> {
+    process_withdraw_from_operation_account(context, amount)
+  }
 }
