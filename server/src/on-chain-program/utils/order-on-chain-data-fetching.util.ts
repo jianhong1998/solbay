@@ -4,11 +4,17 @@ import {
   GetProgramAccountsFilter,
   PublicKey,
 } from '@solana/web3.js';
+import { UUID } from 'crypto';
+import { UuidHelper } from 'src/common/helpers/uuid.helper';
 import { Solbay } from 'src/contract/src';
-import { OrderOnchainData } from 'src/order/types/on-chain-data/order-on-chain-data.type';
+import {
+  IOrderOnchainData,
+  OrderOnchainData,
+} from 'src/order/types/on-chain-data/order-on-chain-data.type';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 
 import { ANCHOR_DISCRIMINATOR_SIZE } from '../constants/index.constant';
+import { OrderOnChainDataHelperUtil } from './order-on-chain-data-helper.util';
 
 const OrderDataSize = {
   isFundReleased: 1,
@@ -76,6 +82,103 @@ export class OrderOnChainDataFetchingUtil {
 
       throw error;
     }
+  }
+
+  public static async getOrderData(orderId: UUID): Promise<IOrderOnchainData> {
+    const self = this.getSelf();
+    const program = self.program;
+
+    const publicKey =
+      OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(orderId);
+
+    const {
+      amount,
+      bump,
+      buyerPubkey,
+      fundReleaseTimeout,
+      isFundReleased,
+      orderId: onChainDataOrderId,
+      platformCode,
+      remarks,
+      sellerPubkey,
+      sellerShipOutTimeout,
+      status,
+      tokenMintAddress,
+    } = await program.account.order.fetch(publicKey);
+
+    const uuid = UuidHelper.convertBytesToUuid(onChainDataOrderId);
+
+    const convertedStatus =
+      OrderOnChainDataHelperUtil.convertOrderStatus(status);
+
+    return {
+      isFundReleased,
+      sellerPubkey,
+      buyerPubkey,
+      amount: Number(amount),
+      sellerShipOutTimeout: Number(sellerShipOutTimeout),
+      fundReleaseTimeout: Number(fundReleaseTimeout),
+      tokenMintAddress,
+      orderId: uuid,
+      platformCode,
+      status: convertedStatus,
+      remarks,
+      bump,
+    };
+  }
+
+  public static async getMultipleOrderData(
+    orderIds: UUID[],
+  ): Promise<IOrderOnchainData[]> {
+    const self = this.getSelf();
+    const program = self.program;
+    const publicKeys = orderIds.map((id) =>
+      OrderOnChainDataHelperUtil.generateOrderPdaPublicKey(id),
+    );
+
+    const dataArray = await program.account.order.fetchMultiple(
+      publicKeys,
+      'confirmed',
+    );
+
+    return dataArray
+      .filter((data) => data !== null)
+      .map<IOrderOnchainData>((data) => {
+        const {
+          amount,
+          bump,
+          buyerPubkey,
+          fundReleaseTimeout,
+          isFundReleased,
+          orderId,
+          platformCode,
+          remarks,
+          sellerPubkey,
+          sellerShipOutTimeout,
+          status,
+          tokenMintAddress,
+        } = data;
+
+        const uuid = UuidHelper.convertBytesToUuid(orderId);
+
+        const convertedStatus =
+          OrderOnChainDataHelperUtil.convertOrderStatus(status);
+
+        return {
+          isFundReleased,
+          amount: Number(amount),
+          sellerShipOutTimeout: Number(sellerShipOutTimeout),
+          fundReleaseTimeout: Number(fundReleaseTimeout),
+          sellerPubkey,
+          buyerPubkey,
+          orderId: uuid,
+          status: convertedStatus,
+          platformCode,
+          tokenMintAddress,
+          remarks,
+          bump,
+        };
+      });
   }
 
   private static getSelf(): OrderOnChainDataFetchingUtil {
