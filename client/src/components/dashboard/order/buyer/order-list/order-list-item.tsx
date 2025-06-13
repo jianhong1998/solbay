@@ -1,13 +1,12 @@
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 
+import { OrderStatusBadge } from '@/components/ui/badges/order-status-badge';
 import PrimaryButton from '@/components/ui/buttons/primary-button';
 import { OrderStatus } from '@/enums/order/order-status.constant';
 import { useReceiveOrder } from '@/hooks/queries/order/receive-order';
 import { IOrderSummaryData } from '@/types/order/order-data.type';
 import { NumberDisplayHelper } from '@/utils/shared/display-helper/number-display-helper';
-
-import { OrderStatusBadge } from '../../shared/order-status-badge';
 
 type OrderListItemProps = {
   order: IOrderSummaryData;
