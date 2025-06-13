@@ -57,6 +57,13 @@ pub struct DeliveryInProgress<'info> {
 
 //service method
 pub fn process_delivery_in_progress(context: Context<DeliveryInProgress>) -> Result<()> {
+  /* Check if order is timeout */
+  let now = Clock::get()?.unix_timestamp as u64;
+
+  if context.accounts.order.seller_ship_out_timeout < now {
+    return Err(ErrorCode::ExceedSellerShipOutTimeout.into());
+  }
+
   context.accounts.order.status = OrderStatus::DeliveryInProgress.to_str();
   Ok(())
 }

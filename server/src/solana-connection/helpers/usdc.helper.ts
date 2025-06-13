@@ -207,6 +207,38 @@ export class UsdcHelper {
     );
   }
 
+  /**
+   * Convert USDC to micro-USDC or micro-USDC to USDC.
+   * @param output Input `USDC` to convert micro-USDC to USDC. Input `micro-USDC` to convert USDC to micro-USDC.
+   * @returns Value of USDC if output select `USDC`. Value of micro-USDC if output select `micro-USDC`.
+   */
+  public static async convertAmount(
+    amount: number,
+    output: 'USDC' | 'micro-USDC',
+  ): Promise<number> {
+    const self = this.getSelf();
+    const mintPublicKey = this.getUsdcMintPublicKey();
+    let mint: Mint;
+
+    try {
+      mint = await getMint(self.connection, mintPublicKey, 'confirmed');
+    } catch (error) {
+      console.log({ error });
+      throw error;
+    }
+
+    const decimalValue = Math.pow(10, mint.decimals);
+
+    switch (output) {
+      case 'USDC':
+        return amount / decimalValue;
+      case 'micro-USDC':
+        return amount * decimalValue;
+      default:
+        throw new Error('Invalid output type');
+    }
+  }
+
   private static getSelf(): UsdcHelper {
     if (!this.self) {
       const cluster = ConnectionUtil.getClusterType();

@@ -51,6 +51,7 @@ export class TransactionUtil {
     transaction: VersionedTransaction | Transaction;
     connection: Connection;
     latestBlockhash: BlockhashWithExpiryBlockHeight;
+    skipPreflight?: boolean;
     commitment?: Commitment;
   }): Promise<string> {
     const {
@@ -58,10 +59,12 @@ export class TransactionUtil {
       latestBlockhash: { blockhash, lastValidBlockHeight },
       transaction,
       commitment = 'confirmed',
+      skipPreflight = false,
     } = params;
 
     const transactionId = await connection.sendRawTransaction(
       transaction.serialize(),
+      { skipPreflight },
     );
 
     await connection.confirmTransaction(

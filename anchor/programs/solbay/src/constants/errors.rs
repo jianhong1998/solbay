@@ -22,4 +22,10 @@ pub enum ErrorCode {
 
   #[msg("Order fund is already released")]
   OrderFundIsAlreadyReleased,
+
+  #[msg("Insufficient amount")]
+  InsufficientAmount,
+
+  #[msg("Already exceed seller ship out timeout")]
+  ExceedSellerShipOutTimeout,
 }
