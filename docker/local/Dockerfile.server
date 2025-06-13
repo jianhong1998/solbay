@@ -4,7 +4,7 @@ WORKDIR /apps/server
 COPY package*.json .
 RUN npm ci
 
-COPY ./ap-southeast-1-bundle.pem .
+COPY ./rds-global-bundle.pem .
 COPY . .
 
 CMD [ "npm", "run", "dev" ]

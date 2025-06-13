@@ -126,7 +126,11 @@ Use command below to build docker image for deployment
 Replace `<TAG>` with the actual tag using for the image
 
 ```shell
+# Using AWS ECS to host backend server
 docker build -f ./docker/deployment/Dockerfile.server -t <TAG> ./server
+
+# Using AWS Lambda to host backend server
+docker build -f ./docker/deployment/Dockerfile.server-lambda -t <TAG> ./server
 ```
 
 ### Docker for DB-migration task

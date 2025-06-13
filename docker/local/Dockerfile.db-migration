@@ -27,7 +27,7 @@ WORKDIR /apps/server
 
 COPY --from=install /apps/server/node_modules ./node_modules
 COPY --from=db-migrate-build /apps/server/package*.json ./
-COPY --from=db-migrate-build /apps/server/ap-southeast-1-bundle.pem ./
+COPY --from=db-migrate-build /apps/server/rds-global-bundle.pem ./
 COPY --from=db-migrate-build /apps/server/.env ./
 COPY --from=db-migrate-build /apps/server/dist ./dist
 
