@@ -15,7 +15,7 @@ import { UUID } from 'crypto';
 import { ProductWithoutSensitiveDataResDTO } from 'src/product/dtos/get-product-details.dto';
 
 import { OrderStatus } from '../enums/order-status.enum';
-import { OrderWithStatus } from '../types/order-with-status.type';
+import { OrderWithOnchainData } from '../types/order-with-onchain-data.type';
 
 /**
  * Response DTO for Order with details
@@ -45,7 +45,7 @@ export class OrderResDTO {
   @Type(() => ProductWithoutSensitiveDataResDTO)
   product: ProductWithoutSensitiveDataResDTO;
 
-  constructor(order: OrderWithStatus) {
+  constructor(order: OrderWithOnchainData) {
     const { status, uuid, totalAmountInMicroUsdc, product, quantity } = order;
 
     this.uuid = uuid;
@@ -65,7 +65,7 @@ export class GetAllOrderResDTO {
   @Type(() => OrderResDTO)
   orders: OrderResDTO[];
 
-  constructor(orders: OrderWithStatus[]) {
+  constructor(orders: OrderWithOnchainData[]) {
     this.orders = orders.map((order) => new OrderResDTO(order));
   }
 }

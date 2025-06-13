@@ -39,7 +39,7 @@ import { OrderModel } from '../models/order.model';
 import { ILogisticInfoCreationData } from '../types/logistic/logistic-info-creation-data.type';
 import { ILogisticTrackingInfoCreationData } from '../types/logistic/logistic-tracking-info-creation-data.type';
 import { IOrderModelCreationData } from '../types/order-model-creation-data.type';
-import { OrderWithStatus } from '../types/order-with-status.type';
+import { OrderWithOnchainData } from '../types/order-with-onchain-data.type';
 import { LogisticInfoDBUtil } from '../utils/logistic-info-db.util';
 import { LogisticTrackingInfoDBUtil } from '../utils/logistic-tracking-info-db.util';
 import { OrderDBUtil } from '../utils/order-db.util';
@@ -139,7 +139,7 @@ export class OrderService {
   public async getOrdersBySeller(params: {
     userId: UUID;
     entityManager?: EntityManager;
-  }): Promise<OrderWithStatus[]> {
+  }): Promise<OrderWithOnchainData[]> {
     const { userId } = params;
     const entityManager = params.entityManager ?? this.entityManager;
 
@@ -177,14 +177,14 @@ export class OrderService {
     });
 
     return Promise.all(
-      orders.map(async (order) => await OrderWithStatus.new(order)),
+      orders.map(async (order) => await OrderWithOnchainData.new(order)),
     );
   }
 
   public async getOrdersByBuyer(params: {
     buyer: UserModel;
     entityManager?: EntityManager;
-  }): Promise<OrderWithStatus[]> {
+  }): Promise<OrderWithOnchainData[]> {
     const { buyer } = params;
     const entityManager = params.entityManager ?? this.entityManager;
 
@@ -226,7 +226,7 @@ export class OrderService {
     const orderPromises = [
       ...tempOrders.map((tempOrder) => tempOrder.order),
       ...dbOrders,
-    ].map(async (order) => await OrderWithStatus.new(order));
+    ].map(async (order) => await OrderWithOnchainData.new(order));
 
     return await Promise.all(orderPromises);
   }
@@ -502,7 +502,7 @@ export class OrderService {
 
     if (!order) throw new NotFoundException(`Order (${orderId}) not found.`);
 
-    const orderWithStatus = await OrderWithStatus.new(order);
+    const orderWithStatus = await OrderWithOnchainData.new(order);
 
     if (orderWithStatus.status === OrderStatus.ITEM_RECEIVED)
       throw new ConflictException('Order is already marked as received.');

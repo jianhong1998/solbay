@@ -4,7 +4,7 @@ import { BN } from 'bn.js';
 import { SOLBAY_PLATFORM_CODE } from 'src/common/constants';
 import { USDC_MINT_PUBLICK_KEY_DEVNET } from 'src/common/constants/public-key.constant';
 import { UuidHelper } from 'src/common/helpers/uuid.helper';
-import { OrderOnChainDataHelperUtil } from 'src/on-chain-program/utils/order-on-chain-data-helper.util';
+import { OrderOnChainDataFetchingUtil } from 'src/on-chain-program/utils/order-on-chain-data-fetching.util';
 import { ProductModel } from 'src/product/models/product.model';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
@@ -32,7 +32,9 @@ export class OrderHelperUtil {
 
     if (!onChainDataPubkey) return OrderStatus.PENDING_PAYMENT;
 
-    const orderData = await OrderOnChainDataHelperUtil.getOrderData(order.uuid);
+    const orderData = await OrderOnChainDataFetchingUtil.getOrderData(
+      order.uuid,
+    );
 
     return orderData.status;
   }

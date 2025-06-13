@@ -34,7 +34,7 @@ import {
   UpdateOrderLogisticTrackingInfoResDTO,
 } from '../dtos/update-order-logistic-tracking-info.dto';
 import { OrderService } from '../services/order.service';
-import { OrderWithStatus } from '../types/order-with-status.type';
+import { OrderWithOnchainData } from '../types/order-with-onchain-data.type';
 import { OrderHelperUtil } from '../utils/order-helper.util';
 
 @Controller('/order')
@@ -182,7 +182,7 @@ export class OrderController {
     if (!order)
       throw new NotFoundException(`Order (${orderId}) does not exist`);
 
-    const orderWithStatus = await OrderWithStatus.new(order);
+    const orderWithStatus = await OrderWithOnchainData.new(order);
 
     return new OrderResDTO(orderWithStatus);
   }

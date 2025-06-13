@@ -6,11 +6,14 @@ import { ProductModel } from 'src/product/models/product.model';
 import { OrderStatus } from '../enums/order-status.enum';
 import { LogisticInfoModel } from '../models/logistic-info.model';
 import { OrderModel } from '../models/order.model';
-import { IOrderOnchainData } from './on-chain-data/order-on-chain-data.type';
+import {
+  IOrderOnchainData,
+  OrderOnchainData,
+} from './on-chain-data/order-on-chain-data.type';
 
 type IOrderModel = typeof OrderModel.prototype;
 
-export class OrderWithStatus implements IOrderModel {
+export class OrderWithOnchainData implements IOrderModel {
   readonly uuid: UUID;
   readonly totalAmountInMicroUsdc: number;
   readonly onChainDataPubkey: string | null;
@@ -18,12 +21,14 @@ export class OrderWithStatus implements IOrderModel {
   readonly status: OrderStatus;
   readonly product?: ProductModel;
   readonly logisticInfo?: LogisticInfoModel;
+  readonly orderOnchainData: OrderOnchainData | null;
 
   private constructor(
     dbOrder: OrderModel,
     onChainOrder: IOrderOnchainData | null,
   ) {
     this.status = onChainOrder?.status ?? OrderStatus.PENDING_PAYMENT;
+    this.orderOnchainData = onChainOrder;
 
     this.uuid = dbOrder.uuid;
     this.totalAmountInMicroUsdc = dbOrder.totalAmountInMicroUsdc;
@@ -34,8 +39,8 @@ export class OrderWithStatus implements IOrderModel {
     this.logisticInfo = dbOrder.logisticInfo;
   }
 
-  public static async new(order: OrderModel): Promise<OrderWithStatus> {
-    if (!order.onChainDataPubkey) return new OrderWithStatus(order, null);
+  public static async new(order: OrderModel): Promise<OrderWithOnchainData> {
+    if (!order.onChainDataPubkey) return new OrderWithOnchainData(order, null);
 
     const onchainOrderPublicKey = new PublicKey(order.onChainDataPubkey);
 
@@ -44,6 +49,6 @@ export class OrderWithStatus implements IOrderModel {
         onchainOrderPublicKey,
       );
 
-    return new OrderWithStatus(order, onchainOrderData);
+    return new OrderWithOnchainData(order, onchainOrderData);
   }
 }

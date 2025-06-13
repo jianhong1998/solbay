@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { FC, MouseEventHandler } from 'react';
 
 import { OrderStatusBadge } from '@/components/ui/badges/order-status-badge';
 import PrimaryButton from '@/components/ui/buttons/primary-button';
@@ -15,12 +15,22 @@ type OrderListItemProps = {
 export const OrderListItem: FC<OrderListItemProps> = ({ order, sellerId }) => {
   const router = useRouter();
 
-  const shipOutButtonOnClickHandler = () => {
+  const shipOutButtonOnClickHandler: MouseEventHandler<HTMLButtonElement> = (
+    event,
+  ) => {
+    event.stopPropagation();
     router.push(`/seller/${sellerId}/order/${order.uuid}/ship-out`);
   };
 
+  const itemCardOnClickHandler = () => {
+    router.push(`/seller/${sellerId}/order/${order.uuid}`);
+  };
+
   return (
-    <li className="p-4 rounded-box shadow-lg dark:bg-gray-900 flex flex-row justify-between items-center gap-x-3">
+    <li
+      className="p-4 rounded-box shadow-lg dark:bg-gray-900 flex flex-row justify-between items-center gap-x-3 cursor-pointer"
+      onClick={itemCardOnClickHandler}
+    >
       {/* Order Info */}
       <div className="flex flex-col w-full lg:flex-row lg:justify-between">
         <div className="flex-1">{order.product.name}</div>
