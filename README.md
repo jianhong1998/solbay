@@ -146,9 +146,11 @@ docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> ./server
 
 #### Deployment
 
-1. Redirect to `./anchor` folder.
+1. Run command `make anchor/build` to build anchor smart contract.
 
-2. Run command below to deploy.
+2. Redirect to `./anchor` folder.
+
+3. Run command below to deploy.
 
 ```shell
 anchor deploy --provider.cluster devnet --provider.wallet ../keypairs/program-owner.json
