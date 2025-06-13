@@ -167,7 +167,6 @@ export class OrderController {
   @HttpCode(200)
   public async getOrder(
     @User() user: UserModel,
-    @Seller() seller: SellerModel | undefined,
     @Param('orderId') orderId: UUID,
   ): Promise<OrderResDTO> {
     const entityManager = this.entityManager;

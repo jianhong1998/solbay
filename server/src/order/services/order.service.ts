@@ -231,6 +231,13 @@ export class OrderService {
     return await Promise.all(orderPromises);
   }
 
+  /**
+   * Get order by orderId.
+   *
+   * @note Only seller and buyer can get order.
+   * @throw ForbiddenException if user is not seller or buyer.
+   * @throw NotFoundException if order not found.
+   */
   public async getOrderByOrderId(params: {
     orderId: UUID;
     user: UserModel;
