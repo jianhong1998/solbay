@@ -5,6 +5,7 @@ import {
   Mint,
   mintToChecked,
   TOKEN_PROGRAM_ID,
+  TokenAccountNotFoundError,
 } from '@solana/spl-token';
 import {
   Connection,
@@ -223,7 +224,8 @@ export class UsdcHelper {
     try {
       mint = await getMint(self.connection, mintPublicKey, 'confirmed');
     } catch (error) {
-      console.log({ error });
+      if (error instanceof TokenAccountNotFoundError)
+        throw new Error('USDC is not initialized yet.');
       throw error;
     }
 
