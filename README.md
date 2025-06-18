@@ -123,18 +123,21 @@ Use command below to build docker image for deployment
 
 ### Docker for server
 
-Replace `<TAG>` with the actual tag using for the image
+Replace `<TAG>` with the actual tag using for the image.
+Replace `<PLATFORM>` with the platform type such as `linux/amd64` or `linux/arm64`
 
 ```shell
-docker build -f ./docker/deployment/Dockerfile.server -t <TAG> ./server
+# Using AWS ECS to host backend server
+docker build -f ./docker/deployment/Dockerfile.server -t <TAG> --platform <PLATFORM> ./server
 ```
 
 ### Docker for DB-migration task
 
 Replace `<TAG>` with the actual tag using for the image
+Replace `<PLATFORM>` with the platform type such as `linux/amd64` or `linux/arm64`
 
 ```shell
-docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> ./server
+docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> --platform <PLATFORM> ./server
 ```
 
 ### Deployment for smart contract

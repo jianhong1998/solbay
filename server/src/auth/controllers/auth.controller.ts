@@ -36,8 +36,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
     private readonly loggerUtil: LoggerUtil,
-    @InjectEntityManager() private readonly entityManager: EntityManager,
     envVarUtil: EnvironmentVariableUtil,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {
     this.envVars = envVarUtil.getVariables();
   }
@@ -82,6 +82,7 @@ export class AuthController {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
+        domain: this.envVars.cookieDomainName,
       })
       .send();
 

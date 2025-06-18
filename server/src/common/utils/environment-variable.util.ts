@@ -9,6 +9,7 @@ type IEnvironmentVariableList = {
   version: string;
   clientHost: string;
   serverHost: string;
+  cookieDomainName: string;
 
   // Database Related
   databaseHost: string;
@@ -45,6 +46,8 @@ export class EnvironmentVariableUtil {
         this.configService.get('CLIENT_HOST') ?? 'http://localhost:3000',
       serverHost:
         this.configService.get('SERVER_HOST') ?? 'http://localhost:3001',
+      cookieDomainName:
+        this.configService.get('COOKIE_DOMAIN_NAME') ?? 'localhost',
 
       databaseHost: this.configService.get('DATABASE_HOST') ?? 'localhost',
       databasePort: this.configService.get<number>('DATABASE_PORT') ?? 5432,
