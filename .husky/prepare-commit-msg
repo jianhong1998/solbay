@@ -19,7 +19,7 @@ if ! BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null); then
 fi
 
 # Use regex to match branch name like 'chore/123-update-something'
-if ! echo "$BRANCH_NAME" | grep -E '^(chore|feat|fix|docs|style|refactor|test|build|ci|perf|revert)/[0-9]+-.*$' >/dev/null; then
+if ! echo "$BRANCH_NAME" | grep -E '^(chore|feat|fix|bugfix|docs|style|refactor|test|build|ci|perf|revert)/[0-9]+-.*$' >/dev/null; then
   echo "Error: Branch name must follow pattern '<type>/<ticket-id>-<description>' (e.g., chore/123-update-something)"
   exit 1
 fi
