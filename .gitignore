@@ -16,7 +16,7 @@ node_modules
 # misc
 .DS_Store
 *.pem
-!ap-southeast-1-bundle.pem
+!rds-global-bundle.pem
 
 # debug
 npm-debug.log*

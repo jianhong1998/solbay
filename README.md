@@ -1,130 +1,200 @@
 # Solbay
 
-## Getting Started
+A Solana-based marketplace application with smart contracts and web services.
 
-### Prerequisites
+## 📋 Table of Contents
 
-- Node v18.18.0 or higher
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Development](#development)
+- [Testing](#testing)
+- [Database Management](#database-management)
+- [Code Quality](#code-quality)
+- [Deployment](#deployment)
 
-- Rust v1.77.2 or higher
-- Anchor CLI 0.30.1 or higher
-- Solana CLI 1.18.17 or higher
+## 🔧 Prerequisites
 
-- Docker installed
+Before you begin, ensure you have the following installed:
 
-### Init project setup
+- **Node.js** v22.14.0 or higher
+- **Rust** v1.85.0 or higher
+- **Anchor CLI** 0.31.1
+- **Solana CLI** 2.1.21
+- **Docker** (for containerized development)
 
-1. Run command below:
+## 🚀 Quick Start
 
-```shell
+### 1. Initialize the Project
+
+```bash
 make init
 ```
 
-2. (Optional) Copy program keypair to `./anchor/target/deploy/solbay-keypair.json`
+**Optional:** Copy your program keypair to `./anchor/target/deploy/solbay-keypair.json`
 
-### Start project
+### 2. Start the Application
 
-```shell
-# Start project
+```bash
+# Start all services (database, server, etc.)
 make up/build
+```
 
-# Deploy smart contract (without airdrop to program owner)
+### 3. Deploy Smart Contracts
+
+```bash
+# Deploy without airdrop (if you have sufficient balance)
 make deploy
 
-# Deploy smart contract (with airdrop to program owner)
+# Deploy with airdrop to program owner
 make deploy/with-airdrop
 ```
 
-### Seed Dummy Data
+### 4. Seed Sample Data
 
-Prerequisites:
-
-1. Database is running.
-2. Database schema up-to-date.
-
-Use command `make up/build` to setup database and executing migration script.
-
-```shell
+```bash
+# Add dummy data to the database
 make db/data/up
 ```
 
-### Test smart contract
+## 💻 Development
 
-#### Recommended Test Steps
+### Starting the Development Environment
 
-```shell
-# Run the application and test-local-validator
-make down/clean up/build
+```bash
+# Start all services
+make up/build
 
-# Run test in another terminal
-make deploy/with-airdrop test/anchor/onchain/skip-deploy
+# Stop and clean up
+make down/clean
 ```
 
-#### All Test Related Commands
+### Smart Contract Development
 
-```shell
-# With bankrun
-make test/anchor
+```bash
+# Build Anchor program
+make anchor/build
 
-# With local test validator (auto deploy)
-make test/anchor/onchain
+# Deploy to local validator
+make deploy
+```
 
-# With local test validator (manual deploy)
+## 🧪 Testing
+
+### Recommended Testing Workflow
+
+```bash
+# 1. Start fresh environment
+make down/clean up/build
+
+# 2. Deploy contracts
+make deploy/with-airdrop
+
+# 3. Run tests (in another terminal)
 make test/anchor/onchain/skip-deploy
 ```
 
-## Useful Code Formating Commands
+### Available Test Commands
 
-### ESLint check
+```bash
+# Test with local validator (auto-deploy)
+make test/anchor/onchain
 
-```shell
-# Lint check
-make lint
-
-# Lint check (with auto-fix)
-make lint/fix
+# Test with local validator (manual deploy)
+make test/anchor/onchain/skip-deploy
 ```
 
-### Prettier code format
+## 🗄️ Database Management
 
-```shell
-make format
-```
+### Prerequisites
 
-## Database Migration Commands
+Ensure your `./server/.env` file contains the necessary database connection variables.
 
-### Pre-Request
+### Generating Migrations
 
-Ensure `./server/.env` file is ready and contain necessary environment variables for database connection.
-
-### Generating a new migration script
-
-1. Ensure database is running and schemas up-to-date. Command `make up/build` will spin up entire application including database and run migration script automatically.
-
-2. Run command below to generate a new database migration script
-
-```shell
+```bash
+# Navigate to server directory
 cd server
-npm run migration:generate --name="<MIGRATION_SCRIPT_FILE_NAME>"
+
+# Generate new migration
+npm run migration:generate --name="your_migration_name"
 ```
 
-### Running migration script
+### Running Migrations
 
-Although when spinning up the application, there is a migration service to auto-execute database migration script. In case of required executing the scripts manually, can run command below:
-
-```shell
+```bash
+# Manual migration (usually auto-executed on startup)
 cd server
 npm run migration:run
 ```
 
-## Docker For Deployment
+## ✨ Code Quality
 
-Use command below to build docker image for deployment
+### Linting
 
-### For server
+```bash
+# Check for linting issues
+make lint
 
-Replace `<TAG>` with the actual tag using for the image
+# Auto-fix linting issues
+make lint/fix
+```
 
-```shell
-docker build -f ./docker/deployment/dockerfile.server -t <TAG> ./server
+### Code Formatting
+
+```bash
+# Format code with Prettier
+make format
+```
+
+## 🚀 Deployment
+
+### Backend Server
+
+Build and deploy the server container:
+
+```bash
+# Replace <TAG> with your image tag
+# Replace <PLATFORM> with linux/amd64 or linux/arm64
+docker build -f ./docker/deployment/Dockerfile.server -t <TAG> --platform <PLATFORM> ./server
+```
+
+### Database Migration Task
+
+```bash
+# Replace <TAG> with your image tag
+# Replace <PLATFORM> with linux/amd64 or linux/arm64
+docker build -f ./docker/deployment/Dockerfile.db-migration -t <TAG> --platform <PLATFORM> ./server
+```
+
+### Smart Contract Deployment
+
+#### Prerequisites
+
+- Ensure `./keypairs/program-owner.json` has sufficient balance
+  - For devnet/testnet: Airdrop to program owner with command: `solana airdrop -k ./keypairs/program-owner.json 2`
+
+#### Deployment Steps
+
+```bash
+# 1. Build the program
+make anchor/build
+
+# 2. Navigate to anchor directory
+cd anchor
+
+# 3. Deploy to devnet
+anchor deploy --provider.cluster devnet --provider.wallet ../keypairs/program-owner.json
+```
+
+## 📁 Project Structure
+
+```
+solbay/
+├── anchor/           # Smart contract code
+├── client/           # NextJS web page server
+├── docker/           # Docker configuration
+├── keypairs/         # Keypair files
+├── scripts/          # Some useful scripts
+├── server/           # Backend API server
+└── Makefile          # Local development scripts
 ```

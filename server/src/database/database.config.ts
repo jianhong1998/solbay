@@ -18,11 +18,7 @@ export default class DatabaseConfig {
     if (buildMode === 'webpack') pathToRootFolder = '../';
     if (buildMode === 'swc') pathToRootFolder = '../../../';
 
-    const rscaPath = join(
-      __dirname,
-      pathToRootFolder,
-      'ap-southeast-1-bundle.pem',
-    );
+    const rscaPath = join(__dirname, pathToRootFolder, 'rds-global-bundle.pem');
     const pemCa = readFileSync(rscaPath);
 
     return {

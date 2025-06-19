@@ -1,0 +1,32 @@
+# =======================================================
+# Install Stage
+# =======================================================
+FROM --platform=$BUILDPLATFORM node:22.15.0-slim AS install
+WORKDIR /apps/server
+
+COPY ./rds-global-bundle.pem .
+COPY package*.json .
+RUN npm ci --omit=dev
+
+# =======================================================
+# DB Migrate Build Stage
+# =======================================================
+FROM --platform=$BUILDPLATFORM node:22.15.0-slim AS db-migrate-build
+WORKDIR /apps/server
+
+COPY package*.json .
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# =======================================================
+# DB Migrate Final Stage
+# =======================================================
+FROM install
+WORKDIR /apps/server
+
+COPY --from=db-migrate-build /apps/server/package*.json ./
+COPY --from=db-migrate-build /apps/server/dist ./dist
+
+CMD [ "sh", "-c", "node -r dotenv/config ./node_modules/typeorm/cli.js -d dist/config/data-source.js migration:run && exit 0"]
