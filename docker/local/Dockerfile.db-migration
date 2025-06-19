@@ -4,6 +4,7 @@
 FROM node:22.14.0-slim AS install
 WORKDIR /apps/server
 
+COPY ./rds-global-bundle.pem .
 COPY package*.json .
 RUN npm ci --omit=dev
 
@@ -22,12 +23,10 @@ RUN npm run build
 # =======================================================
 # DB Migrate Final Stage
 # =======================================================
-FROM node:22.14.0-slim
+# FROM node:22.14.0-slim
+FROM install
 WORKDIR /apps/server
 
-COPY --from=install /apps/server/node_modules ./node_modules
-COPY --from=db-migrate-build /apps/server/package*.json ./
-COPY --from=db-migrate-build /apps/server/ap-southeast-1-bundle.pem ./
 COPY --from=db-migrate-build /apps/server/.env ./
 COPY --from=db-migrate-build /apps/server/dist ./dist
 
