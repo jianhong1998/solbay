@@ -243,6 +243,18 @@ export class UsdcHelper {
     }
   }
 
+  public static async getUsdcMint(): Promise<Mint> {
+    const { connection } = this.getSelf();
+    const mintPublicKey = this.getUsdcMintPublicKey();
+
+    return await getMint(
+      connection,
+      mintPublicKey,
+      'confirmed',
+      TOKEN_PROGRAM_ID,
+    );
+  }
+
   private static getSelf(): UsdcHelper {
     if (!this.self) {
       const cluster = ConnectionUtil.getClusterType();
