@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+} from '@nestjs/common';
 import { Public } from 'src/common/decorators';
 import { LoggerUtil } from 'src/common/utils/logger.util';
 
@@ -37,5 +44,15 @@ export class EscrowController {
     logger.log(`Withdraw profit successfully: ${transactionId}`);
 
     return { transactionId, url };
+  }
+
+  @Get('/operation-account')
+  @Public()
+  public async getEscrowOperationAccountPublicKey() {
+    const { account } = await this.escrowService.getEscrowOperationAccount();
+
+    if (!account) throw new NotFoundException('Account is not found.');
+
+    return { publicKey: account.address.toBase58() };
   }
 }

@@ -1,6 +1,6 @@
 import { Program } from '@coral-xyz/anchor';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Account } from '@solana/spl-token';
+import { Account, Mint, TokenAccountNotFoundError } from '@solana/spl-token';
 import {
   Connection,
   Keypair,
@@ -9,7 +9,11 @@ import {
   Signer,
 } from '@solana/web3.js';
 import { BN } from 'bn.js';
-import { ESCROW_CONFIG_SEED } from 'src/common/constants';
+import {
+  ESCROW_CONFIG_SEED,
+  ESCROW_OPERATION_ACCOUNT_SEED,
+  ESCROW_SEED,
+} from 'src/common/constants';
 import { LoggerUtil } from 'src/common/utils/logger.util';
 import { Solbay } from 'src/contract/src';
 import { ProgramErrorHelper } from 'src/on-chain-program/utils/program-error.helper';
@@ -18,6 +22,8 @@ import { ExplorerLinkHelper } from 'src/solana-connection/helpers/explorer-link.
 import { UsdcHelper } from 'src/solana-connection/helpers/usdc.helper';
 import { ConnectionUtil } from 'src/solana-connection/utils/connection.util';
 import { TransactionUtil } from 'src/solana-connection/utils/transaction.util';
+
+import { EscrowAccountType } from '../enums/escrow-account-type.enum';
 
 @Injectable()
 export class EscrowService {
@@ -163,6 +169,60 @@ export class EscrowService {
 
       throw new BadRequestException(programError.errorMessage);
     }
+  }
+
+  public getEscrowRelatedPublicKey(accountType: EscrowAccountType): PublicKey {
+    let staticSeedBuffer: Buffer<ArrayBuffer>;
+
+    switch (accountType) {
+      case EscrowAccountType.ESCROW:
+        staticSeedBuffer = Buffer.from(ESCROW_SEED);
+        break;
+      case EscrowAccountType.CONFIG:
+        staticSeedBuffer = Buffer.from(ESCROW_CONFIG_SEED);
+        break;
+      case EscrowAccountType.OPERATION:
+        staticSeedBuffer = Buffer.from(ESCROW_OPERATION_ACCOUNT_SEED);
+        break;
+      default:
+        throw new Error('Invalid account type input.');
+    }
+
+    const mintBuffer = UsdcHelper.getUsdcMintPublicKey().toBuffer();
+    const programId = this.program.programId;
+
+    const [publicKey] = PublicKey.findProgramAddressSync(
+      [staticSeedBuffer, mintBuffer],
+      programId,
+    );
+
+    return publicKey;
+  }
+
+  public async getEscrowOperationAccount(): Promise<{
+    account: Account | null;
+    usdcMint: Mint;
+  }> {
+    const publicKey = this.getEscrowRelatedPublicKey(
+      EscrowAccountType.OPERATION,
+    );
+
+    let account: Account | null;
+
+    try {
+      account = await AccountHelper.getTokenAccount(publicKey);
+    } catch (error) {
+      if (error instanceof TokenAccountNotFoundError) account = null;
+
+      throw error;
+    }
+
+    const mint = await UsdcHelper.getUsdcMint();
+
+    return {
+      account,
+      usdcMint: mint,
+    };
   }
 
   /**

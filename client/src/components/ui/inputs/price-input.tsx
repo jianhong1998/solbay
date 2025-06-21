@@ -2,19 +2,19 @@
 
 import {
   ChangeEventHandler,
-  Dispatch,
   forwardRef,
   HTMLAttributes,
   KeyboardEventHandler,
-  SetStateAction,
   useState,
 } from 'react';
 
 type PriceInputProps = HTMLAttributes<HTMLInputElement> & {
   value: number;
-  setValue: Dispatch<SetStateAction<number>>;
+  setValue: (value: number) => void;
   label?: string;
   labelClassName?: string;
+  inputClassName?: string;
+  inputContainerClassName?: string;
   disabled?: boolean;
   placeholder?: string;
   helperText?: string;
@@ -35,6 +35,8 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
       labelClassName,
       helperText,
       error,
+      inputClassName,
+      inputContainerClassName,
       ...props
     },
     ref,
@@ -75,13 +77,13 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
           </label>
         )}
 
-        <div className="join">
-          <div>
+        <div className={['join', className].join(' ')}>
+          <div className={inputContainerClassName ?? ''}>
             <input
               {...props}
               className={[
                 'input input-bordered rounded-tl-md rounded-bl-md rounded-tr-none rounded-br-none bg-white text-black',
-                className,
+                inputClassName,
               ].join(' ')}
               type="number"
               placeholder={placeholder}

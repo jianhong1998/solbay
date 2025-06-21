@@ -9,3 +9,9 @@ export const GeneralErrorMessage = Object.freeze({
 } as const);
 export type GeneralErrorMessage =
   (typeof GeneralErrorMessage)[keyof typeof GeneralErrorMessage];
+
+export const PublicKeyErrorMessage = Object.freeze({
+  INVALID_PUBLIC_KEY: 'Invalid public key input',
+});
+export type PublicKeyErrorMessage =
+  (typeof PublicKeyErrorMessage)[keyof typeof PublicKeyErrorMessage];
