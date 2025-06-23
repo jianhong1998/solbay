@@ -42,6 +42,7 @@ tmp
 temp
 dist
 postgres-data
+localstack-data
 solana-ledger
 keypairs
 

@@ -23,7 +23,7 @@ down/clean:
 		$(MAKE) clean-image
 
 clean:
-	@rm -rf ./solana-ledger ./client/.next ./postgres-data ./temp
+	@rm -rf ./solana-ledger ./client/.next ./postgres-data ./temp ./localstack-data
 
 clean-image:
 	@docker image prune -f

@@ -77,3 +77,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  localstack:
+    image: localstack/localstack:stable
+    ports:
+      - '4566:4566'
+    environment:
+      SERVICES: s3
+      DEBUG: 1
+      PERSISTENCE: 1
+    volumes:
+      - './scripts/localstack:/etc/localstack/init/ready.d'
+      - './localstack-data/s3-buckets:/var/lib/localstack/state' # Persist state data
+      - '/var/run/docker.sock:/var/run/docker.sock' # Mount Docker socket
