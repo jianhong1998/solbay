@@ -90,6 +90,10 @@
         {
           "name": "_platform_code",
           "type": "string"
+        },
+        {
+          "name": "estimated_deliver_date",
+          "type": "u64"
         }
       ]
     },
@@ -776,6 +780,11 @@
       "code": 6008,
       "name": "ExceedSellerShipOutTimeout",
       "msg": "Already exceed seller ship out timeout"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidFundReleaseTimeout",
+      "msg": "Invalid fund release timeout"
     }
   ],
   "types": [

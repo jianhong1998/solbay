@@ -19,6 +19,7 @@ idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
 [dependencies]
 anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }
 anchor-spl = "0.31.1"
+chrono = "0.4.41"
 
 [lints.rust]
 # mute warning about unexpected cfgs

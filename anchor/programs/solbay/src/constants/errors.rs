@@ -28,4 +28,7 @@ pub enum ErrorCode {
 
   #[msg("Already exceed seller ship out timeout")]
   ExceedSellerShipOutTimeout,
+
+  #[msg("Invalid fund release timeout")]
+  InvalidFundReleaseTimeout,
 }

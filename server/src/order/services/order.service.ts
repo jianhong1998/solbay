@@ -12,6 +12,7 @@ import {
   PublicKey,
   VersionedTransaction,
 } from '@solana/web3.js';
+import { BN } from 'bn.js';
 import { UUID } from 'crypto';
 import { isAfter } from 'date-fns';
 import { SOLBAY_PLATFORM_CODE } from 'src/common/constants';
@@ -404,6 +405,9 @@ export class OrderService {
         product: {
           seller: true,
         },
+        logisticInfo: {
+          logisticTrackingInfo: true,
+        },
       },
       entityManager,
     });
@@ -446,9 +450,20 @@ export class OrderService {
     const orderIdBytes = Array.from(UuidHelper.convertUuidToBytes(order.uuid));
     const sellerPublicKey = new PublicKey(sellerUser.publicKey);
     const usdcMintPublicKey = UsdcHelper.getUsdcMintPublicKey();
+    const expectedDeliverTime =
+      order.logisticInfo?.logisticTrackingInfo.estimatedDeliverDate.getTime();
+
+    if (!expectedDeliverTime)
+      throw new Error(
+        `Logistic Tracking Info for order (${orderId}) did not fetched.`,
+      );
 
     const instruction = await this.program.methods
-      .deliveryInProgress(orderIdBytes, SOLBAY_PLATFORM_CODE)
+      .deliveryInProgress(
+        orderIdBytes,
+        SOLBAY_PLATFORM_CODE,
+        new BN(expectedDeliverTime),
+      )
       .accounts({
         mint: usdcMintPublicKey,
         seller: sellerPublicKey,

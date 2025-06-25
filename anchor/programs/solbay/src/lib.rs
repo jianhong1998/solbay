@@ -42,8 +42,9 @@ pub mod solbay {
     context: Context<DeliveryInProgress>,
     _order_id: [u8; 16],
     _platform_code: String,
+    estimated_deliver_date: u64,
   ) -> Result<()> {
-    process_delivery_in_progress(context)
+    process_delivery_in_progress(context, estimated_deliver_date)
   }
 
   pub fn receive_order(
