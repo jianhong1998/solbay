@@ -7,6 +7,7 @@ use crate::{
     ESCROW_OPERATION_ACCOUNT_SEED, ORDER_SEED,
   },
   states::{EscrowConfig, Order},
+  util::{add_days, get_start_of_date},
 };
 
 //context shape
@@ -56,7 +57,10 @@ pub struct DeliveryInProgress<'info> {
 }
 
 //service method
-pub fn process_delivery_in_progress(context: Context<DeliveryInProgress>) -> Result<()> {
+pub fn process_delivery_in_progress(
+  context: Context<DeliveryInProgress>,
+  estimated_deliver_date: u64,
+) -> Result<()> {
   /* Check if order is timeout */
   let now = Clock::get()?.unix_timestamp as u64;
 
@@ -64,6 +68,19 @@ pub fn process_delivery_in_progress(context: Context<DeliveryInProgress>) -> Res
     return Err(ErrorCode::ExceedSellerShipOutTimeout.into());
   }
 
+  let start_of_estimated_deliver_date = get_start_of_date(estimated_deliver_date);
+  msg!("Estimated Delivery Date: {}", estimated_deliver_date);
+  msg!("Start of Estimated Delivery Date: {}", start_of_estimated_deliver_date);
+
+  let current_time = Clock::get()?.unix_timestamp;
+  if current_time >= start_of_estimated_deliver_date as i64 {
+    return Err(ErrorCode::InvalidFundReleaseTimeout.into());
+  }
+
+  let fund_release_timeout = add_days(start_of_estimated_deliver_date, 2);
+  msg!("Fund Release Timeout: {}", fund_release_timeout);
+
   context.accounts.order.status = OrderStatus::DeliveryInProgress.to_str();
+  context.accounts.order.fund_release_timeout = fund_release_timeout;
   Ok(())
 }

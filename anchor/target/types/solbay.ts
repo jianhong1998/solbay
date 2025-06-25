@@ -131,6 +131,10 @@ export type Solbay = {
           name: 'platformCode';
           type: 'string';
         },
+        {
+          name: 'estimatedDeliverDate';
+          type: 'u64';
+        },
       ];
     },
     {
@@ -1218,6 +1222,11 @@ export type Solbay = {
       code: 6008;
       name: 'exceedSellerShipOutTimeout';
       msg: 'Already exceed seller ship out timeout';
+    },
+    {
+      code: 6009;
+      name: 'invalidFundReleaseTimeout';
+      msg: 'Invalid fund release timeout';
     },
   ];
   types: [
