@@ -1,23 +1,19 @@
 [toolchain]
 anchor_version = "0.31.1"
-solana_version="2.1.21"
-channel = "1.76.0"
-
-[env]
-RUSTUP_TOOLCHAIN = "nightly-2025-04-01"
+solana_version = "2.1.21"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.localnet]
-solbay = "DsEJ8Xoffs9GSDhzPV3iUi7LskYSJxUKfhgotnWbUpme"
+solbay = "E7GnEaA8j45br6pCyuueQ5FrcieutZUTehiKB2mfnsZa"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "localnet"
 wallet = "../keypairs/program-owner.json"
 
 [scripts]

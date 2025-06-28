@@ -8,7 +8,7 @@ mod util;
 use anchor_lang::prelude::*;
 pub use instructions::*;
 
-declare_id!("DsEJ8Xoffs9GSDhzPV3iUi7LskYSJxUKfhgotnWbUpme");
+declare_id!("E7GnEaA8j45br6pCyuueQ5FrcieutZUTehiKB2mfnsZa");
 
 #[program]
 pub mod solbay {
