@@ -88,7 +88,7 @@ export const OrderStatusBadge: FC<OrderStatusBadgeProps> = ({
 
   return (
     <div
-      className={`badge p-3 font-semibold ${style === 'outlined' ? 'badge-outline' : ''} ${
+      className={`badge p-3 font-semibold text-xs md:text-sm overflow-y-hidden overflow-x-scroll ${style === 'outlined' ? 'badge-outline' : ''} ${
         sellerMode ? badgeDisplay.sellerModeBgColor : badgeDisplay.bgColor
       }`}
     >

@@ -15,16 +15,14 @@ type CheckoutDeliveryFormPresentationProps = {
 const CheckoutDeliveryFormPresentation: FC<
   CheckoutDeliveryFormPresentationProps
 > = ({ formData, setFormData, disableEdit }) => {
-  // TODO: Mobile responsive UI
-
   return (
     <div className="flex flex-col gap-y-5">
       {/* Personal Info */}
       <div>
         <Title className="text-xl">Recipient Info</Title>
-        <div className="flex gap-x-3">
+        <div className="flex flex-col md:flex-row md:gap-x-3">
           {/* Recipient Name */}
-          <div className="flex-1">
+          <div className="md:w-1/2">
             <TextInput
               className="w-full"
               value={formData.recipientName}
@@ -93,9 +91,9 @@ const CheckoutDeliveryFormPresentation: FC<
             disabled={disableEdit}
           />
         </div>
-        <div className="join join-vertical lg:join-horizontal gap-x-5">
+        <div className="flex flex-col md:flex-row gap-x-5">
           {/* Postal Code */}
-          <div className="join-item">
+          <div>
             <NumberInput
               label="Postal Code"
               className="w-full"
@@ -107,7 +105,7 @@ const CheckoutDeliveryFormPresentation: FC<
             />
           </div>
           {/* City */}
-          <div className="join-item">
+          <div>
             <TextInput
               label="City"
               className="w-full"
@@ -116,8 +114,8 @@ const CheckoutDeliveryFormPresentation: FC<
               disabled={disableEdit}
             />
           </div>
-          <div className="join-item">
-            {/* Country */}
+          {/* Country */}
+          <div>
             <TextInput
               className="w-full"
               label="Country"

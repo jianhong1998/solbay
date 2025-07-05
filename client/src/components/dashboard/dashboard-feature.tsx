@@ -4,7 +4,7 @@ import Hero from './hero';
 
 export default function DashboardFeature() {
   return (
-    <div>
+    <div className="mt-4">
       <Hero />
     </div>
   );

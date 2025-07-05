@@ -25,7 +25,7 @@ const ProductList: NextPage = () => {
 
   return (
     <>
-      <div className="flex flex-col space-y-4 p-20">
+      <div className="flex flex-col space-y-4 mt-4 md:mt-0 md:p-20">
         <h1 className="text-4xl text-gray-500 font-extrabold dark:text-gray-400">
           Product Catalogue
         </h1>

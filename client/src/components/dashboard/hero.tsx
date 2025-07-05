@@ -33,7 +33,7 @@ const Hero = () => {
 
       {/*image section*/}
 
-      <div className="relative w-full md:w-1/2 h-[500px] md:h-[600px] mt-8 md:mt-0">
+      <div className="relative w-full md:flex-1 lg:w-1/2 h-[250px] lg:h-[600px] mt-8 md:mt-0">
         <Image
           src="/herobg.png"
           alt="herobg"
