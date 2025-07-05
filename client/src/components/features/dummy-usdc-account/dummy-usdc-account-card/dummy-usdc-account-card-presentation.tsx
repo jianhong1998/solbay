@@ -19,7 +19,7 @@ export const DummyUsdcAccountCardPresentation: FC<
     <div className="p-3 shadow-xl rounded-3xl dark:bg-gray-900">
       <div className="flex flex-col items-center gap-3">
         <div
-          className="text-5xl font-bold cursor-pointer"
+          className="text-3xl md:text-5xl font-bold cursor-pointer"
           onClick={refreshFn}
         >
           {NumberDisplayHelper.convertNumberToDisplayString(balance)} USDC
