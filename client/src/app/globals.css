@@ -56,15 +56,15 @@ body {
 
 /* START: Hero styles */
 .hero {
-  @apply flex flex-col flex-wrap md:flex-row xl:flex-row gap-5 relative z-0 max-w-[1440px] mx-auto p-20;
+  @apply flex flex-col-reverse flex-wrap md:flex-row gap-5 relative z-0 max-w-[1440px] mx-auto p-0 sm:p-20;
 }
 
 .hero__title {
-  @apply 2xl:text-[68px] sm:text-[60px] text-[48px] font-extrabold text-gray-500 dark:text-white;
+  @apply text-[22px] lg:text-[38px] 2xl:text-[68px]  font-extrabold text-gray-500 dark:text-white;
 }
 
 .hero__subtitle {
-  @apply text-[27px] text-black-100 font-light mt-5 dark:text-gray-400;
+  @apply text-[18px] lg:text-[27px] text-black-100 font-light mt-5 dark:text-gray-400;
 }
 
 .hero__image-container {
