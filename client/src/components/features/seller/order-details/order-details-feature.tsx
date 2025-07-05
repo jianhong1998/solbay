@@ -86,29 +86,24 @@ export const OrderDetailsFeature: FC<OrderDetailsFeatureProps> = ({
         </figure>
 
         <div className="flex flex-col gap-3 px-5 pt-5 pb-7">
-          <div className="flex flex-row justify-between">
-            <div>
-              {/* Product Name */}
-              <p className="text-2xl text-wrap font-bold dark:text-gray-300">
-                {orderDetails.product.name}
-              </p>
-              {/* Order Quantity */}
-              <p className="text-wrap text-gray-400">
-                Quantity: {orderDetails.quantity}
-              </p>
-            </div>
-
-            <div>
-              <OrderStatusBadge
-                status={orderDetails.status}
-                sellerMode
-              />
-            </div>
+          <div>
+            <OrderStatusBadge
+              status={orderDetails.status}
+              sellerMode
+            />
+            {/* Product Name */}
+            <p className="text-2xl text-wrap font-bold dark:text-gray-300">
+              {orderDetails.product.name}
+            </p>
+            {/* Order Quantity */}
+            <p className="text-wrap text-gray-400">
+              Quantity: {orderDetails.quantity}
+            </p>
           </div>
 
           {/* Order Amount */}
           <div>
-            Total Amount:{' '}
+            Buyer Paid:{' '}
             {NumberDisplayHelper.convertNumberToDisplayString(
               NumberDisplayHelper.convertMicroUsdcToUsdc(
                 orderDetails.totalAmountInMicroUsdc,
