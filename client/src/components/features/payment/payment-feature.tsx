@@ -142,7 +142,7 @@ export const PaymentFeature: FC<PaymentFeatureProps> = ({ orderIds }) => {
       product={presentationData.product}
       productQuantityDictionary={presentationData.productQuantities}
       logisticFormData={presentationData.logisticInfo}
-      backButtonOnClickHandler={() => router.back()}
+      backButtonOnClickHandler={() => router.push('/order')}
       paymentButtonOnClickHandler={() => {}} // Payment logic is handled by useMakePayment hook
       isPaymentLoading={false} // This will be updated when we trigger payment manually
     />
