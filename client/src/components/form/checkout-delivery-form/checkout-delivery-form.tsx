@@ -6,11 +6,13 @@ import { ILogisticInfoFormData } from './logistic-info-form-data.type';
 type CheckoutDeliveryFormProps = {
   formData: ILogisticInfoFormData;
   setFormData: (formData: ILogisticInfoFormData) => void;
+  disableEdit?: boolean;
 };
 
 const CheckoutDeliveryForm: FC<CheckoutDeliveryFormProps> = ({
   formData,
   setFormData,
+  disableEdit = false,
 }) => {
   const handleFormDataChange = (
     changedData: Partial<ILogisticInfoFormData>,
@@ -27,7 +29,7 @@ const CheckoutDeliveryForm: FC<CheckoutDeliveryFormProps> = ({
     <CheckoutDeliveryFormPresentation
       formData={formData}
       setFormData={handleFormDataChange}
-      disableEdit={false}
+      disableEdit={disableEdit}
     />
   );
 };

@@ -14,6 +14,7 @@ type CheckoutProductListProps = {
     productId: string;
     quantity: number;
   }) => void;
+  hideAvailableQuantity?: boolean;
 };
 
 const CheckoutProductList: FC<CheckoutProductListProps> = ({
@@ -21,6 +22,7 @@ const CheckoutProductList: FC<CheckoutProductListProps> = ({
   isSubmitting,
   productQuantities,
   setProductQuantities,
+  hideAvailableQuantity = false,
 }) => {
   return (
     <div className="overflow-x-auto">
@@ -46,6 +48,7 @@ const CheckoutProductList: FC<CheckoutProductListProps> = ({
                 quantity={productQuantities[product.uuid]}
                 setQuantity={setProductQuantities}
                 disableQuantityChange={isSubmitting}
+                hideAvailableQuantity={hideAvailableQuantity}
               />
             );
           })}

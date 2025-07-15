@@ -2,12 +2,8 @@ import { FC } from 'react';
 
 import { IProductWithoutSensitiveData } from '@/types/product/product-without-sensitive-data.type';
 
-import CheckoutDeliveryForm from '../form/checkout-delivery-form/checkout-delivery-form';
 import { ILogisticInfoFormData } from '../form/checkout-delivery-form/logistic-info-form-data.type';
-import LinkButton from '../ui/buttons/link-button';
-import PrimaryButton from '../ui/buttons/primary-button';
-import Title from '../ui/typography/title';
-import CheckoutProductList from './product-list/product-list';
+import CheckoutDisplay from './checkout-display';
 
 type CheckoutFeaturePresentationProps = {
   product: IProductWithoutSensitiveData;
@@ -38,38 +34,21 @@ const CheckoutFeaturePresentation: FC<CheckoutFeaturePresentationProps> = ({
   isCheckoutLoading,
 }) => {
   return (
-    <div className="mb-5">
-      <div className="mt-3">
-        <Title>Checkout</Title>
-      </div>
-      <div className="divider" />
-      <div>
-        <CheckoutProductList
-          products={[product]}
-          isSubmitting={false}
-          productQuantities={productQuantityDictionary}
-          setProductQuantities={setProductQuantityDictionary}
-        />
-      </div>
-      <div className="divider" />
-      <div>
-        <CheckoutDeliveryForm
-          formData={logisticFormData}
-          setFormData={setLogisticFormData}
-        />
-      </div>
-      <div className="divider" />
-      <div className="flex flex-row justify-end gap-x-3">
-        <LinkButton onClick={backButtonOnClickHandler}>Back</LinkButton>
-        <PrimaryButton
-          onClick={checkoutButtonOnClickHandler}
-          disabled={!isAllQuantitiesValid || !isAllLogisticInfoDataValid}
-          loading={isCheckoutLoading}
-        >
-          Checkout
-        </PrimaryButton>
-      </div>
-    </div>
+    <CheckoutDisplay
+      title="Checkout"
+      product={product}
+      productQuantityDictionary={productQuantityDictionary}
+      setProductQuantityDictionary={setProductQuantityDictionary}
+      isAllQuantitiesValid={isAllQuantitiesValid}
+      logisticFormData={logisticFormData}
+      setLogisticFormData={setLogisticFormData}
+      isAllLogisticInfoDataValid={isAllLogisticInfoDataValid}
+      primaryButtonText="Checkout"
+      primaryButtonOnClickHandler={checkoutButtonOnClickHandler}
+      backButtonOnClickHandler={backButtonOnClickHandler}
+      isPrimaryButtonLoading={isCheckoutLoading}
+      isReadOnly={false}
+    />
   );
 };
 
