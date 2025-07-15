@@ -15,6 +15,7 @@ type CheckoutProductListItemProps = {
   setQuantity: (params: { productId: string; quantity: number }) => void;
   disableQuantityChange: boolean;
   imageUrl?: string;
+  hideAvailableQuantity?: boolean;
 };
 
 const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
@@ -26,6 +27,7 @@ const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
   setQuantity,
   disableQuantityChange,
   imageUrl = PLACEHOLDER_IMAGE_URL,
+  hideAvailableQuantity = false,
 }) => {
   const unitPriceDisplayString = useMemo(
     () =>
@@ -64,10 +66,12 @@ const CheckoutProductListItem: FC<CheckoutProductListItemProps> = ({
       {/* Name & Available Quantity */}
       <td>
         <div className="font-bold">{productName}</div>
-        <div className="text-gray-400 dark:text-gray-600">
-          Available:{' '}
-          <span className="font-bold">{productAvailableQuantity}</span>
-        </div>
+        {!hideAvailableQuantity && (
+          <div className="text-gray-400 dark:text-gray-600">
+            Available:{' '}
+            <span className="font-bold">{productAvailableQuantity}</span>
+          </div>
+        )}
       </td>
       {/* Unit Price */}
       <td className="font-bold">{unitPriceDisplayString}</td>
